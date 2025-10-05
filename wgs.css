@@ -1,0 +1,1238 @@
+
+:root {
+	/* 
+	color-1: used in top Whats God Say and its option's dropdowns; History; WordStudy Lexicons and References
+	color-2 : Ver/SW settings; and all popup windows header/footer; and scroll bar; text also used for "Whats God say" brdr
+	color 3: All popup windows main part
+	color 4: SW Header/Footer
+	SW: Scripture Window
+	btn: Button
+	Scr: Scroll Bar
+	
+	btn & btn-hover - button and selected buttons - used on all 4 color backgrounds!
+	border - most all borders ;   border2 is just in WordStudy  
+	*/
+
+	--bg1: #0d0d0f;
+	--txt1: #d4d4db;
+
+	--bg2: hsl(0, 0%, 10%);
+	--txt2: #b1cbbb;
+	
+	--bg3: #2d2d30;
+	--txt3: white;
+	
+	--bg4: #b1cbbb;
+	--txt4:black;
+
+	--bgSW: #0d0d0f;
+	--txtSW: #d4d4db;
+	--bgSWMark:blue;
+	--bgbtn: #0d0d0f;
+	--txtbtn:white; 
+
+	--bgbtn-hover: #b1cbbb;
+	--txtbtn-hover: #0d0d0f;
+
+	--brdr: white;
+
+	--bgScr: #0d0d0f; 
+	--thmbScr: #d4d4db;
+
+	--danger:red;
+}
+
+
+ ::-webkit-scrollbar {
+	width: 1rem;
+  }
+  ::-webkit-scrollbar-track {
+	background: var(--bgScr);
+	border-top: 1px solid var(--brdr); 
+	border-right: 1px solid var(--brdr); 
+
+}
+  ::-webkit-scrollbar-thumb {
+	background-color: var(--thmbScr);
+	background-image: radial-gradient(var(--thmbScr),var(--bgScr));
+	border-radius:10%;
+	border: 1px solid var(--brdr);
+}	
+
+/***********************Scroll Bar Stuff ***********************
+--shadow: #43a047;
+--scrollbarBG: #eee;
+--thumbBG: #66bb6a;
+*/
+
+/***********************Scroll Bar Stuff ***********************
+
+	box-shadow: 0 -100vh 0 100vh var(--shadow), 0 0 15px 5px black;
+  }
+
+  
+  body {
+	scrollbar-width: thin;
+	scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+  } 
+  
+  .side-scroll {
+	display: flex;
+	overflow: auto;
+	padding-bottom: 5px;
+  }
+  .side-scroll > div {
+	flex: 1;
+	margin-right: 20px;
+	flex: 0 0 100px;
+	height: 100px;
+	background: #ccc;
+  }
+  .side-scroll::-webkit-scrollbar-thumb:horizontal {
+	background-color: var(--thumbBG);
+	box-shadow: -100vh 0 0 100vh var(--shadow), 0 0 15px 5px black;
+  }
+
+/*********************** END Scroll Bar Stuff ***********************/
+
+
+
+
+
+.site-grid {
+	display: grid;
+	grid-template-columns: 1em 1fr 1fr;
+	/* grid-template-areas:
+		'SiteHeading SiteHeading' 
+		'SideBar maincontainer' 
+		'SiteFooter SiteFooter'
+		; */
+}
+.SWH-grid {
+	display: grid;
+	grid-template-areas:
+		'SWVersion SWReference SWSettings'
+		;
+}
+/* .history-grid{
+	display:grid;
+	grid-template-columns:1em;
+} */
+
+
+html{
+	font-size: 16px;
+	scroll-behavior: smooth;
+}
+
+.tooltip {
+  position: relative;
+
+  /* display: inline-block; */
+}
+.tooltip3{
+	display:inline-block;
+	position: relative;
+	border-bottom: 1px dotted white;
+}
+.tooltiptext, .tooltiptextL{
+	width:auto;
+
+}
+.tooltip .tooltiptext, .tooltip .tooltiptextL{
+  visibility: hidden;
+  /* width: 200px; */
+	color: white;
+	background-color: black;
+	border: 1px solid white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 3;
+ 
+  /* left: 105%; */
+}
+.tooltip .tooltiptext{
+	top: -5px; 
+	left: 105%;
+	text-indent: 0;
+}
+.tooltip .tooltiptextL{
+	top: 30px; 
+	right: 95%;
+}
+
+.tooltip:hover .tooltiptext, .tooltip:hover .tooltiptextL, .tooltip3:hover .ttt3  {
+  visibility: visible;
+}
+
+.tooltip3 .ttt3 {
+	width:98%;
+	max-width: 800px;
+	box-sizing: border-box;
+	min-width:500px;
+	padding: 25px 25px 25px 25px;
+	visibility: hidden;
+  /* width: 200px; */
+	color: white;
+	background-color: black;
+	border: 1px solid white;
+  border-radius: 6px;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+	/* text-align: left; */
+	/* top:50px; */
+	bottom: 22px;
+  left:-250px; 
+}
+
+
+.tooltipNote {
+	position: relative;
+	border-bottom: 1px dotted black;
+  }
+  
+  .tooltipNote .tooltiptextNote {
+	visibility: hidden;
+	min-width: 30vw;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -60px;
+	
+	/* Fade in tooltipNote - takes transition: # seconds to go from 0% to 100% opac: */
+	opacity: 0;
+	transition: opacity 2.4s;
+  }
+
+  .tooltiptextNote{
+	font-size: 10px;
+	font-weight: normal;
+	
+  }
+  
+  .tooltipNote:hover .tooltiptextNote {
+	visibility: visible;
+	opacity: 0.85;
+  }
+
+
+
+body {
+	display:relative;
+	left:0;
+	top:0;
+	background-color: var(--bg1);
+	padding:0;
+	margin:0;
+	font-family: Verdana, Geneva, sans-serif;
+	line-height:1.5;
+	overflow-x:hidden;
+	overflow-y:hidden;
+	/* width:100vw; */
+}
+
+main,header,footer{
+	margin:0;
+}
+a { color: inherit; } 
+
+audio {
+	display:inline;
+	/* width:250px; */
+}
+
+table, th, td {
+	border: 1px solid var(--brdr);
+	border-collapse: collapse;
+	text-align: left;
+	padding: 2px;
+	padding-top:0px;
+	padding-bottom: 0px;
+}
+
+h1{
+	font-size: 1.5rem;
+}
+
+
+input[type=number]{
+	width:2.5rem;
+}
+#showMARrowCnt{
+	width:4rem;
+}
+
+button, input[type="button"] {
+	background-color: var(--bgbtn);
+	border: 1px solid var(--txtbtn);
+	border-radius: 10px;
+	color: var(--txtbtn);
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+
+	}
+	
+	
+select, input[type="text"],input[type="email"],input[type="password"],#toGroup {
+	border-radius: 10px;
+	min-height: 25px;
+}
+
+	
+
+.brdr {
+	background-color:var(--bg1);
+	font-size: small;
+	color:var(--txt2);
+	text-align:center;
+	position:relative;
+	top:0;
+	left:0;
+	clear:both;
+	padding:0px;
+	margin:0px;
+	
+}
+.smallBtn,.smallBtn1,.smallBtn2, .midBtn, .RHBtn {
+	border-radius: 4px;
+	border: 1px solid var(--txtbtn);
+	color: var(--txtbtn);
+	padding: 0.35em 0.45rem;
+	margin: 0.2em 0.5rem;
+	}
+.smallBtn1{
+	padding: 0.1em;
+	margin : 0.1em;
+}
+.midBtn, .RHBtn{
+	padding: 8px 16px;
+	margin: 4px 8px;
+	position: relative;
+}
+.RHBtn{
+	display:block;
+}
+.RHcb{
+	float: left;
+
+}
+
+#searchBtn:hover, #accountBtn:hover, #settingsBtn:hover,#windowBtn:hover  {
+	background-color:var(--bgbtn-hover);
+	border:1px solid var(--txtbtn-hover);
+	color:var(--txtbtn-hover);
+}
+
+
+#brdrDD, #brdrDDRight {
+	/* the Right is just to keep the items symetrical.  */
+	color:var(--txt2);
+	font-size:1rem; 
+	background-color:var(--bg1); 
+	/* float:left;  */
+	visibility:hidden;
+}
+
+#SiteHeading {
+	grid-column: 1/4;
+	/* grid-area:SiteHeading; */
+	background-color:var(--bg1);
+	color:var(--txt2);
+	margin-top:0;
+	margin-bottom: 0;
+}
+
+#siteTitleBar {
+	position:relative;
+	font-size:large; 
+	color:var(--txt2);
+	background-color:  var(--bg1); 
+	/* border: 1px solid var(--bg1); */
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+#siteTitleBarCollapse{
+	position:absolute;
+	left:10px;
+	bottom:50%;
+	font-size: 1rem;
+}	
+
+#siteTitleBarTitle{
+	text-align: center;
+}
+
+#maincontainer {
+	grid-column: 2/4;
+	/* grid-area:maincontainer; */
+	display:flex;
+	margin-left: 0; /* .5rem; */
+	margin-top:0;
+	margin-bottom:0;
+	margin-right:0.5rem;
+	/* max-width:23vw; */
+  }
+
+#ScriptureDiv1{
+	  width:100%;
+/* 	  
+	  margin-left:5px;
+	  margin-right:5px; */
+  }
+#ForumDiv{
+	display:none;
+	/* width:50%; */
+	margin-left:5px;
+	margin-right:5px;
+	float:right;
+}
+#Forum{
+	min-height: 85vh;
+}
+
+
+.TitleDD{
+	font-size:small;	
+	padding:2px;
+	display:inline;
+	margin:0px;
+	text-decoration:underline;
+}
+
+
+.SWVersion{
+	grid-area:SWVersion;
+	position:absolute;
+	 left:0;
+	display: inline-block;
+
+}
+.SWReference{
+	grid-area: SWReference;
+}
+.SWSettings{
+	grid-area: SWSettings;
+	position:absolute;
+	right:0; 
+	display: inline-block;
+}
+
+.SWVersionBtn, .SWSettingsBtn {
+	background-color:var(--bg1);
+	color:var(--txtbtn);
+	padding-top:0.2em;
+	padding-bottom:0.2em;
+	padding-left:1em; 
+	padding-right:1em;
+	border-width: 0;
+	border-radius: 0.7em;
+	justify-self: center;
+}
+
+/* .SWVersionBtn {
+	background-color:var(--bg1);
+	color:var(--txtbtn);
+	padding-top:3px;
+	padding-bottom:3px;
+	padding-left:16px;
+	padding-right:16px;
+	border-width: 0;
+	border-radius: 10px;
+	justify-self: center;
+} */
+
+#SWSettingsBtnFaBars{
+	color:white;
+	font-size:20px;
+}
+
+.SWSettingsDD, .SWVersionDD {
+	position: absolute;
+	min-width: 250px;
+	text-align: left;
+	z-index: 3;
+	border-radius: 6px;
+	padding:16px; 
+	background-color: var(--bg2);
+	color:var(--txt2);
+	border: 1px solid var(--brdr);
+	top:35px;
+	margin: auto;
+	display: none;
+	justify-content: space-between;
+}
+
+.SWSettingsDD {
+	width:225px;
+	right:0;
+}
+
+.SWVersion {
+	display:block;
+	height: 0;
+}
+
+/* Show the dropdown menu on hover */
+.SWSettings:hover .SWSettingsDD {
+	display: block;
+}
+
+
+/* .SWVersion:hover .SWVersionDD {
+	height:auto;
+    transition-property: all;
+	transition-duration: 1s;
+} */
+  
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.SWSettings:hover .SWSettingsBtn, .SWVersion:hover .SWVersionBtn  {
+	background-color:var(--bgbtn-hover);
+	border:3px solid var(--txtbtn-hover);
+	color:var(--txtbtn-hover);
+}
+
+.SWSettings:hover #SWSettingsBtnFaBars {	
+	color:var(--txtbtn-hover);
+}
+
+.ItemDD:hover {
+	background-color:var(--bgbtn-hover);
+	color:var(--txtbtn-hover);
+}
+
+#VideoBar1 {
+	position:relative;	
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--txtSW);
+	border-top: 1px solid var(--brdr); 
+	border-right: 1px solid var(--brdr); 
+	border-left: 1px solid var(--brdr); 
+
+	background-color:var(--bgSW);
+	padding: 2px;
+	/* width:98vw; */
+}
+
+.ScriptureHeaderAudio {
+	display:none;
+}
+
+
+.optionItem {
+	padding:6px;
+}
+
+	/* .audioRate{
+	display:none;
+
+ width:2.5rem;
+	z-index:1;
+	position:absolute;
+	top:0; 
+	}*/
+
+#ScriptureFooter1, #ForumFooter {
+
+	border: 1px solid var(--brdr);
+	background-color:var(--bg4);
+	color:var(--txt4);
+	text-align:center;
+	margin-top:0;
+	margin-bottom:0;
+	/* width:98vw; */
+}
+
+#SiteFooter {
+	grid-column: 1/4;
+	/* grid-area:SiteFooter; */
+	background-color: var(--bg2);
+	color: var(--txt2);
+	padding: 2vw 5vw 2vw 5vw;
+	/* border: 7px solid var(--bg3); */
+	margin-top:0;
+	margin-bottom:0;
+}
+
+
+#Scripture1, #Forum, #Scripture0 {
+	position:relative;
+	cursor:pointer;
+	margin-top:0;
+	margin-bottom:0;  
+	padding : 12px 24px 12px 24px;
+	border-top: 1px solid var(--brdr); 
+	border-right: 1px solid var(--brdr); 
+	border-left: 1px solid var(--brdr); 
+	background-color:var(--bgSW);
+	color:var(--txtSW);
+	overflow-y:auto;
+}
+
+#ScriptureHeader1,#ForumHeader{
+	background-color:var(--bg4);
+	position:relative;
+	margin-top:0;
+	margin-bottom:0;
+	z-index:2; 
+	padding:0.2rem;
+	color:var(--txt4); 
+	text-align:center;
+
+	border-top: 1px solid var(--brdr); 
+	border-right: 1px solid var(--brdr); 
+	border-left: 1px solid var(--brdr); 
+}
+
+#ForumHeader, #ForumFooter{
+	width:48vw;
+}
+
+#Forum {
+	width:45vw;
+}
+
+#ftrDD {
+	float: left;
+	display:none;	
+}
+
+
+.fauxLink {
+	text-decoration: underline;
+	cursor:pointer;
+} 
+
+em.add  {
+	font-weight: lighter;
+}
+
+.q{
+	text-indent:3rem;
+	/* width:min-content; changed for Compare version UDB version sqished*/
+	width:fit-content;
+}
+
+
+/* These are indents and other changes between large and small screen sizes*/ 
+#ScriptureHeader1{padding:0.3rem;}
+.q0 {text-indent:3rem;	width:fit-content;}
+.q1 {text-indent:5rem;	width:fit-content;}
+.q2 {text-indent:7rem;	width:fit-content;}
+.q3 {text-indent:9rem;	width:fit-content;}	
+.siteImg{width:35px; margin-left: 20px;margin-right: 20px;border-radius:5px;}
+.labelText{display: inline;}
+#WhatsGodSay{display: inline;}
+#wordStudyBox{left:10vw;width:80vw;}
+audio {width:250px;}
+/* .audioRate{right:55px;font-size:small;} */
+#VideoLinks{flex:2;text-align: center;}
+#AudioLinks{flex:1;text-align: center;}
+
+
+
+/* hidden windows */
+#loginPopUp, #logoutPopUp, #search, #siteSettings, #siteSettingsThemeDD,#siteSettingsFontDD, #siteSettingsGreekDD,#siteSettingsAudioDD, #siteWindows {
+	z-index:25;
+	display:none;
+	width: 10rem;
+	/* width:350px; */
+	position: absolute;
+	top:0.2rem; /* 3px */
+	right:0.3rem; /* 5px */
+	background-color:var(--bg1);
+	color:var(--txt1);
+	border-collapse:collapse;
+	border: 1px solid var(--brdr); 
+	border-radius: 10px;
+}
+#search,#siteWindows{
+	left:0.3rem;
+	width:17rem;
+}
+#searchEntry{
+	width:9.5rem;
+} 
+#loginPopUp{
+	width:16rem;
+}
+#siteSettingsThemeDD, #siteSettingsFontDD, #siteSettingsGreekDD,#siteSettingsAudioDD  {
+	width: 15rem;
+	top:1.2rem;
+	right:10.8rem;
+	display:none;
+	text-align: center;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;	
+}
+#DarkThemeColorDefault{
+	border-color:#b1cbbb;
+	color:#b1cbbb;
+}
+#DarkThemeColorDefault:hover {
+	background-color:#b1cbbb;
+	color:black;
+}
+
+.radioOptions {
+	font-size:smaller;
+	padding-left: 0px;
+	width:98%;
+	border-bottom: 1px solid var(--brdr);
+	
+}
+.logOptions {
+
+	display:flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	padding:16px;	
+
+}
+#logoutPopUp{
+	font-weight: bold;
+	width:fit-content;
+}
+.logOptions > input {
+	flex:1;
+}
+#writingEditor{
+	width:80%;
+	max-width:950px;
+	margin:auto;
+}
+
+#writingEditorMain {
+ padding:0;
+
+}
+#writingEditorOptions{
+	margin:10px;
+}
+#writingEditorTextArea{
+box-sizing:border-box;	
+width:99% ;
+height:98%;
+margin:auto;
+padding:2px; 
+resize:both;
+}
+
+ #MARHistory{
+	position:relative;
+} 
+
+#MARFilterIcon{
+	position:absolute;
+	right:0;
+	top:0;
+}
+
+.msgboxBtn {
+	display:flex;
+	padding-bottom:16px;
+	padding-top:0;
+}
+
+.msgboxBtn > button {
+margin: auto;
+}
+
+#signUpButton{
+
+	justify-self: center;
+
+}
+
+.msgbox, .msgbox2{   /*msgbox is set to the touchpunch resizeable, moveable. msgbox2 is not. */
+	padding: 1px;
+	background-color: var(--bg2); 
+	color: var(--txt2);
+	z-index:25; 
+	display:none; 
+	position: absolute; 
+	min-width:150px; 
+	max-width:95vw;
+	max-height: 95vh;
+	border: 1px solid var(--brdr);
+}
+.msgbox2{
+	max-height: none;
+}
+.msgboxMain{
+	background-color: var(--bg3); 
+	color:var(--txt3);
+	/*resize: both; */
+	overflow: auto;
+	padding: 16px;
+	padding-left:25px;
+	border: 2px solid var(--bg2);
+	cursor:pointer;
+	position:relative;
+	max-height: 85vh;
+}
+
+.msgboxSection{
+	padding:5px;
+}
+
+ .msgboxHeader, .msgboxFooter, .msgboxClose {
+	color:var(--txt2); 
+	border: 4px solid var(--bg2);
+	padding:3px;
+	position:relative;
+}
+.msgboxHeader, .msgboxFooter{
+	background-color: var(--bg2); 
+}
+
+.msgboxHeader{
+	cursor: all-scroll;
+}
+.msgboxClose{
+	position:absolute;
+	cursor:pointer;
+	right:8px;
+	top:0;
+	padding:0,4px,0,0;
+	border-style: none;
+	z-index:2;
+}
+
+.bkgrd-modal, .bkgrd-msgbox {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 26; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto;  /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+	.bkgrd-msgbox{
+		z-index:24;
+	}
+
+  #viewsMAR{
+	display:flex;	
+} 
+#listMAR{
+	flex:1,3;
+	color:var(--txtSW);
+	background-color: var(--bgSW);
+}
+
+ #chapterMAR{
+	 flex:2;
+} 
+
+
+/* The below refer to elements which are NOT in the HTML index 
+but are in the Scripture or Word data imported.*/ 
+	
+h3.WNPS{
+	font-size:medium;
+	display:inline;
+	font-style:italic;	
+	}
+.secTitle {
+	letter-spacing: 1px;
+	font-weight: bold;
+	font-size: 105%;
+	/* width:fit-content; */
+	font-style: italic;
+	position:sticky;
+	top: -15px; 
+	color:var(--txtSW);
+	background-color: var(--bgSW);
+   }
+
+  .tnote, .rnote { 
+	color:var(--txt2);
+	text-decoration: underline;	
+	font-size:x-small; 
+	vertical-align:top;
+	cursor:pointer;
+	font-weight:bold;		
+}
+.vrs {
+	font-size:60%; 
+	vertical-align:bottom; 
+	font-weight:bold;
+}
+.verse {
+	display:inline;
+
+}
+.strngs, .ew0, .ew1, .ew2, .ew3, .ew4, .ew5, .ew6, .ew7, .ew8, .ew9 {
+	font-size:60%; 
+	vertical-align:top;
+	}
+
+
+
+.lmma {
+	font-size:60%; 
+	vertical-align:bottom;
+	}
+
+.prs {
+	font-size:60%; 
+	vertical-align:top;
+	}
+		
+
+.wgs-modal{
+	z-index:27;
+	position:fixed;
+ 	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+	}
+
+#wordStudyBox {
+		top: 10px;
+
+}
+
+.wstab {
+	background-color: #37373a;
+	cursor: pointer;
+	border: 1px solid #2d2d30;
+}
+
+.wstab button:hover {
+	background-color: #2d2d30;
+}
+
+.wstab button.active {
+	background-color: #2d2d30;
+}
+
+/* Accordion */
+.panel,.subpanel {
+  padding: 0 12px;
+  background-color: var(--bg1);
+  color: var(--txt1);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1.2s linear;
+	transition-delay: 0s;
+}
+
+.accordion,.accordion1, .subaccordion {
+  background-color: var(--bgbtn);
+  color: var(--txtbtn);
+	cursor: pointer;
+  padding: 5px;
+  width: 98%;
+  border: 2px;
+  border-color: var(--brdr);
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+	transition: max-height 1.2s linear;
+	transition-delay: 0s;
+}
+
+.subaccordion {
+    font-size: 12px;
+}
+
+.active, .accordion:hover,.accordion1:hover, .subaccordion:hover {
+/*  background-color: darkslategray; */
+background-color: var(--bgbtn-hover);
+color: var(--txtbtn-hover);
+}
+
+.accordion:after,.accordion1:after, .subaccordion:after {
+   content: '\002B'; 
+  color: var(--txtbtn);
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+	/* font-family: "Font Awesome 4 Free"; font-weight: 400; content: "\f103"; */
+	content: "\2212";
+}
+
+.audioTimeFrame{
+	width:5rem;
+}
+
+/* Dictionary/Lexicon Elements  */
+/* WordNet Divs */
+ .blt, .WNList, .WNDef  {
+	display:inline;
+}
+.WNList {
+	font-size: large;
+}
+.WNDef {
+	font-weight: bold;
+}
+.WNEx, .WNExTtl, .WNExTxt {
+	display:none;
+}
+
+.SideBar {
+	grid-column:1;
+	width:1em;
+	/* display:flex;
+	flex-direction: column; */
+	position: relative;
+	z-index: 3;
+	top: 0;
+	right: 0;
+	background-color: var(--bg1);
+	/* border-right: 2px solid var(--brdr);  */
+	overflow-x: hidden;
+	overflow-y: hidden;
+	margin:0;
+	transition: 0.5s;
+  }
+  
+ .SideBar a {
+	padding: 8px 8px 8px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color:var(--txt1);
+	display: block;
+	transition: 0.3s;
+  }
+  
+  .SideBar a:hover {
+	background-color: var(--bgbtn-hover);
+	color: var(--txtbtn-hover);  
+	/* color: #f1f1f1; */
+  }
+  
+
+  #HBClosedText {
+	transform: rotate(-90deg);
+	background-color: var(--bg1); 
+	color:var(--txt2); 
+	position:relative;
+	top: 40%;
+	left:0;
+	font-size: smaller;
+} 
+
+.SideBarHeader, .SideBarFooter, .SideBarClose {
+	display:none;
+	background-color: var(--bg2);
+	color:var(--txt2); 
+	/* border-top: 4px solid var(--bg2);
+	border-right: 4px solid var(--bg2); */
+	padding:3px;
+	position:relative;
+}
+
+.SideBarHeader{
+	align-self: flex-start;
+	text-align: center;
+	height: 24px;
+}
+
+
+.SideBarMain{
+	text-align: center;
+	border-top: 1px solid var(--brdr); 
+	overflow-y: auto;
+}
+.SideBarFooter{
+	position: sticky;
+	bottom: 0; 
+	height: 24px;
+	border-top: 1px solid var(--brdr); 
+}
+
+.SideBarClose {
+	float: right;
+	z-index: 11;
+	border-top: 3px solid var(--bg2); 
+	border-right: 3px solid var(--bg2);
+}
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+ 
+  #SiteFooter{
+	margin: 0;
+	padding: 0;
+}
+#SiteFooterHeader{
+	padding-left: 1.1rem;
+}
+#SiteFooterMain{
+	margin: 1.3rem;
+	padding:2rem;
+	padding-top:0.8rem
+}
+.BibleReferenceInput {
+	width:15rem;
+	padding: 6px;
+	background-color: var(--bgSW);
+	color: var(--txtSW);
+	border: 1px solid var(--brdr);
+	margin-top:3px;
+}
+
+#TRBox{
+	width: 80%;
+}
+.TopicInput {
+	width:80%;
+	/* padding: 6px; */
+	background-color: var(--bgSW);
+	color: var(--txtSW);
+	border: 1px solid var(--brdr);
+	/* margin:0.5rem; */
+}
+.TopicLbl {
+	/* display: flex;
+	flex-direction: row;
+	justify-content: flex-start; */
+	text-align: right;
+	width: 10%;
+	display:inline-block;
+	line-height: 26px;
+
+	margin: 10px 8px 10px 0;
+	/* margin-right: 5px; */
+  }
+  .TopicInput {
+	height: 20px;
+	/* flex: 1 1 80%; */
+	/* margin-left: 10px; */
+  }
+
+
+
+#enterTopic1Group{
+	min-height: 25px;
+	width:15rem;
+	padding: 6px;
+	background-color: var(--bgSW);
+	color: var(--txtSW);
+	border-top: 1px solid var(--brdr);
+	border-bottom: 1px solid var(--brdr);	
+	margin-top:3px;
+	margin-bottom:3px;
+}
+.SWTopic{
+	margin-left: 0.25rem;
+	margin-right:0.25rem;
+
+}
+.SWTopicEdit{
+	margin-right:0;
+	border-left: 1px solid var(--brdr);
+	border-radius: 10px 0px 0px 10px;
+	margin-top:3px;
+	font-size:small;
+}
+.SWTopicClose{
+	margin-left:0;
+	border-right: 1px solid var(--brdr);
+	border-radius: 0px 10px 10px 0px;  
+	font-size:small;
+}
+
+.verseTitle{
+	float:right;
+	font-style: italic;
+}
+.title0{
+	position: absolute;
+	right:1.5rem;
+}
+
+#Scripture0{
+	width: 85vw;
+	height: 80vh;
+}
+
+@media only screen and (max-width: 730px) {
+	#siteSettings,  #siteWindows{
+		width:10rem;
+	}
+	.BibleReferenceInput {width:10rem;}
+	
+	#siteSettingsThemeDD,#siteSettingsFontDD, #siteSettingsGreekDD,#siteSettingsAudioDD{
+		width:10rem;
+		right:4rem;
+	}
+
+	#VideoLinks{flex:4;}
+
+}	
+
+
+@media only screen and (max-width: 625px) {
+	.smallBtn2{margin:0.3rem 0.2rem;}
+	h1 {font-size: 0.8rem;}
+	#ScriptureHeader1{padding:0rem;}
+	p {text-indent:2rem;}
+	.q0 {text-indent:1rem;	width:fit-content;}
+	.q1 {text-indent:2rem;}
+	.q2 {text-indent:3rem;	width:fit-content;}
+	.q3 {text-indent:4rem;	width:fit-content;}
+	.siteImg{width:25px; margin-left: 4px;margin-right: 4px;border-radius:5px;}
+	.labelText{display: none;} 
+	#WhatsGodSay{display: none;}
+	#wordStudyBox{left:2vw;width:96vw;}
+	audio {width:150px;}
+	::-webkit-scrollbar {width: 0.5rem;}
+}
+
+
+@media only screen and (max-width: 514px) {
+	/* #siteSettings,  #siteWindows{
+		width:220px;
+	} */
+	#siteSettingsThemeDD,#siteSettingsFontDD, #siteSettingsGreekDD,#siteSettingsAudioDD{
+		/* width:220px; */
+		left:5px;
+	}
+	.BibleReferenceInput {width:7rem;}
+	.SWVersionBtn, .SWSettingsBtn{
+		padding: 0.3em;
+		border-radius: 0.3em;
+	}
+	.caret-down{
+		display:none;
+	}
+	::-webkit-scrollbar {width: 0.25rem;}
+}	
+
+.icongoup{
+	color:var(--txtbtn);
+	background-color:red;
+	display:inline;	
+}
+
