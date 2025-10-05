@@ -1,4 +1,4 @@
-devVer="0.2.16 25-05 SectionTitle Cross Reference,"
+devVer="0.1 First GitHub Connection"
 
 var siteControl = {
 	doSave: true, showTitleBar: true, showFooter: true, 
