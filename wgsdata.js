@@ -6275,6 +6275,10 @@ audioFileMeta= [
 ];
 
 
+//[0='ID',1='Version',2='Folder',3='File',4='ContentType',5='Reader',
+// 6='ReaderOrg',7='Book',8='Chapter',9='Book2',10='Chapter2',11='WordCount',12='Length'],
+
+
 parseCode=[
 ['A-APF','Function=Adjective; Case=Accusative; Number=Plural; Gender=Feminine'],
 ['A-APF-C','Function=Adjective; Case=Accusative; Number=Plural; Gender=Feminine; Extra=Comparative'],

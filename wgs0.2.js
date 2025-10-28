@@ -1,4 +1,4 @@
-devVer="0.1 First GitHub Connection"
+devVer="0.11 Adjusted makeAudioDataFilE to create GNT timing"
 
 var siteControl = {
 	doSave: true, showTitleBar: true, showFooter: true, 
@@ -2592,32 +2592,48 @@ var noteControl = {
 
 } //end object noteControl
     
-var makeAudioDataFile= {
+var makeAudioDataFile= {   
+	//used to fill (and reset?) the second for each verse start in an audio Bible 
+	// (Already need the audiofile and meta tables) 
+	
 	timelen:0,
 	wordCount:0,
-	MatchVersion:"BYZ",
-	MatchBook:40,
-	MatchBook2:40,
-	rowNum:-1,
-	IntroLen:2,    //Def 4  ERV 3  BYZ 2 
-	BookIntroLen:6.5,  //Def 6  ERV 12
-	EndingLen:0,    //Def 2  ERV 7  BYZ 0
-	PunctAfterLen:0.02, //Def 0.02  ERV 0.08
+	MetaID:0,  //NEW - will be read from Developer Area entry
+	MatchVersion:"VER",
+	MatchBook:-1, //will be read from Developer Area entry
+	MatchBook2:-1, //will be read from Developer Area entry
+	IntroLen:-1,    //Def 4  ERV 3  BYZ 2 
+	BookIntroLen:-1,  //Def 6  ERV 12
+	EndingLen:-1,    //Def 2  ERV 7  BYZ 0
+	PunctAfterLen:-1, //Def 0.02  ERV 0.08
 	ActiveRow:-1,
+	CVWlen:2, //length for Chap, Verse, Word.  Is 3 for Psalms.
 
-	makeTimingFile: function(){
+	findVoiceFileDataRow: function(mb) {
+		for (let i = 1; i < window["voiceFileData"].length; i++) {
+			if ( window["voiceFileData"][i][7] == mb && window["voiceFileData"][i][13] == this.MetaID )
+				return i;
+		}
+		return -1;
+	},
+
+	makeTimingFile: function(){  //This reads from the first to last book entered - it runs computeTiming() for each book. 
+		this.MetaID=document.getElementById("DA-MtID").value;
 		this.MatchBook=document.getElementById("DA-BS").value;
 		this.MatchBook2=document.getElementById("DA-BE").value;
+		this.MatchVersion=audioFileMeta[this.MetaID][1];
+		this.IntroLen=audioFileMeta[this.MetaID][11]; 
+		this.BookIntroLen=audioFileMeta[this.MetaID][12]; 
+		this.EndingLen=audioFileMeta[this.MetaID][13]; 
+		this.PunctAfterLen=audioFileMeta[this.MetaID][14];
 	
-		let i=0;
-        for (i=this.MatchBook;i<=this.MatchBook2;i++) {
-			// if (i==19) //skip psalms for now
-			//    i++;
-			////console.log("Doing Book " + i);
-			this.rowNum=voiceControl0.findvoiceFileDataRow(this.MatchVersion,util.padNum(i,2) +"001000");
-			this.ActiveRow=this.rowNum;
-			if (this.rowNum>-1){
-				this.computeTiming(i);
+		
+		for (let i=this.MatchBook;i<=this.MatchBook2;i++) {
+			//console.log("Doing Book " + i);
+			this.ActiveRow=this.findVoiceFileDataRow(i);
+			//console.log ("voiceFileData Active Row:" + this.ActiveRow + " Active Row Book:" + voiceFileData[this.ActiveRow][7] );
+			if (this.ActiveRow>-1){
+				this.computeTiming(voiceFileData[this.ActiveRow][7]);
 			}
 		}		
 	},
@@ -2625,24 +2641,23 @@ var makeAudioDataFile= {
 		let timeAt=0;
 		let timeLeft=-1;
 		let timeInterval=-1;
+		let timingBy=22;
 		let j=0;
 		let k=0;
 		let i=0;
 		let chp=1;
 		//get Book Data and column intervals
 		let bibFN=window["B" + bibleBookData[MB][8] + this.MatchVersion];
-		let iID=getColumnIncre(bibFN[0],"id");
-		let iWord=getColumnIncre(bibFN[0],"word");
-		let iPuncAft=getColumnIncre(bibFN[0],"PunctAfter");
+		let iID=getColumnIncre(bibFN[0],"id"); //get the column increment whose title matches
+		let iPuncAft=getColumnIncre(bibFN[0],"PunctAfter"); //ditto
 		let puncCnt=0;
 		let refLen=util.refPadCount(MB);
 		let firstWord=util.padNum(1,refLen); 
 		let fileID=0;
 
-		//Read voiceFileData for each chapter in this book
+		//Read for each chapter in this book
 		if (voiceFileData[this.ActiveRow][4]=="Chapter"){ 
 			while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
-				////console.log(this.MatchVersion + MB + util.padNum(voiceFileData[this.ActiveRow][8],3) + "=[");
 				if (voiceFileData[this.ActiveRow][8]==1) //first Chapter may have book intro
 					timeAt=this.BookIntroLen;
 				else
@@ -2650,24 +2665,20 @@ var makeAudioDataFile= {
 				timeLeft=voiceFileData[this.ActiveRow][12]-timeAt;
 				//get count for each punctuation of [,;.? etc]
 				puncCnt=0;
-				for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)
-					if (typeof (bibFN[i][iPuncAft]) != 'undefined') //bibFN[i][iPuncAft].includes(",")==true || bibFN[i][iPuncAft].includes(".")==true || bibFN[i][iPuncAft].includes(";")==true || bibFN[i][iPuncAft].includes("!")==true || bibFN[i][iPuncAft].includes("?")==true)
-						puncCnt++;
+				// for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)  //voiceFileData[this.ActiveRow][11] is the total number of words in this audio file section					if (typeof (bibFN[i][iPuncAft]) != 'undefined') //bibFN[i][iPuncAft].includes(",")==true || bibFN[i][iPuncAft].includes(".")==true || bibFN[i][iPuncAft].includes(";")==true || bibFN[i][iPuncAft].includes("!")==true || bibFN[i][iPuncAft].includes("?")==true)
+				// 		puncCnt++;
+				//WRONG ABOVE? Doesn't it need to only count IF the Bible Book Data has a ",;.?!" in the words row? 
 				timeInterval=(timeLeft - (puncCnt* this.PunctAfterLen + this.EndingLen))/voiceFileData[this.ActiveRow][11];
-				puncCnt=0;     //above was (timeLeft - (puncCnt* this.PunctAfterLen))
+				//puncCnt=0;     //above was (timeLeft - (puncCnt* this.PunctAfterLen)) divided by the total number of words in this audio file section 
 
 				//***************** Create Timing Table for this voice File ***************/
 				//loop through every word in Bible Data File for this section
-				fileID=this.findAudioFileID(voiceFileData[this.ActiveRow][3],voiceFileData[this.ActiveRow][2]);	
+				fileID=voiceFileData[this.ActiveRow][0];	
 				for (i=1;i<=voiceFileData[this.ActiveRow][11];i++){ 
-					////console.log("chapter is " + Number(bibFN[j+i][iID].substring(0,refLen)) + " chapter text:" + bibFN[j+i][iID].slice(-refLen));
 					if (Number(bibFN[j+i][iID].substring(0,refLen))==voiceFileData[this.ActiveRow][8]) 
 						if ( bibFN[j+i][iID].slice(-refLen)==firstWord) {
-						//	////console.log("['" + bibFN[j+i][iID] + "','"+ bibFN[j+i][iWord] + "'," + Number.parseFloat(timeAt).toFixed(2) + "],");
-							k++;
-							this.saveTiming(k, fileID, bibFN[j+i][iID], Number.parseFloat(timeAt).toFixed(2), "01");
-							////console.log("INSERT INTO `AudioFileTracking` (`FileOrder`, `FileID`, `Reference`, `Timing`, `TimingBy`, `WordRef`) VALUES (" + k + "," + fileID + ",'"+ bibFN[j+i][iID] + "'," + Number.parseFloat(timeAt).toFixed(2) + ",22,'01');"); 						
-//INSERT INTO `AudioFileTracking`(`FileOrder`, `FileID`, `Reference`, `Timing`, `TimingBy`, `WordRef`) VALUES (1,2126,"0101",6.1,22,"01");
+							//this.saveTiming(fileID,Number.parseFloat(timeAt).toFixed(2),bibFN[j+i][iID].substring(0, 2),bibFN[j+i][iID].substring(2, 4),"01");
+							console.log (fileID + "," + Number.parseFloat(timeAt).toFixed(2) + "," + timingBy + "," + bibFN[j+i][iID].substring(0, 2) + "," + bibFN[j+i][iID].substring(2, 4) + ",01")
 						}	
 					else
 						if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
@@ -2677,14 +2688,14 @@ var makeAudioDataFile= {
 						
 					timeAt += timeInterval + puncCnt;	 
 					}
-					////console.log("];");
-					k=0;
 					chp++;
+					
+
 					j=util.findRowIn2DArr("B" + bibleBookData[MB][8] +this.MatchVersion,iID,util.padNum(chp,refLen) + util.padNum(1,refLen)+ util.padNum(1,refLen));
 					j=j-1;
 					this.ActiveRow++;
 			}	
-			this.ActiveRow=-1;	
+			//this.ActiveRow=-1;
 		}
 		else if (voiceFileData[this.ActiveRow][4]=="Book"){
 			//while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
@@ -2715,38 +2726,20 @@ var makeAudioDataFile= {
 			}	
 			////console.log("];");
 		}							
-	}, 	
-	findAudioFileID: function(fileNm,fldrNm ){
-		let checkID=-1;
-		
-		while (1==1){
-			if (checkID>voiceFileData.length)
-				return -1;
-			
-			//get increment on audiofile where filename matches 	
-			checkID=util.findRowIn2DArr("audioFile",2,fileNm,checkID+1);
-			
-			//no match found on filename so exit with -1 for no row found. 
-			if (checkID==-1)
-				return -1;
-			
-			// if increment on audiofile matches folder name
-			if (audioFile[checkID][11]==fldrNm)
-				return audioFile[checkID][0]; //then return FileID		
-		}	
 	},
-	saveTiming: function (fileOrder, fileID, reference, timing, wordRef) {
+
+	saveTiming: function (fileID, timing, chapRef, verRef, wordRef) {
 		let i = 0;
 		$.post("saveTiming.php", {
-			FileOrder: fileOrder,
 			FileID: fileID,
-			Reference:reference,
 			Timing:timing,
+			ChapRef:chapRef,
+			VerRef:verRef,
 			WordRef:wordRef
 		},
 		function (result) {
-			////console.log (result);  
-			////console.log("php saved " + reference + " settings in fileID of " + fileID + " with timing of " + timing);
+			console.log (result);  
+			//console.log("php saved " + ChapRef + VerRef + WordRef + " settings in fileID of " + fileID + " with timing of " + timing);
 		}
 		);
 	},
@@ -4139,7 +4132,7 @@ class VoiceControl {
 				//get voiceFle and nonchanging values with it.
 				let splt=result.split("~");
 				window[vc].voiceFleTop=splt[1];
-				window[vc].voiceFle=JSON.parse(splt[0]); //window[vc]
+				window[vc].voiceFle=JSON.parse(splt[0]); 
 				window[vc].load(increPst);	
 		}
 		);			
@@ -4718,6 +4711,8 @@ class VoiceControl {
 
 		return rVal;
 	}
+
+	
 
 } //end object voiceControl
 
@@ -5461,10 +5456,10 @@ var uncoverGodsWord = {
 		let vv=Number(refBCVW.substr(2+refLength,refLength));
 		
 		//get sectionTitles column for version title
-		for (i=4;i<sectionTitles[0].length;i++)
-			if (sectionTitles[0][i]==siteControl.sectionTitleDefault)
-				break;
-		let ttle=i;	
+		// for (i=4;i<sectionTitles[0].length;i++)
+		// 	if (sectionTitles[0][i]==siteControl.sectionTitleDefault)
+		// 		break;
+		let ttle=4;	
 		
 		//get the same or first higher BCV
 		for (i=0;i<sectionTitles.length;i++)
@@ -6192,20 +6187,40 @@ window.speechSynthesis.onvoiceschanged = function() {
 
 //************************  utility functions
 const util ={
-	findRowIn2DArr: function(arrStr, j, matchValue, startIncr=0) {
-		// the parameter j is the column number
+	findRowIn2DArr: function(arrStr, ColID, matchValue, startIncr=0) {
+		// the parameter ColID is the column number itself or characters of the column name on row[0] of the arr
 		//change the array String (arrStr) into an actual array
 		let arr2=window[arrStr];
 		if (!Array.isArray(arr2)) {
 			throw new Error('Invalid array name: ' + arrStr); // Throw an error if the provided array name is not valid
 		  }
+		//get ColID as j
+		// if (isNaN(ColID))
+		j=util.getColNum(arrStr,ColID)
+		// else
+		// 	j=ColID;
 		for (let i = startIncr; i < arr2.length; i++) {
 			if (arr2[i][j] == matchValue)
 				return i;
 		}
 		return -1;
 	},
-	
+	getColNum: function(arrStr, val) {
+	if (isNaN(val)==false)
+		return val;
+	//not a number but Column name so read row 0 of the 2D array to find matching name and return the Column Number it is in
+	let arr1=window[arrStr[0]];
+		if (!Array.isArray(arr1)) {
+			throw new Error('Invalid array name: ' + arrStr); // Throw an error if the provided array name is not valid
+		  }	
+
+	for (let i = 0; i < arr1.length; i++) {
+		if (arr1[i] == val)
+			return i;
+	}
+	return -1;
+	},
+
 	recursiveSearch: function (obj, searchKey, results = []){
 		const r = results;
 		Object.keys(obj).forEach(key => {

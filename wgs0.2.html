@@ -36,9 +36,10 @@
 		});   
 	</script>
 
-	<!-- Include the Quill library -->
+	<!-- Include the Quill library 
 	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+	-->
 
 	<!-- local CSS -->
 	<link rel="stylesheet" type="text/css" href="wgs0.2.css">
@@ -505,6 +506,8 @@
 			<main class="msgboxMain">
 				<div class="optionItem">
 					<div class="optionItem">
+						<label><b>MetaID#:</b></label>
+						<input id="DA-MtID" type="text">
 						<label><b>Book# Start:</b></label>
 						<input id="DA-BS" type="text">
 						<label><b>Book# End:</b></label>
@@ -1735,9 +1738,9 @@
 				<label>Title:</label><input id="titleAN" type="text">
 				<i id="writingEditorPopUpBtn" class='smallBtn fa fa-ellipsis-v'></i>
 			</div>
-			<div id="quillDiv">
+			<!-- <div id="quillDiv">
 				 <textarea id="writingEditorTextArea" rows="10" spellcheck="true" style="width:99%"></textarea>
-			</div>
+			</div> -->
 		</main>
 		<footer id="writingEditorFooter" class="msgboxFooter">
 			<span class="msgboxBtn"><button id="writingEditorBtn" onclick="noteControl.saveNote(1)">Save
@@ -1899,7 +1902,7 @@
 	<div id="ScriptureData"></div>
 
 	<!-- Initialize Quill editor -->
-	<script>
+	<!-- <script>
 		const options = {
 		debug: 'info',
 		modules: {
@@ -1911,7 +1914,7 @@
 	}
 
 	const quill = new Quill('#quillDiv', options);
-	</script>
+	</script> -->
 
 	<script src="wgs0.2.js"></script>
 
