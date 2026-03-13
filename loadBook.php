@@ -14,6 +14,7 @@ $eb=']';
 $eq='=';
 $sq="'";
 
+$bkName=strtoupper($bkName);
 //Start  $rTxt -the return text of 2D array that is the book data.
 echo '<script data-bv'.$eq.$sq.$bkName.$version.$sq.'>B'.$bkName.$version.$eq.$ob;
 

@@ -1,4 +1,4 @@
-devVer = "0.3 Setting up New: Data from Db and Scripture presented in FlexBox"
+devVer = "0.3 Setup indexedDB for Book Tables"
 
 var siteControl = {
 	doSave: true, showTitleBar: true, showFooter: true,
@@ -24,10 +24,10 @@ var siteControl = {
 	//Greek:11,Phonetic:12,PhoneticLem:13,Hebrew:14,StrongsHeb:15,Grammar:16,PhoneticHeb:17,GlossHeb:18
 
 	ReadingDefault: "B110000000000000000",
-				  				
+
 	StudyDefault: "B11000001100000000",
 	//1=true, 0=false
-	sectionTitleDefault: "BSB",   //use this version's section title for other versions 
+	sectionTitleDefault: "LEB",   //use this version's section title for other versions 
 	sectionTitleOriginal: false,  //true - use current version's section title/ false- use above default for all version's
 	//sectionTitleIsLoaded: "true", //used when first loading the Section Title data to ensure it's not loaded twice.
 	lastChanged: null,
@@ -198,9 +198,9 @@ var siteControl = {
 		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showHebrew);
 		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showStrongsHeb);
 		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showGrammar);
-		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showPhoneticHeb); 
+		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showPhoneticHeb);
 		ModeOpt = ModeOpt + booleanToDigit(window["ScriptureWindow" + incre].showGlossHeb);
-	
+
 		////console.log("setup Mode Options Default- GLOSS:" + window["ScriptureWindow" + incre].showGloss);
 		if (window["ScriptureWindow" + incre].showGloss == 10)
 			ModeOpt = ModeOpt + "9";
@@ -2665,7 +2665,7 @@ class VoiceControl {
 		//!!!!MV needs to be changed when a reflist can contain multiple versions
 		//console.log("zq in startAudioFileProcesS with RefFromTO:" + refFromTo);
 
-		 if (this.windowID == 0) //do NOT run for hidden 0 window.
+		if (this.windowID == 0) //do NOT run for hidden 0 window.
 			return;
 
 		this.clearVoiceData();  //clears object Arrays and values		
@@ -2905,7 +2905,7 @@ class VoiceControl {
 		if (pend >= window["VoiceControl" + incre].voiceFle["o" + window["VoiceControl" + incre].voiceFleIncr].timing[window["VoiceControl" + incre].timingIncr]) {
 			//get previous verse start and loop through until in next verse (or chapter...or end)
 
-			let pnum =3;  //util.refPadCount(window["VoiceControl" + incre].bookNum, window["BibleRef" + incre].version);
+			let pnum = 3;  //util.refPadCount(window["VoiceControl" + incre].bookNum, window["BibleRef" + incre].version);
 			let currVrs = window["VoiceControl" + incre].refWordArr[window["VoiceControl" + incre].rWAIncr][0].substring(0, pnum * 2); //The refWordArr reference CCVV ither 4 or 6 the added 3 is 2 for book plus one for dash
 			do {
 				window["VoiceControl" + incre].rWAIncr++;
@@ -3816,7 +3816,7 @@ class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB
 	}
 	fillRefFromTo(callVoiceControlStart = true) {
 		return;
-		//called from uncoverGodsWord.displayScripturE.  This calls VC.startAudioFileProcesS 
+		//called from uncoverGodsWorD.displayScripturE.  This calls VC.startAudioFileProcesS 
 		let refListArr = this.refList.split(";");
 		let semicolon = "";
 		//clear current values
@@ -4083,7 +4083,7 @@ class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB
 	}
 } //end BibleRef Class
 
-class ScriptureWindow { 
+class ScriptureWindow {
 	constructor(windowID, showWindow) {
 		//, fontSize, showVerseNumbers, displayVerseNewLine, displaySentenceNewLine, showTranslatorNotes, showReferenceNotes, showGloss, showStrongs, showLemma, showSectionTitles,showParsing,showVideoBar
 		this.windowID = windowID;
@@ -4104,11 +4104,11 @@ class ScriptureWindow {
 		this.showVideoBar = false; // = showVideoBar;
 		this.showStrongs = false; // = showStrongs; //WC 					//human selected setting
 		this.showGreekWord = false; // = showStrongs; //WC 					//human selected setting			
-		this.showGreek =false; //WC 					//human selected setting
-		this.showPhonetic =false; //WC 					//human selected setting
-		this.showPhoneticLem=false; //WC 					//human selected setting
-		this.showHebrew =false; //WC 					//human selected setting
-		this.showStrongsHeb=false; //WC 					//human selected setting 
+		this.showGreek = false; //WC 					//human selected setting
+		this.showPhonetic = false; //WC 					//human selected setting
+		this.showPhoneticLem = false; //WC 					//human selected setting
+		this.showHebrew = false; //WC 					//human selected setting
+		this.showStrongsHeb = false; //WC 					//human selected setting 
 		this.showGrammar = false; //WC 					//human selected setting
 		this.showPhoneticHeb = false; //WC 					//human selected setting
 		this.showGlossHeb = false; //WC 					//human selected setting
@@ -4196,15 +4196,15 @@ class ScriptureWindow {
 		this.showLemma = digitToBoolean(setFrom[8]);
 		this.showParsing = digitToBoolean(setFrom[9]);
 		this.showGloss = digitToBoolean(setFrom[10]);
-		this.showGreek =digitToBoolean(setFrom[11]);
-		this.showPhonetic =digitToBoolean(setFrom[12]);
-		this.showPhoneticLem =digitToBoolean(setFrom[13]);
-		this.showHebrew =digitToBoolean(setFrom[14]);
+		this.showGreek = digitToBoolean(setFrom[11]);
+		this.showPhonetic = digitToBoolean(setFrom[12]);
+		this.showPhoneticLem = digitToBoolean(setFrom[13]);
+		this.showHebrew = digitToBoolean(setFrom[14]);
 		this.showStrongsHeb = digitToBoolean(setFrom[15]);
 		this.showGrammar = digitToBoolean(setFrom[16]);
 		this.showPhoneticHeb = digitToBoolean(setFrom[17]);
 		this.showGlossHeb = digitToBoolean(setFrom[18]);
-		
+
 		// this.show =digitToBoolean(setFrom[19]);
 		// this.show =digitToBoolean(setFrom[20]);
 
@@ -4261,26 +4261,26 @@ class ScriptureWindow {
 			return false;
 		if (this.showGloss != defaultOptions[10]) {
 			console.log("Screen Gloss:" + this.showGloss + " Default Gloss:" + defaultOptions[10]);
-		if (this.showGloss != 10 || !(this.showGloss == 10 && defaultOptions[10] == 9))
-			return false;
-		if (this.showGreekWord != digitToBoolean(defaultOptions[11]))
-			return false;
-		if (this.showPhonetic != digitToBoolean(defaultOptions[12]))
-			return false;
-		if (this.showPhoneticLem != digitToBoolean(defaultOptions[13]))
-			return false;
-		if (this.showHebrew != digitToBoolean(defaultOptions[14]))
-			return false;
-		if (this.showStrongsHeb != digitToBoolean(defaultOptions[15]))
-			return false;
-		if (this.showGrammar != digitToBoolean(defaultOptions[16]))
-			return false;
-		if (this.showPhoneticHeb != digitToBoolean(defaultOptions[17]))
-			return false;
-		if (this.showGlossHeb != digitToBoolean(defaultOptions[18]))
-			return false;
-//Greek:11,Phonetic:12,PhoneticLem:13,Hebrew:14,StrongsHeb:15,Grammar:16,PhoneticHeb:17,GlossHeb:18		
-	}
+			if (this.showGloss != 10 || !(this.showGloss == 10 && defaultOptions[10] == 9))
+				return false;
+			if (this.showGreekWord != digitToBoolean(defaultOptions[11]))
+				return false;
+			if (this.showPhonetic != digitToBoolean(defaultOptions[12]))
+				return false;
+			if (this.showPhoneticLem != digitToBoolean(defaultOptions[13]))
+				return false;
+			if (this.showHebrew != digitToBoolean(defaultOptions[14]))
+				return false;
+			if (this.showStrongsHeb != digitToBoolean(defaultOptions[15]))
+				return false;
+			if (this.showGrammar != digitToBoolean(defaultOptions[16]))
+				return false;
+			if (this.showPhoneticHeb != digitToBoolean(defaultOptions[17]))
+				return false;
+			if (this.showGlossHeb != digitToBoolean(defaultOptions[18]))
+				return false;
+			//Greek:11,Phonetic:12,PhoneticLem:13,Hebrew:14,StrongsHeb:15,Grammar:16,PhoneticHeb:17,GlossHeb:18		
+		}
 
 		return true;
 	}
@@ -4320,9 +4320,9 @@ class ScriptureWindow {
 
 		//set the window to match the new property
 		if (this.showVerseNumbers == false)   // False  //don't show verse reference
-			document.querySelectorAll('#Scripture' + this.windowID + ' .vrs').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .vrs').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .vrs').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .vrs').forEach(el => { el.style.display = 'inline'; });
 	}
 	OptiondisplayVerseNewLine(changeByUser) {
 		var opt = "displayVerseNewLine";
@@ -4403,9 +4403,9 @@ class ScriptureWindow {
 
 		//set the window to match the new property
 		if (this.showLemma == false)
-			document.querySelectorAll('#Scripture' + this.windowID + ' .lemma').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .lemma').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .lemma').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .lemma').forEach(el => { el.style.display = 'inline'; });
 	}
 	OptionshowGlossChange(changeByUser) {
 		//Set the BibleRef object property
@@ -4439,15 +4439,15 @@ class ScriptureWindow {
 				document.getElementById("modeOptionsBtn" + this.windowID).style.display = "block";
 			else
 				document.getElementById("modeOptionsBtn" + this.windowID).style.display = "none";
-				}
+		}
 		else
 			document.getElementById("showPhonetic" + this.windowID).checked = this.showPhonetic;
 
 		//set the window to match the new property
 		if (this.showPhonetic == false)
-			document.querySelectorAll('#Scripture' + this.windowID + ' .phonetic').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .phonetic').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .phonetic').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .phonetic').forEach(el => { el.style.display = 'inline'; });
 
 	}
 	OptionshowStrongsChange(changeByUser) {
@@ -4458,15 +4458,15 @@ class ScriptureWindow {
 				document.getElementById("modeOptionsBtn" + this.windowID).style.display = "block";
 			else
 				document.getElementById("modeOptionsBtn" + this.windowID).style.display = "none";
-				}
+		}
 		else
 			document.getElementById("showStrongs" + this.windowID).checked = this.showStrongs;
 
 		//set the window to match the new property
 		if (this.showStrongs == false)
-			document.querySelectorAll('#Scripture' + this.windowID + ' .strongs').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .strongs').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .strongs').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .strongs').forEach(el => { el.style.display = 'inline'; });
 
 	}
 	OptionshowParsingChange(changeByUser) {
@@ -4483,9 +4483,9 @@ class ScriptureWindow {
 
 		//set the window to match the new property
 		if (this.showParsing == false)
-			document.querySelectorAll('#Scripture' + this.windowID + ' .parse').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .parse').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .parse').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .parse').forEach(el => { el.style.display = 'inline'; });
 	}
 	OptionshowGreekWordChange(changeByUser) {
 		//Set the BibleRef object property
@@ -4498,14 +4498,14 @@ class ScriptureWindow {
 		}
 		else
 			if (document.getElementById("showGreekWord" + this.windowID).checked != this.showGreekWord)
-				document.getElementById("showGreekWord" + this.windowID).checked =  this.showGreekWord;
+				document.getElementById("showGreekWord" + this.windowID).checked = this.showGreekWord;
 
 
 		//set the window to match the new property
 		if (this.showGreekWord == false)
-			document.querySelectorAll('#Scripture' + this.windowID + ' .greek').forEach(el => {el.style.display = 'none';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .greek').forEach(el => { el.style.display = 'none'; });
 		else
-			document.querySelectorAll('#Scripture' + this.windowID + ' .greek').forEach(el => {el.style.display = 'inline';});
+			document.querySelectorAll('#Scripture' + this.windowID + ' .greek').forEach(el => { el.style.display = 'inline'; });
 	}
 	OptionshowSectionTitlesChange(changeByUser) {
 		////console.log("In sw Optionshow Section Titles Change and changeByUser is " + changeByUser);
@@ -4551,7 +4551,7 @@ class ScriptureWindow {
 		this.OptionshowLemmaChange(changeByUser);
 		this.OptionshowParsingChange(changeByUser);
 		this.OptionshowGlossChange(changeByUser);
-	 	this.OptionshowGreekWordChange(changeByUser);
+		this.OptionshowGreekWordChange(changeByUser);
 		this.OptionshowPhoneticChange(changeByUser);
 		// this.OptionshowPhoneticLemChange(changeByUser);
 		// this.OptionshowHebrewChange(changeByUser);
@@ -4599,13 +4599,13 @@ var uncoverGodsWord = {
 	paragraphId: 0,
 	resetEnterVerse: false,
 	lastRefBkNum: "00",
-	//arryW: [], //will have the bible book data 2d array
+//	arryW: [], //will have the bible book data 2d array
 
 
 	//Run once:starting process - setup BR,SW, and UGW variables
 	//called from RH.load2SW, SW.changeVersion, BR.parseRefEntered, closeTRBox (via BR.parseRefEnterd), and a couple others settings -
 	//(Break on Sentence, Change Greek Display, setMode away from Reading to add show Lemma etc.)
-	
+
 	processScriptureData: function (incre, skipRHRowUpdate) {
 		//Called from siteControl & SW setting changes
 		//RH.load2SW 
@@ -4723,33 +4723,71 @@ var uncoverGodsWord = {
 		//has a reference so load the data	
 		var ver = this.version //this.br.version - leave this line to change when RefList can include versions;
 		this.br.bookNum = this.refListArr[this.refIncre].substr(0, 2);
-		this.br.bookNam = bibleBookData[Number(this.br.bookNum)][8];
+		this.br.bookNam = bibleBookData[this.br.bookNum][8];
+
 		var arryW = "B" + this.br.bookNam + ver;
-	
+
 		if (typeof window[arryW] == "undefined") { //This Book's Bible Data has not been loaded yet
-			//!!! Code for checking if in indexedDB
-			//is it there?
-			//if yes then load it.
-			//else...			
-	
-			//TESTONLY******************** Remove these - they are for testing only
-			//this.br.bookNam="JUD";
-			//this.br.bookNum=65;			
-			versionNum=1;
-			$.post("loadBook.php", {
-				bookName:this.br.bookNam,
-				bookNum:this.br.bookNum,
-				version:ver,
-				versionNum:1,
-				bookType:"n"
-			},
-				function (result) {
-						$("#ScriptureData").append(result);
-						uncoverGodsWord.displayScripture();
-						uncoverGodsWord.loadScriptureData(this.refIncre);  //is incremented in displayScripture
-						//!!! set delayed loading result into indexedDB
+			console.log("Checking IndexedDB for:", arryW);
+			// Check IndexedDB first
+			let dbRequest = indexedDB.open("BibleDataDB", 1);
+			dbRequest.onupgradeneeded = function (event) {
+				let db = event.target.result;
+				if (!db.objectStoreNames.contains("bookData")) {
+					db.createObjectStore("bookData");
 				}
-			);
+			};
+			dbRequest.onsuccess = function (event) {
+				let db = event.target.result;
+				let transaction = db.transaction(["bookData"], "readonly");
+				let store = transaction.objectStore("bookData");
+				let getRequest = store.get(arryW);
+				let currentRefIncre = uncoverGodsWord.refIncre; // Capture current value
+				getRequest.onsuccess = function (event) {
+					if (event.target.result) {
+						console.log("Found in IndexedDB, loading:", arryW);
+						// Data found in IndexedDB, load it
+						window[arryW] = event.target.result;
+						uncoverGodsWord.displayScripture();
+						uncoverGodsWord.loadScriptureData(currentRefIncre);
+					} else {
+						console.log("Not in IndexedDB, loading from MySQL:", arryW);
+						// Not in IndexedDB, load from MySQL
+						loadFromMySQL();
+					}
+				};
+				getRequest.onerror = function (event) {
+					console.error("Error checking IndexedDB:", event);
+					loadFromMySQL();
+				};
+			};
+			dbRequest.onerror = function (event) {
+				console.error("IndexedDB error:", event);
+				loadFromMySQL();
+			};
+
+			function loadFromMySQL() {
+				let currentRefIncre = uncoverGodsWord.refIncre; // Capture current value
+				versionNum = 1;
+				$.post("loadBook.php", {
+					bookName: uncoverGodsWord.br.bookNam,
+					bookNum: uncoverGodsWord.br.bookNum,
+					version: ver,
+					versionNum: 1,
+					bookType: "n"
+				},
+					function (result) {
+						$("#ScriptureData").append(result);
+						uncoverGodsWord.storeInIndexedDB(arryW, window[arryW]);
+						uncoverGodsWord.displayScripture();
+						uncoverGodsWord.loadScriptureData(currentRefIncre);  //is incremented in displayScripture
+						// Delayed call to store in IndexedDB
+						//				setTimeout(function() {
+						//					storeInIndexedDB(arryW, window[arryW]);
+						//				}, 10000); // 10 second delay
+					}
+				);
+			}
 		}
 		else {
 			uncoverGodsWord.displayScripture();
@@ -4757,12 +4795,38 @@ var uncoverGodsWord = {
 		}
 	},
 	//
+	storeInIndexedDB: function (key, data) {
+		console.log("Storing to IndexedDB:", key, "Data length:", data ? data.length : "undefined");
+		let dbRequest = indexedDB.open("BibleDataDB", 1);
+		dbRequest.onupgradeneeded = function (event) {
+			let db = event.target.result;
+			if (!db.objectStoreNames.contains("bookData")) {
+				db.createObjectStore("bookData");
+			}
+		};
+		dbRequest.onsuccess = function (event) {
+			let db = event.target.result;
+			let transaction = db.transaction(["bookData"], "readwrite");
+			let store = transaction.objectStore("bookData");
+			let putRequest = store.put(data, key);
+			putRequest.onsuccess = function (event) {
+				console.log("Data stored in IndexedDB for key:", key);
+			};
+			putRequest.onerror = function (event) {
+				console.error("Error storing data in IndexedDB:", event);
+			};
+		};
+		dbRequest.onerror = function (event) {
+			console.error("IndexedDB error:", event);
+		};
+	},
+	//
 	displayScripture: function () {
 		//get refList 8 digit BBCCCVVV reference that may be 1(full Book, or single chapter or verse) or 2(from-to) where CCC and VVV may be 000 or 999
 		//Grab BB and then change CVW to match the Refs first and last Book Table id i.e 2PELEB "061012001-061015026" where the final WWW changes depending on how many words the given version has for that verse.
 		//
 		const container = document.getElementById("Scripture" + this.incre);
-		let vrsDisplay=""; //used to hold the text of verse number or chapter:verse number (1:1) 
+		let vrsDisplay = ""; //used to hold the text of verse number or chapter:verse number (1:1) 
 		let verseNum = 0; //used to track when a new verse starts so that can add verse reference  
 		const vbb = this.version + this.br.bookNum;
 		let currentParagraph = null;
@@ -4770,19 +4834,19 @@ var uncoverGodsWord = {
 
 		//get display:none settings for each span label in the word box: lemma,phonetic,... 
 		util.setwordboxdisplay(this.incre);
-	
+
 		//grab just one reference - may be 8 character like BCV 60-001-000 or a "from and to" in that BCV format 60001010-600010017 
-		let bkwoFromTo=this.getBkTblBkwo(this.refListArr[this.refIncre],this.version);
-		let bkwoArr=bkwoFromTo.split("-");
-		bkwoStart=Number(bkwoArr[0]);
-		bkwoEnd=Number(bkwoArr[1]);
+		let bkwoFromTo = this.getBkTblBkwo(this.refListArr[this.refIncre], this.version);
+		let bkwoArr = bkwoFromTo.split("-");
+		bkwoStart = Number(bkwoArr[0]);
+		bkwoEnd = Number(bkwoArr[1]);
 
 		//get Book Table column number for each column label - based on Book Table first row of column names; 
-		const id = 0, word = 1, bkwo=2
+		const id = 0, word = 1, bkwo = 2
 		// let root=getColumnIncre(window["B" + this.br.bookNam + this.version][0], "root") 
 		// let nameid= getColumnIncre(window["B" + this.br.bookNam + this.version][0], "nameid");
-		let phonetic=getColumnIncre(window["B" + this.br.bookNam + this.version][0], "phonetic") 
-		let paragraph= getColumnIncre(window["B" + this.br.bookNam + this.version][0], "paragraph");
+		let phonetic = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "phonetic")
+		let paragraph = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "paragraph");
 		let greek = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "greek");
 		let strongs = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "strongs");
 		let lemma = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "lemma");
@@ -4795,8 +4859,8 @@ var uncoverGodsWord = {
 
 
 
-//add each row from Book Table 
-		for (let i = bkwoStart; i <= bkwoEnd; i++) { 
+		//add each row from Book Table 
+		for (let i = bkwoStart; i <= bkwoEnd; i++) {
 			const row = window["B" + this.br.bookNam + this.version][i];
 			const paragraphNum = row[paragraph];
 
@@ -4806,10 +4870,10 @@ var uncoverGodsWord = {
 
 				//print BookName for multipleBook reference lists
 				if (this.br.multipleBooks == true && this.lastRefBkNum != this.br.bookNum) {
-					const bookNameFull=document.createElement("div");
+					const bookNameFull = document.createElement("div");
 					//bookNameFull.setAttribute("class", "bknam");
-					bookNameFull.textContent=bibleBookData[this.br.bookNum][1];		
-					container.appendChild(bookNameFull);				
+					bookNameFull.textContent = bibleBookData[this.br.bookNum][1];
+					container.appendChild(bookNameFull);
 					this.lastRefBkNum = this.br.bookNum;
 				}
 
@@ -4879,9 +4943,9 @@ var uncoverGodsWord = {
 			currentP.appendChild(wordBox);
 
 		}
-//      if (field.label="word")
-//  
-		
+		//      if (field.label="word")
+		//  
+
 		// //add Section Titles
 		// if (window["ScriptureWindow" + this.incre].showSectionTitles == true)
 		// 	if (this.refCount == 1)
@@ -4917,8 +4981,8 @@ var uncoverGodsWord = {
 			// 		}
 			// }
 			// // and then Get RefFromTO the 
-//			console.log("calling refFromTO");
-//			this.br.fillRefFromTo(true); //it will fill the refFromTO string and then call startAudioFileProcesS with it.	
+			//			console.log("calling refFromTO");
+			//			this.br.fillRefFromTo(true); //it will fill the refFromTO string and then call startAudioFileProcesS with it.	
 		}
 
 		this.refIncre++;  //for multiple references to go to next one. 
@@ -4935,7 +4999,7 @@ var uncoverGodsWord = {
 		}
 		return newArr;
 	},
-	getBkTblBkwo: function(ref, versn){
+	getBkTblBkwo: function (ref, versn) {
 		//Book length is 3  "001"
 		//receives a single ref in form of BBCCCVVV or BBCCCVVV-BBCCCVVV 
 		//returns bkwo-bkwo that contains the Book Table's 
@@ -4944,89 +5008,98 @@ var uncoverGodsWord = {
 		//NOTE:full book or single chapter or single verse will have only 1 ref
 		// example book = 61000000000 chapter =6100100000 verse = 610001001 
 
-	//**************** prime parameter for use ************************
+		//**************** prime parameter for use ************************
 		//get book number and Book Table name
-		let j=0;
-		let bkwo1=0;  //used to store first bkwo to return if needing to loop through and find the second one
+		let j = 0;
+		let bkwo1 = 0;  //used to store first bkwo to return if needing to loop through and find the second one
 
-		let ch="";  //chapter 
-		let vrs=""; //verse
-		const bk=ref.substring(0,2); //book	
-		const tblname= "B" + bibleBookData[bk][8] + versn;  //Book Table name
-	 	
+		let ch = "";  //chapter 
+		let vrs = ""; //verse
+		const bk = Number(ref.substring(0, 2)); //book
+		const tblname = "B" + bibleBookData[bk][8] + versn;
+
+		// 	const tblname= "B" + (function(bookCode) {
+		// 	let firstLetterIndex = bookCode.search(/[a-zA-Z]/);
+		// 	if (firstLetterIndex !== -1) {
+		// 		return bookCode.substring(0, firstLetterIndex) + bookCode.charAt(firstLetterIndex).toUpperCase() + bookCode.substring(firstLetterIndex + 1).toLowerCase();
+		// 	} else {
+		// 		return bookCode;
+		// 	}
+		// })(bibleBookData[bk][8]) + versn;  //Book Table name
+
 		//ensure Book Table is loaded 
-		if (typeof window[tblname] == "undefined"){
-			console.log ("Error -no loaded 2D Array of " + tblname);
+		if (typeof window[tblname] == "undefined") {
+			console.log("Error -no loaded 2D Array of " + tblname);
 			return;
 		}
-		
+
 		//get the one or two references
-		const refArr=ref.split('-');
+		const refArr = ref.split('-');
 
 		//remove book number from the start of each ref
-		for (let i=0; i<refArr.length; i++){
-			refArr[i]=refArr[i].substring(2);	
-//			refArr[i]=refArr[i].substring(1,3) + refArr[i].substring(4,7); 
+		for (let i = 0; i < refArr.length; i++) {
+			refArr[i] = refArr[i].substring(2);
+			//			refArr[i]=refArr[i].substring(1,3) + refArr[i].substring(4,7); 
 		}
-	//********************** get Book Table first ad last bkwo for given Ref ***************
-		
-		for (let i=0; i<refArr.length; i++)
-			if (refArr.length==1){  //ref form is BBCCCVVV (full book or single chapter or single verse)
-				if (refArr[i] == "000000"){ //entire book reference example: "61000000"
-					j=window[tblname].length-1;
+		//********************** get Book Table first ad last bkwo for given Ref ***************
+
+		for (let i = 0; i < refArr.length; i++)
+			if (refArr.length == 1) {  //ref form is BBCCCVVV (full book or single chapter or single verse)
+				if (refArr[i] == "000000") { //entire book reference example: "61000000"
+					j = window[tblname].length - 1;
 					return window[tblname][1][2] + "-" + window[tblname][j][2];
 				}
-				else if (refArr[i].substring(3,6) == "000") {//single chapter - no verse get chapter first and last bkwo
+				else if (refArr[i].substring(3, 6) == "000") {//single chapter - no verse get chapter first and last bkwo
 					//****** get chapter start, find first row of it in Book Table
-					ch=refArr[i].substring(0,3);
-					j=util.findRowIn2DArr(tblname,0,ch + "001" + "001");
-					if (j==-1) {
+					ch = refArr[i].substring(0, 3);
+					j = util.findRowIn2DArr(tblname, 0, ch + "001" + "001");
+					if (j == -1) {
 						console.error("error Book Table doesn't have a row for chapter " + ch);
 						return -1;
-					}	
-					return j + "-" + util.getEndBkwo(tblname,"chapter",window[tblname][j][2]);
+					}
+					return j + "-" + util.getEndBkwo(tblname, "chapter", window[tblname][j][2]);
 
-				}		
+				}
 				else { //single verse
 					//****** get chapter/verse start, find first row of it in Book Table
-					ch=refArr[i].substring(0,3);
-					vrs=refArr[i].substring(3,6)
-					j=util.findRowIn2DArr(tblname,0,ch + vrs + "001");
-					if (j==-1) {
+					ch = refArr[i].substring(0, 3);
+					vrs = refArr[i].substring(3, 6)
+					j = util.findRowIn2DArr(tblname, 0, ch + vrs + "001");
+					if (j == -1) {
 						console.error("error Book Table doesn't have a row for chapter-verse " + ch + vrs);
 						return -1;
-					}	
+					}
 					//Assign first bkwo value
-					return j + "-" + util.getEndBkwo(tblname,"verse",window[tblname][j][2]);
-					
+					return j + "-" + util.getEndBkwo(tblname, "verse", window[tblname][j][2]);
+
 				}
-			}	
+			}
 			else //ref form is BBCCCVVV-BBCCCVVV
-				if (refArr[i].substring(3,6) == "000"){  //no verse get chapter
-					ch=refArr[i].substring(0,3);
-					j=util.findRowIn2DArr(tblname,0,ch + "001" + "001");
-					if (j==-1) {
+				if (refArr[i].substring(3, 6) == "000") {  //no verse get chapter
+					ch = refArr[i].substring(0, 3);
+					j = util.findRowIn2DArr(tblname, 0, ch + "001" + "001");
+					if (j == -1) {
 						console.error("error Book Table doesn't have a row for chapter " + ch);
 						return -1;
-					}	
-					if (i==0)  //first loop though on "From" reference
-						bkwo1=j;
-					else 
-						return bkwo1 + "-" + util.getEndBkwo(tblname,"chapter",window[tblname][j][2]);
+					}
+					if (i == 0)  //first loop though on "From" reference
+						bkwo1 = j;
+					else
+						return bkwo1 + "-" + util.getEndBkwo(tblname, "chapter", window[tblname][j][2]);
 				}
 				else {  // verse level for BBCCCVVV-BBCCCVVV
-					ch=refArr[i].substring(0,3);
-					vrs=refArr[i].substring(3,6)
-					j=util.findRowIn2DArr(tblname,0,ch + vrs + "001");
-					if (j==-1) {
+					ch = refArr[i].substring(0, 3);
+					vrs = refArr[i].substring(3, 6)
+					j = util.findRowIn2DArr(tblname, 0, ch + vrs + "001");
+					if (j == -1) {
 						console.error("error Book Table doesn't have a row for chapter-verse " + ch + vrs);
 						return -1;
-					}	
-					if (i==0)
-						bkwo1=j;
-					else 
-						return bkwo1 + "-" + util.getEndBkwo(tblname,"verse",window[tblname][j][2]);
-				}		
+					}
+					if (i == 0)
+						bkwo1 = j;
+					else
+						return bkwo1 + "-" + util.getEndBkwo(tblname, "verse", window[tblname][j][2]);
+				}
 		//'0'.repeat(CV.length)	
 	},
 	getVersionFromRefList: function (refListArr, defaultVersion) {
@@ -5587,7 +5660,7 @@ $(document).ready(function () {
 
 	//Prime for first load
 	if (RH.LastNum == "000") {
-		window.localStorage.setItem("RH000", "AAAAAAAAAAAAAAA~RH000~R0~A1100000000~~1 Peter All~60000000~1588336664999~1588336664999~1588336664999~BSB~60010101~0~~General");
+		window.localStorage.setItem("RH000", "AAAAAAAAAAAAAAA~RH000~R0~A1100000000~~1 Peter All~60000000~1588336664999~1588336664999~1588336664999~LEB~60010101~0~~General");
 	}
 
 	RH.load2Arr(); //adds all  localStorage Reference History to RHArr
@@ -5801,20 +5874,20 @@ $(document).ready(function () {
 
 wordboxdisplay =
 {
-    word: "",
-    greek: "",
-    phonetic: "",
-    lemma: "",
-    phoneticLem: "",
-    parse: "",
-    strongs: ""
+	word: "",
+	greek: "",
+	phonetic: "",
+	lemma: "",
+	phoneticLem: "",
+	parse: "",
+	strongs: ""
 };
 
-	Element.prototype.ownText = function() {
-    return Array.from(this.childNodes)
-        .reduce((acc, node) => acc + (node.nodeType === 3 ? node.textContent : ''), '')
-        .trim();
-	}
+Element.prototype.ownText = function () {
+	return Array.from(this.childNodes)
+		.reduce((acc, node) => acc + (node.nodeType === 3 ? node.textContent : ''), '')
+		.trim();
+}
 //************************  utility functions
 const util = {
 	findRowIn2DArr: function (arrStr, ColID, matchValue, startIncr = 0) {
@@ -5848,51 +5921,51 @@ const util = {
 		}
 		return -1;
 	},
-	getEndBkwo: function (tblname,type,startAt){
+	getEndBkwo: function (tblname, type, startAt) {
 		let i = 0;
-		let substrt=0;
-		let subend=0;
+		let substrt = 0;
+		let subend = 0;
 
 		//ensure Book Table is loaded 
-		if (typeof window[tblname] == "undefined"){
-			console.log ("Error -no loaded 2D Array of " + tblname);
+		if (typeof window[tblname] == "undefined") {
+			console.log("Error -no loaded 2D Array of " + tblname);
 			return;
 		}
-		
-		if (type=="chapter"){
-			substrt=0;
-			subend=3;
+
+		if (type == "chapter") {
+			substrt = 0;
+			subend = 3;
 		}
-		else if (type=="verse"){
-			substrt=3;
-			subend=6;
+		else if (type == "verse") {
+			substrt = 3;
+			subend = 6;
 		}
-		else 
-			console.error ("Error -invalid parameter of " + type);
+		else
+			console.error("Error -invalid parameter of " + type);
 
 		let typVal = "";
-		typVal=window[tblname][startAt][0].substring(substrt,subend);
+		typVal = window[tblname][startAt][0].substring(substrt, subend);
 
-		for (i=startAt;i<window[tblname].length;i++)
-			if (typVal!= window[tblname][i][0].substring(substrt,subend))
+		for (i = startAt; i < window[tblname].length; i++)
+			if (typVal != window[tblname][i][0].substring(substrt, subend))
 				break;
-			return i-1;
+		return i - 1;
 	},
-	setwordboxdisplay: function(swincr){
+	setwordboxdisplay: function (swincr) {
 		const win = window["ScriptureWindow" + swincr];
 		//set to null first
-    	Object.keys(wordboxdisplay).forEach(key => {
-        	wordboxdisplay[key] = "";
-    	});
- 
-    	if (win) {
-			wordboxdisplay.greek       = win.showGreekWord    ? "" : "display:none";
-			wordboxdisplay.phonetic    = win.showPhonetic     ? "display:none" : "display:none";
-			wordboxdisplay.lemma       = win.showLemma        ? "" : "display:none";
-			wordboxdisplay.phoneticLem = win.showPhoneticLem  ? "" : "display:none";
-			wordboxdisplay.parse       = win.showParsing      ? "" : "display:none";
-			wordboxdisplay.strongs     = win.showStrongs      ? "" : "display:none";
-    }
+		Object.keys(wordboxdisplay).forEach(key => {
+			wordboxdisplay[key] = "";
+		});
+
+		if (win) {
+			wordboxdisplay.greek = win.showGreekWord ? "" : "display:none";
+			wordboxdisplay.phonetic = win.showPhonetic ? "display:none" : "display:none";
+			wordboxdisplay.lemma = win.showLemma ? "" : "display:none";
+			wordboxdisplay.phoneticLem = win.showPhoneticLem ? "" : "display:none";
+			wordboxdisplay.parse = win.showParsing ? "" : "display:none";
+			wordboxdisplay.strongs = win.showStrongs ? "" : "display:none";
+		}
 	},
 	recursiveSearch: function (obj, searchKey, results = []) {
 		const r = results;
@@ -5907,7 +5980,7 @@ const util = {
 		return r;
 	},
 	refPadCount(bk, version = "WEB") {
-			return 3;
+		return 3;
 	},
 	padNum: function (number, length) {
 
@@ -5931,29 +6004,29 @@ const util = {
 		return -1;
 	},
 
-  getMsgboxPlacement: function(x, y, container, msgWidth=100, msgHeight=30) {
-  const rect = container.getBoundingClientRect();
-  let left = x - container.offsetLeft;
-  let top = y - container.offsetTop;
+	getMsgboxPlacement: function (x, y, container, msgWidth = 100, msgHeight = 30) {
+		const rect = container.getBoundingClientRect();
+		let left = x - container.offsetLeft;
+		let top = y - container.offsetTop;
 
-  // Adjust if overflow on the right
-  if (left + msgWidth > rect.width) {
-    left = rect.width - msgWidth - 10;
-  }
+		// Adjust if overflow on the right
+		if (left + msgWidth > rect.width) {
+			left = rect.width - msgWidth - 10;
+		}
 
-  // Adjust if overflow on the bottom
-  if (top + msgHeight > rect.height) {
-    top = top - msgHeight - 10; // Place above click
-  }
+		// Adjust if overflow on the bottom
+		if (top + msgHeight > rect.height) {
+			top = top - msgHeight - 10; // Place above click
+		}
 
-  // Ensure not off the left edge
-  if (left < 0) left = 10;
+		// Ensure not off the left edge
+		if (left < 0) left = 10;
 
-  // Ensure not off the top edge
-  if (top < 0) top = 10;
+		// Ensure not off the top edge
+		if (top < 0) top = 10;
 
-  return `${left}-${top}`;
-},   
+		return `${left}-${top}`;
+	},
 
 	openModalBox: function (p1, header, typ = "OK") {
 		let BtnTitleTrue = "";
@@ -6513,7 +6586,6 @@ function showScripture0(title) {
 }
 
 
-
 //util but ONLY used in SW
 function digitToBoolean(dgt) {
 	if (dgt == 0)
@@ -6549,14 +6621,14 @@ function gotoElement(element, stopIfMessageBackground, SWIncre = -1) {
 
 // from html
 
-document.getElementById('displayVerseNewLine1').addEventListener('change', function(e) {
-    // Toggle class on container based on checkbox state
-    const container = document.getElementById('Scripture1');
-    if (e.target.checked) {
-        container.classList.add('newlines-on');
-    } else {
-        container.classList.remove('newlines-on');
-    }
+document.getElementById('displayVerseNewLine1').addEventListener('change', function (e) {
+	// Toggle class on container based on checkbox state
+	const container = document.getElementById('Scripture1');
+	if (e.target.checked) {
+		container.classList.add('newlines-on');
+	} else {
+		container.classList.remove('newlines-on');
+	}
 });
 $("#enterVerse1").keydown(function (event) {
 	if (event.keyCode == 13)
@@ -6573,46 +6645,46 @@ $("#TRenterTopic").keydown(function (event) {
 
 // Attach one listener high up — but only to the Scripture container(s)
 document.querySelectorAll('.Scripture').forEach(scriptureContainer => {
-    scriptureContainer.addEventListener('click', e => {
+	scriptureContainer.addEventListener('click', e => {
 		const wB = e.target.parentElement;
-		const incre=wB.id.substring(wB.id.indexOf("-")+1,wB.id.indexOf("~"));
-		let pos="x-y";
+		const incre = wB.id.substring(wB.id.indexOf("-") + 1, wB.id.indexOf("~"));
+		let pos = "x-y";
 
 
 		//alert(e.target.className + " in the wordBox with an id of " + e.target.parentElement.id);
-		if (e.target.matches('.parse')){
-			document.getElementById('contextMenuTitle').innerHTML = "Parsing";		
+		if (e.target.matches('.parse')) {
+			document.getElementById('contextMenuTitle').innerHTML = "Parsing";
 			document.getElementById('contextMenuMain').innerHTML = getParseCode(e.target.textContent);
-			document.getElementById('contextMenuFooter').innerHTML = e.target.textContent;		
+			document.getElementById('contextMenuFooter').innerHTML = e.target.textContent;
 			document.getElementById('contextMenu').style.fontSize = `${siteControl.fontSize}px`;
-			document.getElementById('contextMenu').style.left =`-500px`;
+			document.getElementById('contextMenu').style.left = `-500px`;
 			document.getElementById('contextMenu').style.top = `-500px`;
 			document.getElementById('contextMenu').style.display = 'inline-block';
-			console.log('CM Width:', document.getElementById('contextMenu').offsetWidth, 'Height:', document.getElementById('contextMenu').offsetHeight); 
-			console.log('SW Width:', document.getElementById('Scripture' + incre ).offsetWidth, 'Height:', document.getElementById('Scripture' + incre).offsetHeight); 
-			pos=util.getMsgboxPlacement(e.clientX, e.clientY, document.getElementById("Scripture" + incre),document.getElementById('contextMenu').offsetWidth,document.getElementById('contextMenu').offsetHeight);
+			console.log('CM Width:', document.getElementById('contextMenu').offsetWidth, 'Height:', document.getElementById('contextMenu').offsetHeight);
+			console.log('SW Width:', document.getElementById('Scripture' + incre).offsetWidth, 'Height:', document.getElementById('Scripture' + incre).offsetHeight);
+			pos = util.getMsgboxPlacement(e.clientX, e.clientY, document.getElementById("Scripture" + incre), document.getElementById('contextMenu').offsetWidth, document.getElementById('contextMenu').offsetHeight);
 			let [x, y] = pos.split('-');
-			document.getElementById('contextMenu').style.left =`${x}px`;
+			document.getElementById('contextMenu').style.left = `${x}px`;
 			document.getElementById('contextMenu').style.top = `${y}px`;
 		}
-		else if (e.target.matches('.lemma') || e.target.matches('.strongs') ) // || e.target.matches('.phoneticLem')
-				 getWordData(wB.querySelector('.word').ownText(),"","English",wB.querySelector('.lemma').textContent);
+		else if (e.target.matches('.lemma') || e.target.matches('.strongs')) // || e.target.matches('.phoneticLem')
+			getWordData(wB.querySelector('.word').ownText(), "", "English", wB.querySelector('.lemma').textContent);
 
-        // // direct parent = wordBox (as per your structure)
-        // const wordBox = e.target.parentElement;
+		// // direct parent = wordBox (as per your structure)
+		// const wordBox = e.target.parentElement;
 
-        // // minimal sanity check (optional but cheap)
-        // if (!wordBox?.classList?.contains('wordBox')) return;
+		// // minimal sanity check (optional but cheap)
+		// if (!wordBox?.classList?.contains('wordBox')) return;
 
-        // const boxId = wordBox.id;
-        // const lemmaText = e.target.textContent.trim();
+		// const boxId = wordBox.id;
+		// const lemmaText = e.target.textContent.trim();
 
-        // console.log(`"${lemmaText}" clicked → ${boxId}`);
+		// console.log(`"${lemmaText}" clicked → ${boxId}`);
 
-        // ── your real action here ──
-        // e.g. highlightWordBox(wordBox);
-        // showLemmaInfo(lemmaText, boxId);
-    });
+		// ── your real action here ──
+		// e.g. highlightWordBox(wordBox);
+		// showLemmaInfo(lemmaText, boxId);
+	});
 });
 
 $("#contextMenuMain").click(function (event) {
@@ -6841,7 +6913,7 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 	let startVrs = 999;
 	let endVrs = 999;
 	let sectionVersion = "";
-	let refCVWIncre =3;// util.refPadCount(bookNum);
+	let refCVWIncre = 3;// util.refPadCount(bookNum);
 	let idIncre = incre;
 	startChap = Number(startAt.substr(0, refCVWIncre));
 	startVrs = Number(startAt.substr(refCVWIncre, refCVWIncre));
@@ -6984,7 +7056,7 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 				else //Show Title Cross Reference with open link. Need to open ScriptureDiv0 as a msgbox window. Must ensure Scripture Data is loaded.
 					divT.innerHTML = sectionTitles[i][colIncre] + asterisk + "<small> <small onclick=\"doSectionTitleCR(\'" + version + "\',\'" + sectionTitles[i][colIncreCrossRef] + "')\">(" + sectionTitles[i][colIncreCrossRef] + ")</small></small>";
 				//divT.innerHTML = sectionTitles[i][colIncre] + asterisk  + "<small> <small onclick=\"document.getElementById(\'VerBtn0\').innerHTML  =\'" + version + "\'; document.getElementById(\'enterVerse0\').innerHTML  =\'" + sectionTitles[i][colIncreCrossRef] + "\'; BibleRef0.parseRefEntered();showScripture0(\' \');\">(" + sectionTitles[i][colIncreCrossRef] + ")</small></small>";
-				// spanT.setAttribute("onclick", "uncoveringGodsWord.processScriptureData(0,false);");
+				// spanT.setAttribute("onclick", "uncoveringGodsWorD.processScriptureDatA(0,false);");
 
 				// divT.appendChild(titleLine);
 				parentObj.insertBefore(divT, insertB4Obj);

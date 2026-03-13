@@ -1,4 +1,4 @@
-devVer="0.2.15 24-06 OrigLang"
+devVer="0.11 Adjusted makeAudioDataFilE to create GNT timing"
 
 var siteControl = {
 	doSave: true, showTitleBar: true, showFooter: true, 
@@ -23,7 +23,6 @@ var siteControl = {
 	//Notes:6, Strongs:7, Lemma:8 (Study Only), Parsing:9 (Study Only), Gloss:10 (Greek Only)
 	ReadingDefault: "A1100000000",
 	StudyDefault: "A1010000000",
-	CallPSDThru:"",
 	//1=true, 0=false
 	sectionTitleDefault: "BSB",   //use this version's section title for other versions 
 	sectionTitleOriginal: false,  //true - use current version's section title/ false- use above default for all version's
@@ -832,8 +831,7 @@ var siteControl = {
 			return;
 
 		this.greekDisplay = lvl;
-		this.CallPSDThru="setGreekDisplay";
-		uncoverGodsWord.processScriptureData(this.activeWindow);
+		uncoverGodsWord.processScriptureData(this.activeWindow,true);
 	},
 	toggleGreekLexicon: function (lvl, changedByUser) {
 		//change value for changedByUser
@@ -1383,9 +1381,7 @@ var RH={  //Reference History
 		else
 			sw.setupMode="Study";			
 		sw.readFromModeOptions("current", false);
-
-		siteControl.CallPSDThru="load2SW";
-		uncoverGodsWord.processScriptureData(incre);
+		uncoverGodsWord.processScriptureData(incre,true);
 	},
 	saveToDB: function(){
 	
@@ -1508,6 +1504,7 @@ var accountControl = {
 	//"|".$recentRead["Role"]."|".$recentRead["CreatorID"]."|".$recentRead["Description"]."~"; 	
 	IDGP: 0, namGP: 1, nameGP: 2, typeGP: 3, modGP: 4, roleGP: 5, crtrGP: 6, desGP: 7,
 	openDialog: function () {
+		console.log ("In accountControl.opendialog");
 		//	var myX = event.pageX - 285;
 		//	var myY = event.pageY;
 		document.getElementById('msgboxbackground').style.display = 'block';
@@ -2595,210 +2592,6 @@ var noteControl = {
 
 } //end object noteControl
     
-var makeAudioDataFile= {
-	timelen:0,
-	wordCount:0,
-	MatchVersion:"WEB",
-	MatchBook:0,
-	MatchBook2:0,
-	rowNum:-1,
-	IntroLen:4,    //ERV 3
-	BookIntroLen:6,  //ERV 12
-	EndingLen:2,    //ERV 7
-	PunctAfterLen:0.02, //ERV 0.08
-	ActiveRow:-1,
-
-	makeTimingFile: function(){
-		this.MatchBook=document.getElementById("DA-BS").value;
-		this.MatchBook2=document.getElementById("DA-BE").value;
-	
-		let i=0;
-        for (i=this.MatchBook;i<=this.MatchBook2;i++) {
-			// if (i==19) //skip psalms for now
-			//    i++;
-			////console.log("Doing Book " + i);
-			this.rowNum=voiceControl0.findvoiceFileDataRow(this.MatchVersion,util.padNum(i,2) +"001000");
-			this.ActiveRow=this.rowNum;
-			if (this.rowNum>-1){
-				this.computeTiming(i);
-			}
-		}		
-	},
-	computeTiming: function(MB){
-		let timeAt=0;
-		let timeLeft=-1;
-		let timeInterval=-1;
-		let j=0;
-		let k=0;
-		let i=0;
-		let chp=1;
-		//get Book Data and column intervals
-		let bibFN=window["B" + bibleBookData[MB][8] + this.MatchVersion];
-		let iID=getColumnIncre(bibFN[0],"id");
-		let iWord=getColumnIncre(bibFN[0],"word");
-		let iPuncAft=getColumnIncre(bibFN[0],"PunctAfter");
-		let puncCnt=0;
-		let refLen=util.refPadCount(MB);
-		let firstWord=util.padNum(1,refLen); 
-		let fileID=0;
-
-		//Read voiceFileData for each chapter in this book
-		if (voiceFileData[this.ActiveRow][4]=="Chapter"){ 
-			while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
-				////console.log(this.MatchVersion + MB + util.padNum(voiceFileData[this.ActiveRow][8],3) + "=[");
-				if (voiceFileData[this.ActiveRow][8]==1) //first Chapter may have book intro
-					timeAt=this.BookIntroLen;
-				else
-					timeAt=this.IntroLen;
-				timeLeft=voiceFileData[this.ActiveRow][12]-timeAt;
-				//get count for each punctuation of [,;.? etc]
-				puncCnt=0;
-				for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)
-					if (typeof (bibFN[i][iPuncAft]) != 'undefined') //bibFN[i][iPuncAft].includes(",")==true || bibFN[i][iPuncAft].includes(".")==true || bibFN[i][iPuncAft].includes(";")==true || bibFN[i][iPuncAft].includes("!")==true || bibFN[i][iPuncAft].includes("?")==true)
-						puncCnt++;
-				timeInterval=(timeLeft - (puncCnt* this.PunctAfterLen + this.EndingLen))/voiceFileData[this.ActiveRow][11];
-				puncCnt=0;     //above was (timeLeft - (puncCnt* this.PunctAfterLen))
-
-				//***************** Create Timing Table for this voice File ***************/
-				//loop through every word in Bible Data File for this section
-				fileID=this.findAudioFileID(voiceFileData[this.ActiveRow][3],voiceFileData[this.ActiveRow][2]);	
-				for (i=1;i<=voiceFileData[this.ActiveRow][11];i++){ 
-					////console.log("chapter is " + Number(bibFN[j+i][iID].substring(0,refLen)) + " chapter text:" + bibFN[j+i][iID].slice(-refLen));
-					if (Number(bibFN[j+i][iID].substring(0,refLen))==voiceFileData[this.ActiveRow][8]) 
-						if ( bibFN[j+i][iID].slice(-refLen)==firstWord) {
-						//	////console.log("['" + bibFN[j+i][iID] + "','"+ bibFN[j+i][iWord] + "'," + Number.parseFloat(timeAt).toFixed(2) + "],");
-							k++;
-							this.saveTiming(k, fileID, bibFN[j+i][iID], Number.parseFloat(timeAt).toFixed(2), "01");
-							////console.log("INSERT INTO `AudioFileTracking` (`FileOrder`, `FileID`, `Reference`, `Timing`, `TimingBy`, `WordRef`) VALUES (" + k + "," + fileID + ",'"+ bibFN[j+i][iID] + "'," + Number.parseFloat(timeAt).toFixed(2) + ",22,'01');"); 						
-//INSERT INTO `AudioFileTracking`(`FileOrder`, `FileID`, `Reference`, `Timing`, `TimingBy`, `WordRef`) VALUES (1,2126,"0101",6.1,22,"01");
-						}	
-					else
-						if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
-							puncCnt= this.PunctAfterLen;
-						else
-							puncCnt=0;	 
-						
-					timeAt += timeInterval + puncCnt;	 
-					}
-					////console.log("];");
-					k=0;
-					chp++;
-					j=util.findRowIn2DArr("B" + bibleBookData[MB][8] +this.MatchVersion,iID,util.padNum(chp,refLen) + util.padNum(1,refLen)+ util.padNum(1,refLen));
-					j=j-1;
-					this.ActiveRow++;
-			}	
-			this.ActiveRow=-1;	
-		}
-		else if (voiceFileData[this.ActiveRow][4]=="Book"){
-			//while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
-			////console.log(this.MatchVersion + MB + "=[");
-			timeAt=this.BookIntroLen;
-			timeLeft=voiceFileData[this.ActiveRow][12]-timeAt;
-
-
-			puncCnt=0;
-			for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)
-				if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
-					puncCnt++;
-			timeInterval=(timeLeft - (puncCnt* this.PunctAfterLen + this.EndingLen))/voiceFileData[this.ActiveRow][11];
-			puncCnt=0;    
-
-
-			//***************** Create Timing Table for this voice File ***************/
-			//loop through every word in Bible Data File for this section
-			for (i=1;i<bibFN.length;i++){ 
-				if ( bibFN[i][iID].slice(-2)=="01") { 
-					////console.log("['" + bibFN[i][iID] + "','"+ bibFN[i][iWord] + "'," + Number.parseFloat(timeAt).toFixed(2) + "],");
-				}
-				if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
-					puncCnt= this.PunctAfterLen;
-				else 
-					puncCnt=0;		 					
-				timeAt += timeInterval + puncCnt;	 
-			}	
-			////console.log("];");
-		}							
-	}, 	
-	findAudioFileID: function(fileNm,fldrNm ){
-		let checkID=-1;
-		
-		while (1==1){
-			if (checkID>voiceFileData.length)
-				return -1;
-			
-			//get increment on audiofile where filename matches 	
-			checkID=util.findRowIn2DArr("audioFile",2,fileNm,checkID+1);
-			
-			//no match found on filename so exit with -1 for no row found. 
-			if (checkID==-1)
-				return -1;
-			
-			// if increment on audiofile matches folder name
-			if (audioFile[checkID][11]==fldrNm)
-				return audioFile[checkID][0]; //then return FileID		
-		}	
-	},
-	saveTiming: function (fileOrder, fileID, reference, timing, wordRef) {
-		let i = 0;
-		$.post("saveTiming.php", {
-			FileOrder: fileOrder,
-			FileID: fileID,
-			Reference:reference,
-			Timing:timing,
-			WordRef:wordRef
-		},
-		function (result) {
-			////console.log (result);  
-			////console.log("php saved " + reference + " settings in fileID of " + fileID + " with timing of " + timing);
-		}
-		);
-	},
-
-	//DONE (getFirstTimingLength & getTimingLength)  open voice file for length  (chap or book?)
-	//DONE on PC - count words for that version 
-	// divide length by number of words to get estimate of chapters/verses/sentences
-	// save to db by userid. 
-	//*********** Enable editing of the auto marking of chapters/verses/sentences
-	//select edit option
-	//dialog box with auto play of each chapter/verse/ or sentence
-	//listen to audio and find in text? 
-    getFirstTimingLength: function(){        
-		makeAudioDataFile.rowNum=util.findRowIn2DArr("voiceFileData",1,makeAudioDataFile.MatchVersion);
-		////console.log(voiceFileData[makeAudioDataFile.rowNum][0]);
-		if (makeAudioDataFile.rowNum > -1){
-				document.getElementById("ScriptureHeaderAudio1").src = voiceFileData[makeAudioDataFile.rowNum][2] + "\\" +  voiceFileData[makeAudioDataFile.rowNum][3];
-				voiceControl0.setDuration();
-				setTimeout(makeAudioDataFile.getTimingLength,2000);
-		}	
-	},
-	getTimingLength(){
-		let i=makeAudioDataFile.rowNum;
-		let str="";
-		////console.log("ID nd Ver: " + voiceFileData[i][0] + voiceFileData[i][1] );
-		str="['" + voiceFileData[i][0] + "','" + voiceFileData[i][1] + "','" + voiceFileData[i][2] + "','"  + voiceFileData[i][3] + "','" + voiceFileData[i][4] + "','" + voiceFileData[i][5] + "','" + voiceFileData[i][6] + "'," + voiceFileData[i][7] + "," + voiceFileData[i][8] + ",," + voiceFileData[i][10] + "," + voiceFileData[i][11] + "," + voiceControl0.TimeToSeconds(voiceControl0.duration) + "],"
-		////console.log(str);
-		
-		i++; 
-		makeAudioDataFile.rowNum=i;
-		if (voiceFileData[i][1]==makeAudioDataFile.MatchVersion){
-			document.getElementById("ScriptureHeaderAudio1").src=voiceFileData[i][2] + "/" +  voiceFileData[i][3];
-			voiceControl0.setDuration();
-			setTimeout(makeAudioDataFile.getTimingLength,2000);
-		}
-
-			// setVoiceFileDuration(incre){
-	// 	let pend = document.getElementById("ScriptureHeaderAudio" + incre).currentTime;
-	// 	let i= document.getElementById("ScriptureHeaderAudio"+ incre).duration;
-	// 	if(isNaN(i)) {
-	// 		setTimeout(window["VoiceControl" + incre].setVoiceFileDuration,100,incre);
-	// 		return;
-	// 	}
-	// 	else
-	// 		VoiceControl.duration=VoiceControl.SecondsToTime(i);
-	// 	document.getElementById("AudioTime" + incre).innerHTML = VoiceControl.SecondsToTime(pend) + "/" + VoiceControl.duration;
-	// }
-	}
-}
 // window.speechSynthesis.onvoiceschanged = function() {
    
 // }	
@@ -2884,8 +2677,7 @@ class BibleRef {
 		//window["VoiceControl"+ this.windowID].reset();
 
 		// call process Scripture Data
-		siteControl.CallPSDThru="changeVersion";
-		uncoverGodsWord.processScriptureData(this.windowID);
+		uncoverGodsWord.processScriptureData(this.windowID,false);
 	}
 	parseRefEntered() {
 		var refr = document.getElementById('enterVerse' + this.windowID).value;
@@ -3041,8 +2833,7 @@ class BibleRef {
 				openTRBox(this.windowID);
 			else {		
 				RH.addToRH(this.windowID); 
-				siteControl.CallPSDThru="parseRefEntered";
-				uncoverGodsWord.processScriptureData(this.windowID);
+				uncoverGodsWord.processScriptureData(this.windowID,false);
 			}
 		}	
 	}
@@ -3417,7 +3208,7 @@ class BibleRef {
 						document.getElementById("ScriptureHeaderLinksF" + this.windowID).style.display = "inline";
 						break;
 					case 42:
-						linkVid3.href = "https://youtu.be/fUmktYvg7CQ";
+						linkVid3.href = "https://www.youtube.com/watch?v=fUmktYvg7CQ&list=PLcJVIuhI8isJOKcvkIMhwj7Gv5769FqEJ";
 						linkVid4.href = "https://www.youtube.com/watch?v=W9UcImEiF9o";
 						document.getElementById('ScriptureHeaderLinksImgD' + this.windowID).src = "Image/TheJesusFilm.jpg";
 						document.getElementById("ScriptureHeaderLinksFttt" + this.windowID).innerHTML = "Video of Book playlist";
@@ -3656,8 +3447,7 @@ class ScriptureWindow {
 		this.toggleModeOptions(false);
 
 		if (this.setupMode=="Study" && changeByUser == true){ //reload to add Greek Lemma/Parsing even if hidden
-			siteControl.CallPSDThru="readFromModeOptions";
-			uncoverGodsWord.processScriptureData(this.windowID);
+			uncoverGodsWord.processScriptureData(this.windowID,false);
 		}	
 
 	}
@@ -3798,7 +3588,7 @@ class ScriptureWindow {
 		if (changeByUser == true) {
 			this.displaySentenceNewLine = document.getElementById(opt + this.windowID).checked;
 			document.getElementById("Scripture" + this.windowID).innerHTML = "";
-			uncoverGodsWord.processScriptureData(this.windowID);
+			uncoverGodsWord.processScriptureData(this.windowID,false);
 			//displayScripture(this.windowID, window["BibleRef" + this.bibleRefId].bookNum, window["BibleRef" + this.bibleRefId].bookNam, window["BibleRef" + this.bibleRefId].version, window["BibleRef" + this.bibleRefId].refList);
 			this.OptiondisplayVerseNewLine(false);
 
@@ -4145,7 +3935,7 @@ class VoiceControl {
 				//get voiceFle and nonchanging values with it.
 				let splt=result.split("~");
 				window[vc].voiceFleTop=splt[1];
-				window[vc].voiceFle=JSON.parse(splt[0]); //window[vc]
+				window[vc].voiceFle=JSON.parse(splt[0]); 
 				window[vc].load(increPst);	
 		}
 		);			
@@ -4725,6 +4515,8 @@ class VoiceControl {
 		return rVal;
 	}
 
+	
+
 } //end object voiceControl
 
 var uncoverGodsWord = {
@@ -4746,7 +4538,7 @@ var uncoverGodsWord = {
 	//Run once:starting process - setup BR,SW, and UGW variables
 	//called from RH.load2SW, SW.changeVersion, BR.parseRefEntered, closeTRBox (via BR.parseRefEnterd), and a couple others settings -
 	//(Break on Sentence, Change Greek Display, setMode away from Reading to add show Lemma etc.)
-	processScriptureData: function(incre) {
+	processScriptureData: function(incre,skipRHRowUpdate) {
 		//Called from siteControl & SW setting changes
 					//RH.load2SW 
 					//BibleRef#.parseRefEntered & BibleRef#.ChangeVersion
@@ -4801,9 +4593,8 @@ var uncoverGodsWord = {
 	
 		//update RH History
 		//maybe shouldn't call here but change Version in changeVersion etc. 
-		if("load2SW setGreekDisplay".includes(siteControl.CallPSDThru)==false){
-			RH.updateRHRow(incre,RH.CurNum);
-		}
+		if (skipRHRowUpdate==false)
+			RH.updateRHRow(incre,RH.CurNum);		
 			
 		//Get arrays of refList and corresponding Versions and refText
 		this.refListArr=this.removeVersionFromRefList(this.br.refList.split(";"));
@@ -4853,7 +4644,6 @@ var uncoverGodsWord = {
 		var fname = "";
 		//more than number of references? if so STOP.
 		if (this.refListArr.length < this.refIncre + 1) {
-			siteControl.CallPSDThru="";
 			return;
 		}	
 		//has a reference so load the data	
@@ -5249,7 +5039,7 @@ var uncoverGodsWord = {
 									spanT.setAttribute("id", "t" + this.version + this.br.bookNum + wordArr[j][id]+ "-" + this.incre);
 									spanT.setAttribute("data-otype", "verse title");
 									if  (currentTitleArr[0]!="No Title")							
-										spanT.setAttribute("onclick","displayVerses('" + this.br.version + "','" + currentTitleArr[1]  + "','" + currentTitleArr[0]  + "');");
+										spanT.setAttribute("onclick","displayVerses('" + this.br.version + "','" + "codetext" + "','" + currentTitleArr[1]  + "','" + currentTitleArr[0]  + "');");
 									nodeV=document.createTextNode(currentTitleArr[0]);
 									spanT.appendChild(nodeV);
 									spanV.insertBefore(spanT, child);
@@ -5469,10 +5259,10 @@ var uncoverGodsWord = {
 		let vv=Number(refBCVW.substr(2+refLength,refLength));
 		
 		//get sectionTitles column for version title
-		for (i=4;i<sectionTitles[0].length;i++)
-			if (sectionTitles[0][i]==siteControl.sectionTitleDefault)
-				break;
-		let ttle=i;	
+		// for (i=4;i<sectionTitles[0].length;i++)
+		// 	if (sectionTitles[0][i]==siteControl.sectionTitleDefault)
+		// 		break;
+		let ttle=4;	
 		
 		//get the same or first higher BCV
 		for (i=0;i<sectionTitles.length;i++)
@@ -5896,7 +5686,7 @@ function getTopVerse(bk,chp){
 }
 
 //******************  Set Local Storage when closing the window  *********************************************
-window.onunload = window.onbeforeunload = function () {
+window.onbeforeunload = function () {
 	br=window["BibleRef" + siteControl.activeWindow];
 	br.ScrollToId = get1stVerseInViewport(br.windowID, br.version);
 	RH.updateRHRow(siteControl.activeWindow,RH.CurNum);
@@ -6198,23 +5988,42 @@ window.speechSynthesis.onvoiceschanged = function() {
 		VoiceControl1.voices=window.speechSynthesis.getVoices();
 }
 
-
 //************************  utility functions
 const util ={
-	findRowIn2DArr: function(arrStr, j, matchValue, startIncr=0) {
-		// the parameter j is the column number
+	findRowIn2DArr: function(arrStr, ColID, matchValue, startIncr=0) {
+		// the parameter ColID is the column number itself or characters of the column name on row[0] of the arr
 		//change the array String (arrStr) into an actual array
 		let arr2=window[arrStr];
 		if (!Array.isArray(arr2)) {
 			throw new Error('Invalid array name: ' + arrStr); // Throw an error if the provided array name is not valid
 		  }
+		//get ColID as j
+		// if (isNaN(ColID))
+		j=util.getColNum(arrStr,ColID)
+		// else
+		// 	j=ColID;
 		for (let i = startIncr; i < arr2.length; i++) {
 			if (arr2[i][j] == matchValue)
 				return i;
 		}
 		return -1;
 	},
-	
+	getColNum: function(arrStr, val) {
+	if (isNaN(val)==false)
+		return val;
+	//not a number but Column name so read row 0 of the 2D array to find matching name and return the Column Number it is in
+	let arr1=window[arrStr[0]];
+		if (!Array.isArray(arr1)) {
+			throw new Error('Invalid array name: ' + arrStr); // Throw an error if the provided array name is not valid
+		  }	
+
+	for (let i = 0; i < arr1.length; i++) {
+		if (arr1[i] == val)
+			return i;
+	}
+	return -1;
+	},
+
 	recursiveSearch: function (obj, searchKey, results = []){
 		const r = results;
 		Object.keys(obj).forEach(key => {
@@ -6453,8 +6262,9 @@ const util ={
 	  if (book<67)
 		return "NT";
 	  return "AP";	
-	},
-	processScriptureIdFormat: function(){
+	}
+	//,
+	//processScriptureIdFormat: function(){
 	//************* Need to change all object References to start with an identifying digit - so word to start with "W" **********************/
 	//************* Need to change all object References to 2-3-3(-3) BBCCCVVV(WWW)   **********************/
 
@@ -6476,8 +6286,7 @@ const util ={
 	// rLEB19001002001-1
 	//  0123456789012345
 	//  LEB19001002003-1	
-
-	}
+	//}
 }
 
 //BibleRef?  But would need a BibleRef0 not tied to any SW
@@ -6593,6 +6402,8 @@ function buildSingleRefText(refLst,bookNameRowIncre) {
 // }
 //SW
 function get1stVerseInViewport(incre,version) {
+	if (incre==0)
+		return;
 	 ////console.log("In get1stVerseInViewport for " + version);
 	let wordList = $('[id^="v' + version + '"]'); //an array of all verse id's in this book/version.
 
@@ -6765,8 +6576,7 @@ function closeTRBox(){
 	}
 	else if (tpWas=="0") { //new topic on new reference so continue loading...
 		RH.addToRH(incre); 
-		siteControl.CallPSDThru="parseRefEntered";
-		uncoverGodsWord.processScriptureData(incre);
+		uncoverGodsWord.processScriptureData(incre,false);
 	}
 
 	//clear TRBox Variables before next use
@@ -6788,15 +6598,20 @@ function closeTopic(incre){
 }
 
 //uncoverGodsWord
-function displayVerses(version, ref, title){
-
+function displayVerses(version, reftype, ref, title, ){
+	
 	//set BibleRef0 values
 	BibleRef0.version=version;
-	BibleRef0.bookNum=ref.substr(0,2);
-	BibleRef0.bookNam = bibleBookData[Number(BibleRef0.bookNum)][8];
-	BibleRef0.refList=ref;
-	BibleRef0.refText=buildSingleRefText(ref,1);
-
+	if(reftype=="plaintext"){
+		document.getElementById("enterVerse0").value=ref;
+		BibleRef0.parseRefEntered();	
+	}
+	else {	
+		BibleRef0.bookNum=ref.substr(0,2);
+		BibleRef0.bookNam = bibleBookData[Number(BibleRef0.bookNum)][8];
+		BibleRef0.refList=ref;
+		BibleRef0.refText=buildSingleRefText(ref,1);
+	}
 	////console.log(BibleRef0.refText);
 	
 	//set uncoverGodsWord values
@@ -6814,9 +6629,15 @@ function displayVerses(version, ref, title){
 	uncoverGodsWord.versionCount=1;
  
 	//call displayScriptures 
- 	document.getElementById("Scripture0").innerHTML="";
-	uncoverGodsWord.displayScripture();
-	document.getElementById("ScriptureHeader0").innerHTML=title + "   <span class='title0'>" + BibleRef0.refText + "</span>";
+	console.log ("In displayVerses for ref of " + BibleRef0.refEntered);
+	showScripture0(title);
+}
+function showScripture0(title){
+	// document.getElementById("Scripture0").innerHTML="";
+	// uncoverGodsWord.processScriptureData(0,false);
+//	document.getElementById("ScriptureHeader0").innerHTML=title;
+//TempZ	document.getElementById("ScriptureHeader0").innerHTML=title + "   <span class='title0'>" + BibleRef0.refText + "<span class='msgboxClose'><i onclick='document.getElementById(\"ScriptureDiv0\").style.display=\"none\";document.getElementById(\"msgboxbackground\").style.display=\"none\"' class='fa fa-close' title='Close'>&nbsp;</i></span></span>";
+//	document.getElementById("ScriptureHeader0").innerHTML=title + "   <span class='title0'>" + BibleRef0.refText + "</span>";
 	document.getElementById("ScriptureDiv0").style.display="block";
 	document.getElementById("ScriptureDiv0").style.top="2rem";
 	document.getElementById("ScriptureDiv0").style.left="2rem";
@@ -6944,6 +6765,19 @@ function booleanToDigit(bln) {
 
 }
 
+// util
+function gotoElement(element, stopIfMessageBackground, SWIncre=-1){
+
+	if (SWIncre>-1)
+		element=element + SWIncre;
+
+	if (stopIfMessageBackground==true && window.getComputedStyle(document.getElementById("msgboxbackground")).display === 'block')
+		return;
+	else
+		document.getElementById(element).focus();
+}
+
+
 //*******************************listeners events   ******************************************
 //placed at the bottom of html file so that Firefox works.
 
@@ -6955,6 +6789,13 @@ $("#enterVerse1").keydown(function (event) {
 		$("#enterVerse1").css("color", "gray");
 
 });
+//Topic Reference text box
+$("#TRenterTopic").keydown(function (event) {
+	if (event.keyCode == 13)
+		closeTRBox();
+});
+
+
 
 $("#contextMenuMain").click(function (event) {
 	gotoTitle(event, 1);
@@ -7462,7 +7303,8 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 	let i = 1;
 	let j = 1;
 	let k = 1;
-	let colIncre = 99;
+	let colIncre = 4;
+	let colIncreCrossRef=5;
 	let foundTitle = false;
 	let startChap = 999;
 	let endChap = 999;
@@ -7481,18 +7323,19 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 
 	//****  Get version used for Section Titles */
 	//pick which section title group
-	if (siteControl.sectionTitleOriginal == true) {
-		colIncre = getColumnIncre(sectionTitles[0], version);
-		sectionVersion = version;
-	}
+	// if (siteControl.sectionTitleOriginal == true) {
+	// 	colIncre = getColumnIncre(sectionTitles[0], version);
+	// 	sectionVersion = version;
+	// }
 
-	////console.log("sectionTitleDefault:" + siteControl.sectionTitleDefault);
-	if (colIncre == 99) { //does for Original==false and if version not in sectionTitles 
-		colIncre = getColumnIncre(sectionTitles[0], siteControl.sectionTitleDefault);
-		sectionVersion = siteControl.sectionTitleDefault;
-	}
-	if (colIncre == 99)
-		colIncre=4;
+	// ////console.log("sectionTitleDefault:" + siteControl.sectionTitleDefault);
+	// if (colIncre == 99) { //does for Original==false and if version not in sectionTitles 
+	// 	colIncre = getColumnIncre(sectionTitles[0], siteControl.sectionTitleDefault);
+	// 	sectionVersion = siteControl.sectionTitleDefault;
+	// }
+	// if (colIncre == 99)
+	// 	colIncre=4;
+	
 
 	//check if section titles for book in selected reference
 	for (i = 1; i < sectionTitles.length; i++)
@@ -7516,7 +7359,8 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 	}
 	var rowEndIncre = i--;
 
-	var divT, parentObj, insertB4Obj, titleText;
+	var divT, parentObj, insertB4Obj, titleLine;
+	var crssRef=""; //this is used to hold a crossReference IF is it exists
 	var asterisk = ""; //this is used to hold the tVERbbccvvww-incrE ID the beginning "t" is for Title. 
 	//This is to be the ID for the Section Titles repeated in the context menu by adding "CM" at the start - don't want any repeat IDs.
 	if (sendTo.includes("msgbox")) {
@@ -7554,8 +7398,8 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 		if (sendTo == "msgbox") {
 			divT.setAttribute("id", "CMt" + sectionVersion + util.padNum(sectionTitles[i][0], refCVWIncre) + util.padNum(sectionTitles[i][1], refCVWIncre) + util.padNum(sectionTitles[i][2], refCVWIncre) + util.padNum(sectionTitles[i][3], refCVWIncre) + "-" + incre );
 			divT.setAttribute("style", "display:block");
-			titleText = document.createTextNode(sectionTitles[i][colIncre]);
-			divT.appendChild(titleText);
+			titleLine = document.createTextNode(sectionTitles[i][colIncre]);
+			divT.appendChild(titleLine);
 			parentObj.appendChild(divT);
 		}
 		else {
@@ -7569,7 +7413,6 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 				divT.setAttribute("style", "display:block");
 
 			//try to set to paragraph
-			////console.log  ("Paragraph name: " + "p" + version + util.padNum(sectionTitles[i][0],refCVWIncre) + util.padNum(sectionTitles[i][1],refCVWIncre) + util.padNum(sectionTitles[i][2],refCVWIncre) + util.padNum(sectionTitles[i][3],refCVWIncre));
 			insertB4Obj = document.getElementById("p" + version + util.padNum(sectionTitles[i][0], refCVWIncre) + util.padNum(sectionTitles[i][1], refCVWIncre) + util.padNum(sectionTitles[i][2], refCVWIncre) + util.padNum(sectionTitles[i][3], refCVWIncre)+ "-" + incre);
 			//try to set to poetry line
 			if (typeof (insertB4Obj) == 'undefined' || insertB4Obj == null) { //no paragraph so set to poetry line	
@@ -7606,8 +7449,14 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 				console.error("Section Title ERROR: Couldn't find object to put it in front of. " + version + util.padNum(sectionTitles[i][0], refCVWIncre) + util.padNum(sectionTitles[i][1], refCVWIncre) + util.padNum(sectionTitles[i][2], refCVWIncre));
 			else {
 				parentObj = insertB4Obj.parentNode;
-				titleText = document.createTextNode(sectionTitles[i][colIncre] + asterisk);
-				divT.appendChild(titleText);
+				if(sectionTitles[i][colIncreCrossRef].length==0)  //Check if there is a cross reference or not
+					divT.innerHTML = sectionTitles[i][colIncre] + asterisk;
+				else //Show Title Cross Reference with open link. Need to open ScriptureDiv0 as a msgbox window. Must ensure Scripture Data is loaded.
+					divT.innerHTML = sectionTitles[i][colIncre] + asterisk  + "<small> <small onclick=\"doSectionTitleCR(\'" + version + "\',\'" + sectionTitles[i][colIncreCrossRef] + "')\">(" + sectionTitles[i][colIncreCrossRef] + ")</small></small>"; 
+					//divT.innerHTML = sectionTitles[i][colIncre] + asterisk  + "<small> <small onclick=\"document.getElementById(\'VerBtn0\').innerHTML  =\'" + version + "\'; document.getElementById(\'enterVerse0\').innerHTML  =\'" + sectionTitles[i][colIncreCrossRef] + "\'; BibleRef0.parseRefEntered();showScripture0(\' \');\">(" + sectionTitles[i][colIncreCrossRef] + ")</small></small>";
+					// spanT.setAttribute("onclick", "uncoveringGodsWord.processScriptureData(0,false);");
+
+					// divT.appendChild(titleLine);
 				parentObj.insertBefore(divT, insertB4Obj);
 			}
 		}
@@ -7618,6 +7467,16 @@ function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, 
 		document.getElementById("CM" + asterisk).scrollIntoView();
 		rootBody("auto");
 	}
+}
+
+function doSectionTitleCR(ver, ref){
+	document.getElementById('VerBtn0').innerHTML=ver;
+	document.getElementById('enterVerse0').innerHTML=ref;
+	BibleRef0.refEntered=ref;
+	BibleRef0.version=ver;
+	BibleRef0.parseRefEntered();
+	console.log ("In doSectionTitleCR for ref of " + BibleRef0.refEntered);
+	showScripture0(ref);
 }
 
 function getRefCVW(refList, version="WEB", startOnly=true, includeBook=false) {
@@ -7737,6 +7596,7 @@ function roundTo(num, places) {
     return Math.round(num * multiplier) / multiplier;
 }
 
+
 //devTest
 function devTest(){
 	////console.log("tesBA");
@@ -7761,3 +7621,200 @@ function devTest(){
 }
 
 
+var makeAudioDataFile= {   
+	//used to fill (and reset?) the second for each verse start in an audio Bible 
+	// (Already need the audiofile and meta tables) 
+	
+	timelen:0,
+	wordCount:0,
+	MetaID:0,  //NEW - will be read from Developer Area entry
+	MatchVersion:"VER",
+	MatchBook:-1, //will be read from Developer Area entry
+	MatchBook2:-1, //will be read from Developer Area entry
+	IntroLen:-1,    //Def 4  ERV 3  BYZ 2 
+	BookIntroLen:-1,  //Def 6  ERV 12
+	EndingLen:-1,    //Def 2  ERV 7  BYZ 0
+	PunctAfterLen:-1, //Def 0.02  ERV 0.08
+	ActiveRow:-1,
+	CVWlen:2, //length for Chap, Verse, Word.  Is 3 for Psalms.
+
+	findVoiceFileDataRow: function(mb) {
+		for (let i = 1; i < window["voiceFileData"].length; i++) {
+			if ( window["voiceFileData"][i][7] == mb && window["voiceFileData"][i][13] == this.MetaID )
+				return i;
+		}
+		return -1;
+	},
+
+	makeTimingFile: function(){  //This reads from the first to last book entered - it runs computeTiming() for each book. 
+		this.MetaID=document.getElementById("DA-MtID").value;
+		this.MatchBook=document.getElementById("DA-BS").value;
+		this.MatchBook2=document.getElementById("DA-BE").value;
+		this.MatchVersion=audioFileMeta[this.MetaID][1];
+		this.IntroLen=audioFileMeta[this.MetaID][11]; 
+		this.BookIntroLen=audioFileMeta[this.MetaID][12]; 
+		this.EndingLen=audioFileMeta[this.MetaID][13]; 
+		this.PunctAfterLen=audioFileMeta[this.MetaID][14];
+	
+		
+		for (let i=this.MatchBook;i<=this.MatchBook2;i++) {
+			//console.log("Doing Book " + i);
+			this.ActiveRow=this.findVoiceFileDataRow(i);
+			//console.log ("voiceFileData Active Row:" + this.ActiveRow + " Active Row Book:" + voiceFileData[this.ActiveRow][7] );
+			if (this.ActiveRow>-1){
+				this.computeTiming(voiceFileData[this.ActiveRow][7]);
+			}
+		}		
+	},
+	computeTiming: function(MB){
+		let timeAt=0;
+		let timeLeft=-1;
+		let timeInterval=-1;
+		let timingBy=22;
+		let j=0;
+		let k=0;
+		let i=0;
+		let chp=1;
+		//get Book Data and column intervals
+		let bibFN=window["B" + bibleBookData[MB][8] + this.MatchVersion];
+		let iID=getColumnIncre(bibFN[0],"id"); //get the column increment whose title matches
+		let iPuncAft=getColumnIncre(bibFN[0],"PunctAfter"); //ditto
+		let puncCnt=0;
+		let refLen=util.refPadCount(MB);
+		let firstWord=util.padNum(1,refLen); 
+		let fileID=0;
+
+		//Read for each chapter in this book
+		if (voiceFileData[this.ActiveRow][4]=="Chapter"){ 
+			while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
+				if (voiceFileData[this.ActiveRow][8]==1) //first Chapter may have book intro
+					timeAt=this.BookIntroLen;
+				else
+					timeAt=this.IntroLen;
+				timeLeft=voiceFileData[this.ActiveRow][12]-timeAt;
+				//get count for each punctuation of [,;.? etc]
+				puncCnt=0;
+				// for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)  //voiceFileData[this.ActiveRow][11] is the total number of words in this audio file section					if (typeof (bibFN[i][iPuncAft]) != 'undefined') //bibFN[i][iPuncAft].includes(",")==true || bibFN[i][iPuncAft].includes(".")==true || bibFN[i][iPuncAft].includes(";")==true || bibFN[i][iPuncAft].includes("!")==true || bibFN[i][iPuncAft].includes("?")==true)
+				// 		puncCnt++;
+				//WRONG ABOVE? Doesn't it need to only count IF the Bible Book Data has a ",;.?!" in the words row? 
+				timeInterval=(timeLeft - (puncCnt* this.PunctAfterLen + this.EndingLen))/voiceFileData[this.ActiveRow][11];
+				//puncCnt=0;     //above was (timeLeft - (puncCnt* this.PunctAfterLen)) divided by the total number of words in this audio file section 
+
+				//***************** Create Timing Table for this voice File ***************/
+				//loop through every word in Bible Data File for this section
+				fileID=voiceFileData[this.ActiveRow][0];	
+				for (i=1;i<=voiceFileData[this.ActiveRow][11];i++){ 
+					if (Number(bibFN[j+i][iID].substring(0,refLen))==voiceFileData[this.ActiveRow][8]) 
+						if ( bibFN[j+i][iID].slice(-refLen)==firstWord) {
+							//this.saveTiming(fileID,Number.parseFloat(timeAt).toFixed(2),bibFN[j+i][iID].substring(0, 2),bibFN[j+i][iID].substring(2, 4),"01");
+							console.log (fileID + "," + Number.parseFloat(timeAt).toFixed(2) + "," + timingBy + "," + bibFN[j+i][iID].substring(0, 2) + "," + bibFN[j+i][iID].substring(2, 4) + ",01")
+						}	
+					else
+						if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
+							puncCnt= this.PunctAfterLen;
+						else
+							puncCnt=0;	 
+						
+					timeAt += timeInterval + puncCnt;	 
+					}
+					chp++;
+					
+
+					j=util.findRowIn2DArr("B" + bibleBookData[MB][8] +this.MatchVersion,iID,util.padNum(chp,refLen) + util.padNum(1,refLen)+ util.padNum(1,refLen));
+					j=j-1;
+					this.ActiveRow++;
+			}	
+			//this.ActiveRow=-1;
+		}
+		else if (voiceFileData[this.ActiveRow][4]=="Book"){
+			//while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
+			////console.log(this.MatchVersion + MB + "=[");
+			timeAt=this.BookIntroLen;
+			timeLeft=voiceFileData[this.ActiveRow][12]-timeAt;
+
+
+			puncCnt=0;
+			for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)
+				if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
+					puncCnt++;
+			timeInterval=(timeLeft - (puncCnt* this.PunctAfterLen + this.EndingLen))/voiceFileData[this.ActiveRow][11];
+			puncCnt=0;    
+
+
+			//***************** Create Timing Table for this voice File ***************/
+			//loop through every word in Bible Data File for this section
+			for (i=1;i<bibFN.length;i++){ 
+				if ( bibFN[i][iID].slice(-2)=="01") { 
+					////console.log("['" + bibFN[i][iID] + "','"+ bibFN[i][iWord] + "'," + Number.parseFloat(timeAt).toFixed(2) + "],");
+				}
+				if (typeof (bibFN[i][iPuncAft]) != 'undefined') 
+					puncCnt= this.PunctAfterLen;
+				else 
+					puncCnt=0;		 					
+				timeAt += timeInterval + puncCnt;	 
+			}	
+			////console.log("];");
+		}							
+	},
+
+	saveTiming: function (fileID, timing, chapRef, verRef, wordRef) {
+		let i = 0;
+		$.post("saveTiming.php", {
+			FileID: fileID,
+			Timing:timing,
+			ChapRef:chapRef,
+			VerRef:verRef,
+			WordRef:wordRef
+		},
+		function (result) {
+			console.log (result);  
+			//console.log("php saved " + ChapRef + VerRef + WordRef + " settings in fileID of " + fileID + " with timing of " + timing);
+		}
+		);
+	},
+
+	//DONE (getFirstTimingLength & getTimingLength)  open voice file for length  (chap or book?)
+	//DONE on PC - count words for that version 
+	// divide length by number of words to get estimate of chapters/verses/sentences
+	// save to db by userid. 
+	//*********** Enable editing of the auto marking of chapters/verses/sentences
+	//select edit option
+	//dialog box with auto play of each chapter/verse/ or sentence
+	//listen to audio and find in text? 
+    getFirstTimingLength: function(){        
+		makeAudioDataFile.rowNum=util.findRowIn2DArr("voiceFileData",1,makeAudioDataFile.MatchVersion);
+		////console.log(voiceFileData[makeAudioDataFile.rowNum][0]);
+		if (makeAudioDataFile.rowNum > -1){
+				document.getElementById("ScriptureHeaderAudio1").src = voiceFileData[makeAudioDataFile.rowNum][2] + "\\" +  voiceFileData[makeAudioDataFile.rowNum][3];
+				voiceControl0.setDuration();
+				setTimeout(makeAudioDataFile.getTimingLength,2000);
+		}	
+	},
+	getTimingLength(){
+		let i=makeAudioDataFile.rowNum;
+		let str="";
+		////console.log("ID nd Ver: " + voiceFileData[i][0] + voiceFileData[i][1] );
+		str="['" + voiceFileData[i][0] + "','" + voiceFileData[i][1] + "','" + voiceFileData[i][2] + "','"  + voiceFileData[i][3] + "','" + voiceFileData[i][4] + "','" + voiceFileData[i][5] + "','" + voiceFileData[i][6] + "'," + voiceFileData[i][7] + "," + voiceFileData[i][8] + ",," + voiceFileData[i][10] + "," + voiceFileData[i][11] + "," + voiceControl0.TimeToSeconds(voiceControl0.duration) + "],"
+		////console.log(str);
+		
+		i++; 
+		makeAudioDataFile.rowNum=i;
+		if (voiceFileData[i][1]==makeAudioDataFile.MatchVersion){
+			document.getElementById("ScriptureHeaderAudio1").src=voiceFileData[i][2] + "/" +  voiceFileData[i][3];
+			voiceControl0.setDuration();
+			setTimeout(makeAudioDataFile.getTimingLength,2000);
+		}
+
+			// setVoiceFileDuration(incre){
+	// 	let pend = document.getElementById("ScriptureHeaderAudio" + incre).currentTime;
+	// 	let i= document.getElementById("ScriptureHeaderAudio"+ incre).duration;
+	// 	if(isNaN(i)) {
+	// 		setTimeout(window["VoiceControl" + incre].setVoiceFileDuration,100,incre);
+	// 		return;
+	// 	}
+	// 	else
+	// 		VoiceControl.duration=VoiceControl.SecondsToTime(i);
+	// 	document.getElementById("AudioTime" + incre).innerHTML = VoiceControl.SecondsToTime(pend) + "/" + VoiceControl.duration;
+	// }
+	}
+}

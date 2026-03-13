@@ -1,8 +1,5 @@
 //setup structure used in displayScriptures 
 
-
-
-
 //0-Book,1-Chapter,2-Verse,3-WordOrder,4-BSB,5-NET,6-ERV,7-LEB,8-PET,9-OEB
 sectionTitles = [
     [0, 0, 0, 0, 'BSB', 'crossReferences'],
@@ -3293,6 +3290,7 @@ bibleBookData = [
 	['82', '2 Esdras', '16', 'AP', '2E', '9', '9', '9', '2ES', '9', '9',"2Es"],
 	['83', 'Prayer of Manasses', '1', 'AP', 'PRAYER OF M', 'PR', 'M', '9', 'MAN', '9', '9',"PoM"],
 	['84', 'Psalm 151', '1', 'AP', 'PSALM151', 'PS', '151', '9', 'PS2', '9', '9',"P151"],
+	['85', '', '', '', '', '', '', '', '', '', '',""],    
 	['86', 'Odae/Odes', '0', 'AP', 'OD', '9', '9', '9', 'ODA', '9', '9',"Ode"],
 	['87', 'Psalms of Solomon', '0', '', '', '', '', '', 'PSS', '9', '9',"PsS"],
     ['88', 'Eno', 'Enoch', '36', '', '', '', '', 'Eno', '9', '9',"Enoch"],
