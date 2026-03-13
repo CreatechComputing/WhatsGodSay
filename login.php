@@ -25,7 +25,7 @@ else { // User exists
         $_SESSION['UserID'] =$UserID;
         $_SESSION['email'] = $user['email'];
 
-        $GroupIDs="";
+        $GroupID="";
         $result2 = $mysqli->query("SELECT `GroupID` FROM `UserGroups` WHERE `UserID`=".$UserID);
         $firstRow=true;
         if ( $result2->num_rows > 0 ) {
@@ -33,7 +33,7 @@ else { // User exists
               if ($firstRow==true)
                   $firstRow=false;
               else
-              $GroupID=$GroupID.",";
+                $GroupID=$GroupID.",";
            
               $GroupID=$GroupID.$recentRead['GroupID'];
            }

@@ -4609,10 +4609,10 @@ bibleBookData = [
 	['70', 'Wisdom of Solomon', '19', 'DC', 'W', '9', '9', '9', 'WIS', '9', '9',"WoS"],
 	['71', 'Sirach', '51', 'DC', 'SI', '9', '9', '9', 'SIR', '9', '9',"Sir"],
 	['72', 'Baruch', '6', 'DC', 'BA', '9', '9', '9', 'BAR', '9', '9',"Bar"],
+	['73', 'Bel and the Dragon', '0', 'DC', '1M', '9', '9', '9', 'BEL', '9', '9',"Bel"],
 	['74', 'Letter of Jeremiah', '0', 'DC', 'PRAYER OF A', 'PR', 'AZ', '9', 'LJE', '9', '9',"LoJ"],
 	['75', 'Song of the 3 Young Men', '0', 'DC', 'SU', '9', '9', '9', 'S3Y', '9', '9',"S3YM"],
 	['76', 'Susanna', '0', 'DC', 'BE', '9', '9', '9', 'SUS', '9', '9',"Sus"],
-	['77', 'Bel and the Dragon', '0', 'DC', '1M', '9', '9', '9', 'BEL', '9', '9',"Bel"],
 	['77', '1 Maccabees', '16', 'DC', '1M', '9', '9', '9', '1MA', '9', '9',"1Ma"],
 	['78', '2 Maccabees', '15', 'DC', '2M', '9', '9', '9', '2MA', '9', '9',"2Ma"],
 	['79', '3 Maccabees', '7', 'AP', '3M', '9', '9', '9', '3MA', '9', '9',"3Ma"],
@@ -4621,8 +4621,11 @@ bibleBookData = [
 	['82', '2 Esdras', '16', 'AP', '2E', '9', '9', '9', '2ES', '9', '9',"2Es"],
 	['83', 'Prayer of Manasses', '1', 'AP', 'PRAYER OF M', 'PR', 'M', '9', 'MAN', '9', '9',"PoM"],
 	['84', 'Psalm 151', '1', 'AP', 'PSALM151', 'PS', '151', '9', 'PS2', '9', '9',"P151"],
+	['85','NotUsed'],
 	['86', 'Odae/Odes', '0', 'AP', 'OD', '9', '9', '9', 'ODA', '9', '9',"Ode"],
 	['87', 'Psalms of Solomon', '0', '', '', '', '', '', 'PSS', '9', '9',"PsS"],
+	['88','NotUsed'],
+	['89','NotUsed'],
 	['90', 'Daniel (Greek)', '14', '', '', '', '', '', 'DAG', '9', '9',"DanG"]
 ];
 

@@ -176,7 +176,7 @@ if ($lemmastmt!=""){
         echo $resultWordData["Vines"]."</div>";
         }  
     echo '</div>';
-  }  //end if at least 1 lexixcon is selected
+  }  //end if at least 1 lexicon is selected
 
    /* ********************Do Greek References****************************************** */   
   // get Greek Refernce SQL

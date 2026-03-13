@@ -4,7 +4,7 @@ require 'dbBible.php';
 
 $refList=$mysqli->escape_string($_POST['refList']);
 $vrsn=$mysqli->escape_string($_POST['Version']);
-$refText=$mysqli->escape_string($_POST['refText']);
+//$refText=$mysqli->escape_string($_POST['refText']);
 //echo $refText."<br><br>";
 $incre=0;
 //$BookArray=array('PlaceHolder','Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1 Samuel','2 Samuel','1 Kings','2 Kings','1 Chronicles','2 Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes','Song of Solomon','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi','Matthew','Mark','Luke','John','Acts','Romans','1 Corinthians','2 Corinthians','Galatians','Ephesians','Philippians','Colossians','1 Thessalonians','2 Thessalonians','1 Timothy','2 Timothy','Titus','Philemon','Hebrews','James','1 Peter','2 Peter','1 John','2 John','3 John','Jude','Revelation');
@@ -12,10 +12,10 @@ $incre=0;
 //echo verses from refList
 if (strpos($refList, ";")!==false) { //has a semi-colon so make an array
 	$refList=explode(";",$refList);
-	$refText=explode(";",$refText);
+	//$refText=explode(";",$refText);
 	foreach ($refList as $reference){
 		//write Reference
-		echo $refText[$incre]."<br>";
+		//echo $refText[$incre]."<br>";
 		$incre++;
 		//echo $BookArray[intval(substr($reference,0,2))]." ".intval(substr($reference,2,3));
 		$sqlStmt=getSQLText($reference,$vrsn);
@@ -34,7 +34,7 @@ if (strpos($refList, ";")!==false) { //has a semi-colon so make an array
 else {  //only one reference although it might be a range of verses
 	$sqlStmt=getSQLText($refList, $vrsn);
 	$stmt=$mysqli->query($sqlStmt);
-	echo $refText."<br>";
+	//echo $refText."<br>";
 	if ( $stmt->num_rows > 1 ) 
 		while($resultVersion = $stmt->fetch_assoc()) {
 			echo $resultVersion["Writing"];					   
