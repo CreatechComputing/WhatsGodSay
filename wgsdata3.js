@@ -4930,21 +4930,6 @@ greekAccents = [
 
 //"ID" 0,"Version" 1,"ContentType" 2,"Foldername" 3,"AudioFileCount" 4,"Reader" 5,"ReaderGroup" 6,"ReaderSubGroup" 7,"FullNT" 8,"FullOT" 9,"FullAP" 10,
 //"IntroLen" 11,"BookIntroLength" 12,"EndingLen" 13,"PunctAfterLen" 14,"BookList" 15,"ChapterList" 16	
-audioFileMeta= [
-	["ID","Version","ContentType","Foldername","AudioFileCount","Reader","ReaderGroup","ReaderSubGroup","FullNT","FullOT","FullAP","IntroLen","BookIntroLength","EndingLen","PunctAfterLen","BookList","ChapterList"],
-	[1,"WEB","Chapter","WEB/WinfredHenson",1189,"Winfred Henson",,,1,1,,4,6,2,0,"",""],
-	[2,"FBV","Book","FBV",27,"Jonathan Gallagher","FBV Translator",,1,0,0,0,6,2,0,"",""],
-	[3, "ASV","Chapters","ASV/RonAltman",129,"Ron Altman","Librivox",,1,1,0,4,6,2,0,"",""],
-	[4, "BYZ","Chapter","BYZ",260,"Maurice Robinson","Text Editor",,1,0,0,4,6,2,0,"",""],
-	[5, "EPT","Chapter","EPT",260,"Apostolos Vavylis","Greek Orthodox",,1,0,0,4,6,2,0,"",""],
-	[6, "ERV","Chapters","ERV",29,"Unknown","Count It All Joy",,0,0,0,4,6,2,0,"18,20,21,23,41,43,45,46,47,49,50,51,58,60,61,62,66",""],
-	[7, "KJV","Chapter","KJV/DanWagner",1189,"Dan Wagner",,,1,1,0,4,6,2,0,"",""],
-	[8, "TRS","Chapter","TRS",260,"Theo Karvounakis",,,1,0,0,0,0,0,0,"",""],
-	[9, "WHT","Chapter","WHT",260,"Marilyn Phemister",,,1,0,0,2.6,2.6,0,0,"",""],
-	[10,"WEB","Chapter","https://ebible.org/webaudio",41,"Michael Johnson","WEB Translator",,,,,4,6,2,0,"40,58",""],
-	[11,"WEB","Book","https://ebible.org/webaudio",18,"Michael Johnson","WEB Translator",,,,,0,10,2,0,"47,48,49,50,51,52,53,54,55,56,57,59,60,61,62,63,64,65",""],
-	[12,"BSB","Chapter","https://openbible.com/audio/hays",1189,"Barry Hays",,,1,1,,3,0,2,0,"",""]
-];
 
 parseCode=[
 ['A-APF','Function=Adjective; Case=Accusative; Number=Plural; Gender=Feminine'],

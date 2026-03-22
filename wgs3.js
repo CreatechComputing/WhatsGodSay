@@ -55,8 +55,8 @@ var siteControl = {
 					siteControl.fontSize = ss[6];
 					siteControl.fontFamily = ss[7];
 					siteControl.wordDataOptions = ss[8];
-					console.log("setting siteControl.audioTypeAllowed to " + ss[9]);
-					siteControl.audioTypeAllowed = ss[9];
+//					console.log("setting siteControl.audioTypeAllowed to " + ss[9]);
+//					siteControl.audioTypeAllowed = ss[9];
 					siteControl.ReadingDefault = ss[10];
 					siteControl.StudyDefault = ss[11]
 					siteControl.sectionTitleDefault = ss[12];
@@ -262,15 +262,15 @@ var siteControl = {
 	},
 	setActiveWindowLanguage: function () {
 		var ver = window["BibleRef" + siteControl.activeWindow].version;
-		if (util.getVersionrow(ver) >= trackRead.englishVersionCount) {
-			siteControl.activeWindowLanguage = "Greek";
-			$(".GreekOnly").show();
-			$(".EnglishOnly").hide();
-		}
-		else {
+		if (versionData[util.getVersionrow(ver)][2].indexOf("English")!==-1) {
 			siteControl.activeWindowLanguage = "English";
 			$(".EnglishOnly").show();
 			$(".GreekOnly").hide();
+		}
+		else {
+			siteControl.activeWindowLanguage = "Greek";
+			$(".GreekOnly").show();
+			$(".EnglishOnly").hide();
 		}
 	},
 	copyToPrevSettings: function () {
@@ -283,7 +283,7 @@ var siteControl = {
 		prevSiteSettings.fontSize = this.fontSize;
 		prevSiteSettings.fontFamily = this.fontFamily;
 		prevSiteSettings.wordDataOptions = this.wordDataOptions;
-		prevSiteSettings.audioTypeAllowed = this.audioTypeAllowed;
+	//	prevSiteSettings.audioTypeAllowed = this.audioTypeAllowed;
 		prevSiteSettings.ReadingDefault = this.ReadingDefault;
 		prevSiteSettings.StudyDefault = this.StudyDefault;
 		prevSiteSettings.sectionTitleDefault = this.sectionTitleDefault;
@@ -313,7 +313,7 @@ var siteControl = {
 			prevSiteSettings.fontSize == this.fontSize &&
 			prevSiteSettings.fontFamily == this.fontFamily &&
 			prevSiteSettings.wordDataOptions == this.wordDataOptions &&
-			prevSiteSettings.audioTypeAllowed == this.audioTypeAllowed &&
+		//	prevSiteSettings.audioTypeAllowed == this.audioTypeAllowed &&
 			prevSiteSettings.ReadingDefault == this.ReadingDefault &&
 			prevSiteSettings.StudyDefault == this.StudyDefault &&
 			prevSiteSettings.sectionTitleDefault == this.sectionTitleDefault &&
@@ -332,7 +332,7 @@ var siteControl = {
 		let fontSize = this.fontSize;
 		let fontFamily = this.fontFamily;
 		let wordDataOptions = this.wordDataOptions;
-		let audioTypeAllowed = this.audioTypeAllowed;
+	//	let audioTypeAllowed = this.audioTypeAllowed;
 		let ReadingDefault = this.ReadingDefault;
 		let StudyDefault = this.StudyDefault;
 		let sectionTitleDefault = this.sectionTitleDefault;
@@ -348,7 +348,7 @@ var siteControl = {
 			fontSize: fontSize,
 			fontFamily: fontFamily,
 			wordDataOptions: wordDataOptions,
-			audioTypeAllowed: audioTypeAllowed,
+	//		audioTypeAllowed: audioTypeAllowed,
 			ReadingDefault: ReadingDefault,
 			StudyDefault: StudyDefault,
 			sectionTitleDefault: sectionTitleDefault,
@@ -380,8 +380,8 @@ var siteControl = {
 			this.closeSubSettings("Font");
 		if (sub != "Greek")
 			this.closeSubSettings("Greek");
-		if (sub != "Audio")
-			this.closeSubSettings("Audio");
+//		if (sub != "Audio")
+//			this.closeSubSettings("Audio");
 	},
 	openWindow: function () {
 		//	document.getElementById('msgboxbackground').style.display='block';
@@ -869,26 +869,8 @@ var siteControl = {
 			document.getElementById('siteLexiconBtn' + lvl).style.color = "var(--txtbtn)";
 		}
 	},
-	toggleSiteSettingsAudioDD: function () {
-		this.closeAllSubSettingsExcept("Audio");
-		if (document.getElementById("siteSettingsAudioDD").style.display == "block") {
-			this.closeSubSettings("Audio");
-			console.log("In AudioDD close display as block");
-		}
-		else {
-			console.log("In AudioDD display as block");
-			document.getElementById("siteSettingsAudioDD").style.display = "block";
-			document.getElementById('siteSettingsAudioRight').style.display = 'inline';
-			document.getElementById('siteSettingsAudioLeft').style.display = 'none';
-			document.getElementById("siteSettingsAudio").style.color = "var(--bg1)";
-			document.getElementById("siteSettingsAudio").style.backgroundColor = "var(--txt1)";
-		}
-	},
-	setVoiceType: function (typeEntered) {
-		return;
-		this.audioTypeAllowed = typeEntered;
-		window["VoiceControl" + this.activeWindow].startAudioFileProcess(window["BibleRef" + this.activeWindow].version, window["BibleRef" + this.activeWindow].refFromTo);
-	}
+
+
 } //end object siteControl
 
 //apply Theme colors
@@ -918,7 +900,7 @@ var prevSiteSettings = {
 	fontFamily: "",
 	//MounceWD:0,DodsonWD:1,PerseusWD:2,VinesWD:3,StrongsWD:4,Abbott-Smith:5, 
 	wordDataOptions: "",
-	audioTypeAllowed: "",
+//	audioTypeAllowed: "",
 	//Option List Version:0, Section Titles:1,External Links:2,Verse Numbers:3, Verse Newline:4, Sentence Newline:5 (Eng only), 
 	//Notes:6, Strongs:7, Lemma:8 (Study Only), Parsing:9 (Study Only), Gloss:10 (Greek Only)
 	ReadingDefault: "",
@@ -1019,7 +1001,7 @@ var RH = {  //Reference History
 		let rh = "";
 		let modeText = "";
 		let br = window["BibleRef" + incre];
-		let vc = window["VoiceControl" + incre];
+		//let vc = window["VoiceControl" + incre];
 
 		if (rndmId == "") //Add New so created the rndmId
 			rndmId = Math.random().toString(36).substring(2, 15);
@@ -1032,7 +1014,7 @@ var RH = {  //Reference History
 		else
 			modeText = "S0";
 		rh = rndmId + "~" + RHId + "~" + modeText + "~" + siteControl.createModeOptions(incre, "RefHist") + "~" + br.topic + "~" + br.refText + "~" + br.refList + "~" + br.createDate + "~" + br.modifyDate + "~" + br.lastUsedDate + "~" + br.version + "~" + br.ScrollToId + "~";
-		rh = rh + vc.currentTime + "~" + vc.timingFile + "~" + "General";
+		//rh = rh + vc.currentTime + "~" + vc.timingFile + "~" + "General";
 		////console.log("vc.currentTime:" + vc.currentTime + "  audio filename:" + vc.timingFile);
 		return rh;
 	},
@@ -1501,7 +1483,6 @@ var RH = {  //Reference History
 var accountControl = {
 	isLoggedIntoWGS: false,
 	passwordVerified: true,
-	stayLoggedIn: false,
 	email: "",
 	userID: "",
 	sharedName: "",
@@ -1715,8 +1696,8 @@ var accountControl = {
 		this.hasGroup = false;
 		this.groupData = "";
 		this.groupDataList = "";
-		noteControl.noteList = [['0', '0'], ['0', '0']];
-		noteControl.listNoteText = "";
+		// noteControl.noteList = [['0', '0'], ['0', '0']];
+		// noteControl.listNoteText = "";
 	},
 	getGroups: function () {
 		if (accountControl.isLoggedIntoWGS == false)
@@ -1765,7 +1746,7 @@ var accountControl = {
 		for (i = j; i < 11; i++)
 			document.getElementById("groupFM" + i).style.display = "none";
 
-		noteControl.getNoteList(false);
+//		noteControl.getNoteList(false);
 	},
 
 	setForumNotes: function () {
@@ -1829,1531 +1810,6 @@ var searchControl = {
 	}
 } //end object searchControl
 
-var trackRead = {
-	bRef: 1,  //BibleRef object increment 
-	sRef: 1,  //ScriptureWindow object increment
-	listMARtext: "", //this is the text that goes in the dialog box.
-	showMARrowCnt: 7, //number of MARrows to display.
-	showMARshortDate: false,  //change date display to format Mon dd
-	showMARMethod: false,
-	showMARComment: false,
-	viewFilter: "List",
-	versionFilter: "All",
-	dateFilter: "All",
-	MARrowCnt: 0, //total Mark As Read rows with NO delete date in fullMAR. 
-	MARcnt: 0,  //total Mark As Read rows with NO delete date in fullMAR.
-	englishVersionCount: 12,
-	ID: 0, ReadDate: 1, ReadDate2: 2, ReferenceText: 3, Reference: 4, ReferenceTo: 5,
-	Version: 6, TitleNum: 7, DeleteDate: 8, method: 9, comment: 10,
-
-	openDialog: function (param) {
-		//checked if logged in.
-		if (accountControl.isLoggedIntoWGS === false) {
-			util.openModalBox("If you wish to mark your reading, please log in.<br> To log in select the account button (<button class='smallBtn fa fa-users'></button>) in the top right hand corner.", "Requires a Log In");
-			return;
-		}
-		if (param === false)
-			document.getElementById('addMAR').style.display = "none";
-
-		var vrsn = window["BibleRef" + this.bRef].version;
-		var RefText = window["BibleRef" + this.bRef].refText;
-		var i = 0;
-		//var d = new Date();
-		//var LocalTimeString = (d.getMonth() + 1) + "-" + d.getDate() + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
-
-		//create and fill markAsRead window
-		document.getElementById('markAsRead').style.top = '5px';
-		document.getElementById('markAsRead').style.left = '5px';
-		document.getElementById('markAsReadReference').innerHTML = RefText;
-		document.getElementById('markAsReadVersion').innerHTML = vrsn;
-
-		if ('fullMAR' in trackRead == false) {  //have not loaded MAR from table
-			//get the load marked as Read into object
-			//			 ////console.log("In trackRead.openDialog - about to run getFullMAR");
-			trackRead.getFullMAR();
-		}
-		else {
-			trackRead.getRecentMAR();
-		}
-	},
-	openFilter: function () {
-		////console.log("In openFilter");
-		document.getElementById('showMARrowCnt').value = trackRead.showMARrowCnt;
-		document.getElementById("filterMAR").style.display = "block";
-		document.getElementById("filterMAR").style.left = "350px";
-		document.getElementById("filterMAR").style.top = "75px";
-	},
-	updateShowMARrowCnt: function () {
-		trackRead.showMARrowCnt = document.getElementById('showMARrowCnt').value;
-		trackRead.getRecentMAR();
-	},
-	updateShowMARshortDate: function () {
-		trackRead.showMARshortDate = document.getElementById("showMARshortDate").checked;
-		trackRead.getRecentMAR();
-	},
-	changeToShortDate: function (dateTxt) {
-		if (trackRead.showMARshortDate == false)
-			return dateTxt;
-		dateTxt = dateTxt.substr(4, 6);
-		return dateTxt;
-
-	},
-	changeFilterMARVerAll: function () {
-		if (document.getElementById("MARAll").checked == true) {
-			for (i = 0; i < versionData.length; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = true;
-
-			document.getElementById("MARAllEnglish").checked = true;
-			document.getElementById("MARAllGreek").checked = true;
-		}
-		else {
-			for (i = 0; i < versionData.length; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = false;
-
-			document.getElementById("MARAllEnglish").checked = false;
-			document.getElementById("MARAllGreek").checked = false;
-
-		}
-		trackRead.changeFilterMARVer();
-	},
-	changeFilterMARVerAllEnglish: function () {
-		if (document.getElementById("MARAllEnglish").checked == true) {
-			for (i = 0; i < trackRead.englishVersionCount; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = true;
-			if (document.getElementById("MARAllGreek").checked == true)
-				document.getElementById("MARAll").checked = true;
-		}
-		else {
-			for (i = 0; i < trackRead.englishVersionCount; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = false;
-			document.getElementById("MARAll").checked = false;
-
-		}
-		trackRead.changeFilterMARVer();
-	},
-	changeFilterMARVerAllGreek: function () {
-		if (document.getElementById("MARAllGreek").checked == true) {
-			for (i = trackRead.englishVersionCount; i < versionData.length; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = true;
-		}
-		else {
-			for (i = trackRead.englishVersionCount; i < versionData.length; i++)
-				document.getElementById("MAR" + versionData[i][0]).checked = false;
-			document.getElementById("MARAll").checked = false;
-
-		}
-		trackRead.changeFilterMARVer();
-	},
-	changeFilterMARVer: function () {
-		var EngCnt = 0;
-		var GrkCnt = 0;
-		trackRead.versionFilter = "";
-		for (i = 0; i < versionData.length; i++)
-			if (document.getElementById("MAR" + versionData[i][0]).checked == true) {
-				trackRead.versionFilter = trackRead.versionFilter + versionData[i][0] + ",";
-				if (i < trackRead.englishVersionCount)
-					EngCnt++;
-				else
-					GrkCnt++;
-			}
-
-		if (trackRead.versionFilter.length > 0)
-			trackRead.versionFilter = trackRead.versionFilter.substr(0, trackRead.versionFilter.length - 1);
-
-		if (EngCnt == trackRead.englishVersionCount)
-			document.getElementById("MARAllEnglish").checked = true;
-		else
-			document.getElementById("MARAllEnglish").checked = false;
-
-		if (GrkCnt == versionData.length - trackRead.englishVersionCount)
-			document.getElementById("MARAllGreek").checked = true;
-		else
-			document.getElementById("MARAllGreek").checked = false;
-
-		if (GrkCnt + EngCnt == versionData.length) { //All checked
-			document.getElementById("MARAll").checked = true;
-			trackRead.versionFilter = "All";
-			document.getElementById("filterMARVer").innerHTML = "Versions:All"
-		}
-		else {  //Not All Checked
-			document.getElementById("MARAll").checked = false;
-			if (GrkCnt == 0 && EngCnt == trackRead.englishVersionCount)
-				trackRead.versionFilter = "All English";
-			else if (EngCnt == 0 && GrkCnt == versionData.length - trackRead.englishVersionCount)
-				trackRead.versionFilter = "All Greek";
-		}
-
-		////console.log ("changeFilterMARVer:" + trackRead.versionFilter);	
-		if (trackRead.versionFilter.length > 21)
-			document.getElementById("filterMARVer").innerHTML = "Versions:Multiple";
-		else
-			document.getElementById("filterMARVer").innerHTML = "Versions:" + trackRead.versionFilter;
-
-		trackRead.getRecentMAR();
-	},
-	changeFilterMARDate: function (dateOpt) {
-		////console.log ("dateOpt:" + dateOpt + "  MARDateTo:" + document.getElementById('MARDateTo').value );
-		if (dateOpt == 'All') {
-			document.getElementById('filterMARDate').innerHTML = "Read Dates:All";
-			trackRead.dateFilter = "All";
-		}
-		else {
-			if (document.getElementById('MARDateTo').value != "") {
-				document.getElementById('filterMARDate').innerHTML = "Read Dates:" + document.getElementById('MARDateFrom').value + " - " + document.getElementById('MARDateTo').value;
-				trackRead.dateFilter = document.getElementById('MARDateFrom').value + " - " + document.getElementById('MARDateTo').value;
-			}
-			else {
-				document.getElementById('filterMARDate').innerHTML = "Read Dates:" + document.getElementById('MARDateFrom').value + " - Now";
-				trackRead.dateFilter = document.getElementById('MARDateFrom').value + " - Now";
-			}
-		}
-
-		trackRead.getRecentMAR();
-	},
-	matchFilter: function (i) {
-		if (trackRead.fullMAR[i][trackRead.DeleteDate] == "") {
-			if (trackRead.versionFilter != "All") {//check if version filter match
-				if (trackRead.versionFilter.substr(0, 3) == "All") {
-					for (l = 0; l < versionData.length; l++) {
-						if (trackRead.fullMAR[i][trackRead.Version] == versionData[l][0])
-							verRow = l;
-					}
-					if (trackRead.versionFilter == "All English" && verRow > (trackRead.englishVersionCount - 1))
-						return false;
-					else if (trackRead.versionFilter == "All Greek" && verRow < trackRead.englishVersionCount)
-						return false;
-				}
-				else
-					if (trackRead.versionFilter.includes(trackRead.fullMAR[i][trackRead.Version]) == false)
-						return false;
-			}
-			if (trackRead.dateFilter != "All") {
-				if (trackRead.dateFilter.includes("Now") === true) {
-					////console.log(trackRead.dateFilter.substr(0,10) + " " + trackRead.fullMAR[i][trackRead.ReadDate2]);
-					if (trackRead.dateFilter.substr(0, 10) > trackRead.fullMAR[i][trackRead.ReadDate2])
-						return false;
-				}
-				else {
-					////console.log(trackRead.dateFilter.substr(13,10) + " " + trackRead.fullMAR[i][trackRead.ReadDate2]);
-					if (trackRead.dateFilter.substr(0, 10) > trackRead.fullMAR[i][trackRead.ReadDate2] || trackRead.dateFilter.substr(13, 10) < trackRead.fullMAR[i][trackRead.ReadDate2])
-						return false;
-				}
-			}
-
-		}
-		else
-			return false;
-
-		return true;
-	},
-	getFullMAR: function () {
-		////console.log("In getFullMAR");
-		$.post("getfullMAR.php", {},
-			function (result) {
-				trackRead.step1 = [];
-				trackRead.fullMAR = [];
-				trackRead.step1 = result.split("~");
-				for (i = 0; i < trackRead.step1.length; i++)
-					trackRead.fullMAR[i] = trackRead.step1[i].split(",");
-				//trackRead.fullMAR=result;
-				if (trackRead.fullMAR[0][trackRead.ID] == "0") {
-					trackRead.MARcnt = 0;
-					trackRead.MARrowCnt = 0;
-					trackRead.listMARtext = "Nothing marked yet.";
-					document.getElementById("listMAR").innerHTML = trackRead.listMARtext;
-					document.getElementById('markAsRead').style.display = 'block';
-				}
-				else {  //fullMAR has row(s) 
-					trackRead.MARcnt = trackRead.fullMAR.length;
-					trackRead.MARrowCnt = trackRead.fullMAR.length;
-					////console.log("In getFullMAR set MARcnt to " + trackRead.MARcnt); // + " and newMARcnt=" + trackRead.newMARcnt + " about to run getRecentMAR.");
-					trackRead.getRecentMAR();
-				}
-			}
-
-		);
-	},
-	getRecentMAR: function () {
-		var i = 0;
-		var j = 0;
-		var k = Number(trackRead.showMARrowCnt) - 1;
-		var l = 0;
-		var verRow = 0;
-
-		////console.log("In getRecentMAR MARcnt=" + trackRead.MARcnt); // + " and newMARcnt=" + trackRead.newMARcnt);
-		if (trackRead.MARcnt == 0) { //nothing has been Marked as Read yet.
-			////console.log("getRecentMAR-no rows");
-			trackRead.listMARtext = "No references marked.";
-			document.getElementById("listMAR").innerHTML = trackRead.listMARtext;
-			document.getElementById('markAsRead').style.display = 'block';
-		}
-		else {  //create listMARtext from fullMAR			
-			////console.log("getRecentMAR-use fullMAR");
-			if (trackRead.versionFilter == "") {
-				trackRead.listMARtext = "The filter has no version selected.";
-			}
-			else {
-				trackRead.listMARtext = "<table>";
-				for (i = trackRead.MARcnt - 1; i > -1; i--) {
-					if (trackRead.matchFilter(i) === true) {
-						trackRead.listMARtext = trackRead.listMARtext + "<tr><td>"
-							+ trackRead.fullMAR[i][trackRead.ReferenceText] + "</td><td>"
-							+ trackRead.fullMAR[i][trackRead.Version] + "</td><td>"
-							+ trackRead.changeToShortDate(trackRead.fullMAR[i][trackRead.ReadDate]) + "</td><td>"
-							+ trackRead.fullMAR[i][9].replace("MAR", "").replace("MAR", "").replace("_", " ") + "</td><td>"
-							+ trackRead.fullMAR[i][10] + "</td><td>"
-							+ '<i onclick=\"trackRead.deleteMAR(' + trackRead.fullMAR[i][trackRead.ID] + ');\" class=\"fa fa-trash\" title=\"Delete\"></i></td>'
-							+ " </td></tr>";
-						j = j + 1;
-						if (j > k)
-							break;
-					}
-				}
-				if (trackRead.listMARtext == "<table>")
-					trackRead.listMARtext = "No matches on the current filter.";
-				else
-					trackRead.listMARtext = trackRead.listMARtext + "</table>"
-			}
-
-			document.getElementById("listMAR").innerHTML = trackRead.listMARtext;
-
-			trackRead.showMarkedReadChapter();
-			trackRead.showFilterView(trackRead.viewFilter);
-		}
-	},
-	deleteMAR: function (rID) {
-		////console.log("In deleteMAR");
-		for (i = 0; i < trackRead.fullMAR.length; i++) {
-			if (trackRead.fullMAR[i][trackRead.ID] == rID) {
-				if (confirm("delete " + trackRead.fullMAR[i][trackRead.ReadDate] + " " + trackRead.fullMAR[i][trackRead.Version] + " " + trackRead.fullMAR[i][trackRead.ReferenceText] + "?") == true) {
-					////console.log("deleting record via fullMAR with ID of " + rID);
-					// !!!! needs to set Reference
-					$.post("deleteMarkRead.php", { ID: rID },
-						function (result) {
-							////console.log(result);
-						});
-					trackRead.fullMAR[i][trackRead.DeleteDate] = "2018-12-12";
-					trackRead.getRecentMAR();
-				}
-				break;
-			}
-		}
-	},
-	markAsReadButton: function () {
-		var reference = window["BibleRef" + trackRead.bRef].refList.substr(0, 8);
-		var referenceTo = "";
-		var vrsn = window["BibleRef" + trackRead.bRef].version;
-		var RefText = window["BibleRef" + trackRead.bRef].refText;
-		var method = document.getElementById('markAsReadMethod').value;
-		var comment = document.getElementById('markAsReadComment').value;
-		if (window["BibleRef" + trackRead.bRef].refList.includes("-") === true)   // more than one chapter
-			referenceTo = window["BibleRef" + trackRead.bRef].refList.substr(9, 8);
-
-		var d = new Date();
-		var LocalTimeString = (d.getMonth() + 1) + "-" + d.getDate() + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
-		////console.log(LocalTimeString);
-		////console.log("In mark As Read before post");
-
-		$.post("markAsRead.php", {
-			reference: reference,
-			referenceTo: referenceTo,
-			vrsn: vrsn,
-			RefText: RefText,
-			//paragraph: paragraph,
-			LocalTimeString: LocalTimeString,
-			comment: comment,
-			method: method
-		},
-			function (result) {
-				trackRead.getNewMAR();
-				document.getElementById('addMAR').style.display = "none";
-			}
-		);
-	},
-	getNewMAR: function () {
-		$.post("getNewMAR.php", {
-		},
-			function (result) {
-				result = result.trim();
-				////console.log(result);
-				trackRead.fullMAR.push(result.split(","));
-				trackRead.MARcnt = Number(trackRead.MARcnt) + 1;
-				trackRead.getRecentMAR();
-			}
-		);
-
-	},
-	showMarkedReadChapter: function () {
-		var i = 0;
-		var j = 0;
-		var ref = "";
-
-
-		//document.getElementById('markAsRead').style.display = 'none';
-
-		//makes each book and chapter the default color (not read).
-		for (i = 1; i < 67; i++) {
-			document.getElementById(util.padNum(i, 2)).style.color = "var(--txt3)";
-			//"var(--txt3)"
-			for (j = 1; j < 151; j++) {
-				if (document.getElementById(util.padNum(i, 2) + util.padNum(j, 3)) != undefined)
-					document.getElementById(util.padNum(i, 2) + util.padNum(j, 3)).style.color = "var(--txt3)";
-				else
-					break;
-			}
-		}
-		//Set each chapter the red color.
-		for (i = 0; i < trackRead.fullMAR.length; i++) {
-			if (trackRead.matchFilter(i) === true) { //rec matches filter so process it.
-				ref = trackRead.fullMAR[i][trackRead.Reference].substr(0, 5);
-				if (ref.substr(2, 3) == "000") //ref has no chapter... 
-					ref = ref.substr(0, 2);    //so set ref to book id
-				if (document.getElementById(ref) != undefined) { //sets book name or single chapter
-					document.getElementById(ref).style.color = "var(--danger)";
-					if (ref.length == 2) { //do each chapter in the book
-						for (j = 1; j < 151; j++) {
-							if (document.getElementById(ref + util.padNum(j, 3)) != undefined)
-								document.getElementById(ref + util.padNum(j, 3)).style.color = "var(--danger)";
-							else
-								break;
-						}
-					}
-				}
-				if (trackRead.fullMAR[i][trackRead.ReferenceTo] != "") {
-					while (ref < trackRead.fullMAR[i][trackRead.ReferenceTo].substr(0, 5)) {
-						ref = ref.substr(0, 2) + util.padNum(Number(ref.substr(2)) + 1, 3);
-						if (document.getElementById(ref) != undefined)
-							document.getElementById(ref).style.color = "var(--danger)";
-					}
-				}
-
-			}
-		}
-		document.getElementById('chapterMAR').style.display = "block";
-		//}
-		//);
-	},
-	showFilterView(viewFilter) {
-		trackRead.viewFilter = viewFilter;
-		switch (trackRead.viewFilter) {
-			case "List":
-				document.getElementById("listMAR").style.display = "block";
-				document.getElementById("chapterMAR").style.display = "none";
-				document.getElementById("markAsRead").style.width = "auto";
-				document.getElementById("MARHistory").style.minHeight = "auto";
-				break;
-			case "Chapter":
-				document.getElementById("chapterMAR").style.display = "block";
-				document.getElementById("listMAR").style.display = "none";
-				document.getElementById("markAsRead").style.width = "690px";
-				document.getElementById("MARHistory").style.minHeight = "75vh";
-				break;
-			case "Both":
-				document.getElementById("viewsMAR").style.display = "flex";
-				document.getElementById("listMAR").style.display = "block";
-				document.getElementById("chapterMAR").style.display = "block";
-				document.getElementById("markAsRead").style.width = "95vw";
-				document.getElementById("MARHistory").style.minHeight = "75vh";
-				break;
-		}
-		document.getElementById('markAsRead').style.display = 'block';
-	}
-} //end object trackRead
-
-var noteControl = {
-	IDAN: "0", titleAN: "", ToAN: "self", toGroupAN: "", toMemberAN: "", tagTypeAN: "word", tagAN: "", purposeAN: "note",
-	maxNoteID: 0,
-	localTimeString: "",
-	isSaved: true,
-	isChanged: false,
-	isNew: true,
-	oId: "",
-	oType: "",
-	noteList: [['0', '0'], ['0', '0']],
-	// createDate:"", 	// lastModifyDate:"", 	// toAN:"none", // none, web developer, group, world 	// tagType:"word",//English word, Greek word, sentence, paragraph, section, verse, chapter, book  	// tagValue:"", //identifier of word or last word - where the N tag will show. 	// purpose:"note", //note, topic, translation, share, question, reference, cross reference, other, web developer("data" or "website") // title:"", //noteList fields
-	ID: 0, title: 1, To: 2, groupID: 3, tagType: 4, tag: 5, purpose: 6, createDate: 7, modifyDate: 8, userID: 9, displayName: 10, note: 11,
-
-	openWritingEditor: function (incre, noteID, objID, objType, objValue) {
-		var i = 0;
-		var titleEditor = "";
-		var foundNote = false;
-		var isNewNote = false;
-
-		if (accountControl.isLoggedIntoWGS === false) {
-			util.openModalBox("If you wish to write, please log in.<br> To log in select the account button (<button class='smallBtn fa fa-users'></button>) in the top right hand corner.", "Requires a Log In");
-			return;
-		}
-
-		this.oId = objID;
-		this.oType = objType;
-
-
-		if (noteID == 0) { //is new note
-			isNewNote = true;
-			this.tagTypeAN = objType;
-			this.noteID = 0;
-			//set default values for writing.	
-			document.getElementById('noteID').value = 0;
-			document.getElementById('purposeAN').value = this.purposeAN;
-			document.getElementById('ToAN').value = this.ToAN;
-			noteControl.processToAN();
-
-			if (this.ToAN == "group")
-				document.getElementById('toGroup').value = accountControl.getGroupNam(this.noteList[i][noteControl.groupID]);
-			// else {
-			// 	////console.log(typeof document.getElementById('toGroup'));
-			// 	if (typeof document.getElementById('toGroup')!= "undefined")
-			// 		document.getElementById('toGroup').value="";
-			// 	}		
-			document.getElementById('tagTypeAN').value = this.tagTypeAN;
-			document.getElementById('tagAN').value = "";
-			//document.getElementById('tagAN').value=  !!!Based on clicked element
-			document.getElementById('titleAN').value = "";
-			titleEditor = "New " + this.purposeAN + " to " + this.ToAN;
-		}
-		else {  //is reopening a prior note to update
-			isNewNote = false;
-			//find matching noteList row in values 
-			for (let i = 0; i < this.noteList.length; i++) {
-				if (this.noteList[i][noteControl.ID] == noteID) {
-					if (this.noteList[i][noteControl.userID] == accountControl.userID) {
-						foundNote = true;
-						break;
-					}
-				}
-			}
-			//pull in values from noteList
-			titleEditor = "Cannot find Writing."
-			if (foundNote == true) {
-				document.getElementById('noteID').value = this.noteList[i][noteControl.ID];
-				document.getElementById('titleAN').value = this.noteList[i][noteControl.title];
-				document.getElementById('ToAN').value = this.noteList[i][noteControl.To];
-				noteControl.processToAN();
-				if (this.noteList[i][noteControl.To] == "group") {
-					document.getElementById('toGroup').value = accountControl.getGroupNam(this.noteList[i][noteControl.groupID])
-				}
-				//document.getElementById('').value=this.noteList[i][noteControl.groupID];
-				document.getElementById('tagTypeAN').value = this.noteList[i][noteControl.tagType];
-				document.getElementById('tagAN').value = this.noteList[i][noteControl.tag] + "";
-				document.getElementById('purposeAN').value = this.noteList[i][noteControl.purpose];
-				//nicEditors.findEditor("writingEditorTextArea").setContent(this.noteList[i][noteControl.note]);
-
-				titleEditor = "Edit " + this.noteList[i][noteControl.purpose] + " to " + this.noteList[i][noteControl.To];
-			}
-			else { //couldn't find note id
-				util.openModalBox("Could not find Writing with an ID of " + noteID, " Error Writing ID");
-				return;
-			}
-		}
-
-		//open editor	
-		document.getElementById('writingEditor').style.top = "50px";
-		//$('.nicEdit-panelContain').parent().width('99%');
-		//$('.nicEdit-panelContain').parent().next().width('99%');
-		//$('.nicEdit-main').width('99%');
-		//$('.nicEdit-main').css('padding', '5px');
-		document.getElementById('writingEditorTitle').innerHTML = titleEditor;
-		document.getElementById('writingEditorPopupHeader').innerHTML = "";
-		document.getElementById('writingEditorBtn').innerHTML = "Save " + document.getElementById('purposeAN').value;
-		document.getElementById('writingEditorPopupHeader').innerHTML = "Edit " + document.getElementById('purposeAN').value + " Options";
-		document.getElementById('writingEditor').style.display = 'block';
-		document.getElementById('wordStudyBox').style.display = 'none';
-	},
-	closeDialog: function (incre) {
-		if (isChanged == true)
-			alert("Window" + incre + " is not saved");
-	},
-	openOptions: function () {
-		document.getElementById('writingEditorPopUp').style.top = event.pageY + "px";
-		document.getElementById('writingEditorPopUp').style.left = event.pageX + "px";
-		document.getElementById('writingEditorPopUp').style.display = "block";
-	},
-	saveNote: function (incre) {
-		var i = 0;
-		var isNewNote = false;
-		var noteID = document.getElementById('noteID').value;
-		var ToAN = document.getElementById('ToAN').value;
-		var toGroup = "";
-		var titleAN = document.getElementById('titleAN').value;
-		var tagType = document.getElementById('tagTypeAN').value;
-		var tag = document.getElementById('tagAN').value;
-		var purpose = document.getElementById('purposeAN').value;
-
-		//var nicInstance = nicEditors.findEditor('writingEditorTextArea');
-		//var note = nicInstance.getContent();
-		var note = document.getElementById("writingEditorTextArea").value;
-		var foundGroup = "";
-		var d = new Date();
-		var LocalTimeString = (d.getMonth() + 1) + "-" + d.getDate() + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
-
-		if (noteID == 0) {
-			isNewNote = true;
-			noteID = ++this.maxNoteID;
-		}
-		////console.log("isNewNote:" + isNewNote);
-
-		if (ToAN == "group") {
-			toGroup = document.getElementById('toGroup').value;
-			foundGroup = accountControl.getGroupID(toGroup);
-			if (foundGroup != "false")
-				toGroup = foundGroup;
-			else {
-				util.openModalBox("Error getting ID of Group " + toGroup, "Error: Group ID");
-				return;
-			}
-		}
-
-
-		$.post("saveNote.php", {
-			isNewNote: isNewNote,
-			noteID: noteID,
-			LocalTimeString: LocalTimeString,
-			note: note,
-			ToAN: ToAN,
-			toGroup: toGroup,
-			tagType: tagType,
-			tag: tag,
-			purpose: purpose,
-			titleAN: titleAN
-		},
-			function (result) {
-				//!!!! need to either add note or update note to noteList!!
-				document.getElementById('noteID').value = noteID;
-				noteControl.localTimeString = LocalTimeString
-				noteControl.updateNoteList(false, isNewNote, noteID, titleAN, ToAN, toGroup, tagType, tag, purpose, note);
-				util.openModalBox(result, "Save " + purpose + " Results");
-
-			}
-		);
-	},
-	getNoteList: function (showDialog) {
-		var topNoteID = 0;
-		if (accountControl.isLoggedIntoWGS === false) {
-			if (showDialog == true)
-				util.openModalBox("If you wish to view notes, please log in.<br> To log in select the account button (<button class='smallBtn fa fa-users'></button>) in the top right hand corner.", "Requires a Log In");
-			return;
-		}
-
-		if (noteControl.noteList[0][0] == "0") {
-			$.post("getNotesList.php", {},
-				function (result) {
-					if (result == "No Notes") {
-						document.getElementById('wordStudyBoxMain').innerHTML = "No Notes created yet.";
-						document.getElementById('wordStudyBoxHeader').innerHTML = "No Note List";
-						document.getElementById('wordStudyBox').style.display = 'block';
-						this.maxNoteID = -1;
-						return;
-					}
-
-					var step1 = result.split("~");
-					noteControl.noteList = [];
-					for (i = 0; i < step1.length; i++) {
-						noteControl.noteList[i] = step1[i].split("|");
-						if (typeof noteControl.noteList[i][noteControl.tagType] != "undefined")
-							noteControl.noteList[i][noteControl.tagType] = noteControl.noteList[i][noteControl.tagType];
-						if (typeof noteControl.noteList[i][noteControl.purpose] != "undefined")
-							noteControl.noteList[i][noteControl.purpose] = noteControl.noteList[i][noteControl.purpose];
-						if (typeof noteControl.noteList[i][noteControl.To] != "undefined")
-							noteControl.noteList[i][noteControl.To] = noteControl.noteList[i][noteControl.To];
-
-
-						noteControl.noteList[i][noteControl.createDate] = noteControl.noteList[i][noteControl.createDate].substr(0, 16);
-						noteControl.noteList[i][noteControl.modifyDate] = noteControl.noteList[i][noteControl.modifyDate].substr(0, 16);
-
-						if (noteControl.noteList[i][noteControl.ID] > topNoteID)
-							topNoteID = noteControl.noteList[i][noteControl.ID];
-					}
-					noteControl.maxNoteID = topNoteID;
-					if (showDialog == false)
-						accountControl.setForumNotes();
-					else
-						noteControl.makeNoteListText(true);
-				}
-
-			);
-
-		}
-		else //already have noteList
-			if (showDialog == true)
-				noteControl.makeNoteListText(true);
-	},
-	updateNoteList: function (showDialog, isNewNote, noteID, titleAN, ToAN, toGroup, tagType, tag, purpose, note) {
-		// insert/edit row in noteList
-		//ID:0,title:1,To:2,groupID:3,tagType:4,tag:5,purpose:6,createDate:7,modifyDate:8,userID:9, displayName:10, note:11,
-		var i = 0;
-		var foundNote = false;
-
-		if (isNewNote == true) //add new note
-			this.noteList.push([noteID, titleAN, ToAN, toGroup, tagType, tag, purpose, this.localTimeString, this.localTimeString, accountControl.userID, accountControl.sharedName, note]);
-		else { //edit current note
-			for (i = 0; i < this.noteList.length; i++) {
-				if (this.noteList[i][noteControl.ID] == noteID) {
-					if (this.noteList[i][noteControl.userID] == accountControl.userID) {
-						foundNote = true;
-						break;
-					}
-				}
-			}
-
-			if (foundNote == true) {
-				this.noteList[i][noteControl.title] = titleAN;
-				this.noteList[i][noteControl.To] = ToAN;
-				this.noteList[i][noteControl.tagType] = tagType;
-				this.noteList[i][noteControl.tag] = tag;
-				this.noteList[i][noteControl.purpose] = purpose;
-				this.noteList[i][noteControl.modifyDate] = this.localTimeString;
-				//this.noteList[i][noteControl.userID]=accountControl.userID;
-				//this.noteList[i][noteControl.displayName]=accountControl.sharedName;
-				this.noteList[i][noteControl.note] = note;
-				noteControl.makeNoteListText(showDialog);
-			}
-			else
-				util.openModalBox("Error getting ID of Note " + noteID, "Error: Note ID");
-		}
-	},
-	processToAN: function () {
-		if (document.getElementById('ToAN').value == "group")
-			if (accountControl.hasGroup == false) {
-				util.openModalBox("To Share With a group you must first join a group<br><br>Use the account button (<button class='smallBtn fa fa-users'></button>) is in the top right hand corner.", "No group selected yet.");
-			}
-			else {
-				document.getElementById('toSubOptions').innerHTML = "Select Group: <input id='toGroup' class='optionItems' list='groupDataList'>" + accountControl.groupDataList;
-				document.getElementById('toSubOptions').style.display = "block";
-			}
-		else //not groupAN
-			document.getElementById('toSubOptions').style.display = "none";
-	},
-	makeNoteListText: function (showDialog) {
-		this.listNoteText = "<table><tr><th>Edit</th><th>Purpose</th><th>Title</th><th>To</th><th>Tagged</th><th>Create Date</th><th>Modified Date</th><th>Written By</th><th>Del</th></tr>";
-		for (i = 0; i < this.noteList.length; i++) {
-			if (this.noteList[i][this.purpose] != "") {
-				if (this.noteList[i][this.userID] == accountControl.userID)
-					this.listNoteText = this.listNoteText + '<tr><td><i onclick=\"noteControl.openWritingEditor(0,\'' + this.noteList[i][this.ID] + '\',0,\'\');\" class=\"fa fa-edit\" title=\"Edit\"></i></td>';
-				else
-					this.listNoteText = this.listNoteText + '<tr><td> </td>';
-
-				this.listNoteText = this.listNoteText + "<td>" + this.noteList[i][this.purpose] + "</td><td>" + this.noteList[i][this.title] + "</td><td>" + this.noteList[i][this.To] + "</td><td>" + this.noteList[i][this.tagType] + "</td><td>" + this.noteList[i][this.createDate] + "</td><td>" + this.noteList[i][this.modifyDate] + "</td><td>" + this.noteList[i][this.displayName] + "</td>";
-				if (this.noteList[i][this.userID] == accountControl.userID)
-					this.listNoteText = this.listNoteText + '<td><i onclick=\"noteControl.deleteNote(' + this.noteList[i][this.ID] + ');\" class=\"fa fa-trash\" title=\"Delete\"></i></td></tr>'
-				else
-					this.listNoteText = this.listNoteText + '<td> </td></tr>';
-			}
-		}
-		this.listNoteText = this.listNoteText + "</table>";
-
-		if (showDialog == true) {
-			document.getElementById('wordStudyBoxMain').innerHTML = noteControl.listNoteText;
-			document.getElementById('wordStudyBoxHeader').innerHTML = "Writings List";
-			document.getElementById('wordStudyBox').style.display = 'block';
-		}
-	},
-	showNote: function (noteID, userID) {
-		var i = 0;
-		var foundIt = false;
-
-		for (i = 0; i < this.noteList.length; i++)
-			if (this.noteList[i][this.ID] == noteID) {
-				if (this.noteList[i][noteControl.userID] == userID) {
-					foundIt = true;
-					break;
-				}
-			}
-		if (foundIt == false) {
-			util.openModalBox("System Error: unable to get Note by ID", "Finding Note Error");
-			return;
-		}
-		document.getElementById('wordStudyBoxMain').innerHTML = this.noteList[i][this.note];
-		document.getElementById('wordStudyBoxHeader').innerHTML = this.noteList[i][this.purpose] + ":" + this.noteList[i][this.title] + "<span style='position:absolute; right:32px'>" + this.noteList[i][this.displayName] + "</span>";
-		document.getElementById('wordStudyBox').style.display = 'block';
-	},
-	deleteNote: function (noteID) {
-		var foundNote = false;
-		var i = 0;
-		for (i = 0; i < this.noteList.length; i++) {
-			if (this.noteList[i][noteControl.ID] == noteID) {
-				if (this.noteList[i][noteControl.userID] == accountControl.userID) {
-					foundNote = true;
-					break;
-				}
-			}
-		}
-
-		if (foundNote == true) {
-			if (confirm("delete " + noteControl.noteList[i][noteControl.purpose] + " entitled " + noteControl.noteList[i][noteControl.title] + "?") == true) {
-				$.post("deleteWriting.php", {
-					noteID: noteID
-				},
-					function (result) {
-						if (result.includes("Writing deleted") == true) {
-							noteControl.noteList[i][noteControl.title] = "";
-							noteControl.noteList[i][noteControl.To] = "";
-							noteControl.noteList[i][noteControl.tagType] = "";
-							noteControl.noteList[i][noteControl.tag] = "";
-							noteControl.noteList[i][noteControl.purpose] = "";
-							noteControl.noteList[i][noteControl.modifyDate] = "";
-							noteControl.noteList[i][noteControl.note] = "";
-							noteControl.makeNoteListText(true);
-						}
-
-						util.openModalBox(result, "Delete Writing Result")
-					});
-			}
-		}
-	},
-
-} //end object noteControl
-
-// window.speechSynthesis.onvoiceschanged = function() {
-
-// }	
-
-class VoiceControl {
-	constructor(windowID) {
-		this.windowID = windowID;  	//must match to a ScriptureWindow windowID 
-		this.fileMetaID = []; //an array containing the audioFileMeta IDs for each reference with a match. Needed to create MYSQL requests for each reference with audio. should be aligned with RefList.   Will also be needed for Multiple Version References (MVR)
-		this.refFromToArr = []; //splits refFromTO
-		this.refFromToIncr = 0; //increment for refFromToArr (1 to 1 with fileMetaID)
-		this.refFromToTop = 0;  //number of elements in refFromTO
-		this.voiceFle = {};  //an object for each voice File with name of file and timing. 
-		this.voiceFleIncr = 0; //used to walk thru voiceFle array in voiceFle
-		this.voiceFleTop = 0;  //number of elements in voiceFle which is the number of voice files. 
-		//voiceFle={r00={file1={file="https=//ebible.org/webaudio/Heb04.mp3";ref="58004014-58004999";timing=[134.5]}};r01={file2={file="https=//ebible.org/webaudio/Heb05.mp3";ref="58005001-58005002";timing=[3;14];stop=21}};r10={file1={file="WEB/WinfredHenson/46_1Cor13.mp3";ref="46013001-47013005";timing=[3;11.5;23;32;40];stop=48}}};
-
-		this.refWordArr = [];  //holds Bible refernce Arr wordList subset of a single reference sent to audio/synth voice 
-		this.rWAIncr = 1; // in Synth this is the current word/row in refWordArR to add to the batch for synth
-		this.rWAFrstIncr = 1; // in Synth this is the First word/row in refWordArR to batch send to synth  (currently first word of the sentence)
-		this.rWALstIncr = -1; // in Synth this is the Last word/row in refWordArR to send to synth  (currently last word of the sentence)
-		this.iPunctAfter = -1; // the column of refWordArr that has the punctuation after the word. (used to find and end of sentence)
-
-		this.duration = "";  //total time of voice use voiceFle[voiceFleIncr].dur
-		this.timingStop = 30000.03;  //Used to halt at reference end if before the voice file end.
-		this.timingIncr = 1;   //used to go through all items in the nested timing object in the voiceFle object
-		this.autoPlay = false;
-		this.sayRef = false;
-		this.autoScroll = 0;
-		this.autoScrollTiming = 100;
-		this.currentTime = 0; //to save and restore from RH
-		this.RHNum = "";
-		this.iRHrow = -1;
-
-		this.defaultSynth = false; //used to set default to synth voice instead of person voice file when available.
-		this.callbackControl = "";   //set for synth 
-		this.callbackFunction = "";  //set for synth to start reading next portion 
-		this.fullStop = false; //flag for synth voice end
-		this.isPaused = false;
-		this.versionDataCol = 6;  //column in versionData.  Column contains the Row number(s) of audioFileMeta ID(s) for that version in order of use.  A '0' value means no audiofile.
-
-		this.markTextArr = [];
-		this.cntTo = 999;
-		this.cntFrom = 0;
-
-
-		this.bookNum = -1;
-		this.bookNam = "";
-
-		this.voices = [];
-	}
-	startAudioFileProcess(version, refFromTo) {
-		return;
-		//called from  BibleRef#.fillRefFromTO which is called from uncoverGodsWord.displayScripture after last Reference is processed
-		//empties & fills: fileMetaID array, voiceFle object 
-		//check each ref with versionData and local audioMetaFile to determine if it has audio file 
-		//Get MetaID and call getAudioFileTiming.php to get database filenames and timing data, if applicable
-		// fileMetaID item of 0 means a Synth voice
-		//voiceFle object is a array of objects - 1 object per voice file and/or reference on synth
-		//voicFle is what is iterated in load function.  
-		//!!!!MV needs to be changed when a reflist can contain multiple versions
-		//console.log("zq in startAudioFileProcesS with RefFromTO:" + refFromTo);
-
-		if (this.windowID == 0) //do NOT run for hidden 0 window.
-			return;
-
-		this.clearVoiceData();  //clears object Arrays and values		
-		let audioMetaOrder = '-1';
-		let metaID = 0;
-		let audioMetaOrderArr = [0, 0];
-		this.refFromToArr = refFromTo.split(";");
-		this.refFromToTop = this.refFromToArr.length;
-		let voiceFleStr = "{";
-		let bk = 0;
-		let bkSctn = "";
-		let k = 0;
-
-
-		if (siteControl.audioTypeAllowed == "None") //exit function if user set audio option to None. Remove the view of the audio controls
-		{
-			document.getElementById('AudioTimeSpacer' + this.windowID).style.display = "none";
-			document.getElementById('AudioTime' + this.windowID).style.display = "none";
-			document.getElementById("AudioDDBtn" + this.windowID).style.display = "none";
-			document.getElementById("AudioPlayBtn" + this.windowID).style.display = "none";
-			document.getElementById("AudioPauseBtn" + this.windowID).style.display = "none";
-			console.log("Audio set to none");
-			return;
-		}
-
-		//*********** Set HTML audio buttons (mostly set in Play/Pause functions) ***********/		
-		//set responsive for screen size for Spacer and AudioTime AND initialize Play/Pause
-		var a = document.getElementById("Scripture" + this.windowID).getBoundingClientRect()
-		if (a.width > 624) {
-			document.getElementById('AudioTimeSpacer' + this.windowID).style.display = "none";
-			document.getElementById('AudioTime' + this.windowID).style.display = "inline";
-			console.log("AudioTime set to inline");
-		}
-		else {
-			document.getElementById('AudioTimeSpacer' + this.windowID).style.display = "inline";
-			document.getElementById('AudioTime' + this.windowID).style.display = "none";
-			console.log("AudioTime set to none");
-		}
-		document.getElementById("AudioDDBtn" + this.windowID).style.display = "inline";
-		document.getElementById("AudioPlayBtn" + this.windowID).style.display = "inline";
-		document.getElementById("AudioPauseBtn" + this.windowID).style.display = "none";
-
-		//check if there is a voicefile or user setting wants Synth
-		audioMetaOrder = versionData[util.findRowIn2DArr("versionData", 0, version)][this.versionDataCol];
-		audioMetaOrderArr = audioMetaOrder.split(","); //for Version/Ref with more than one audio file set
-		//**** Create items for this.fileMetaID
-		if (audioMetaOrder == '0' || siteControl.audioTypeAllowed.includes("Synth")) {//no audio for version or user set to Synth
-			for (let i = 1; i <= this.refFromToArr.length; i++)
-				this.fileMetaID.push("0");
-
-			//console.log("fileMetaID:" + JSON.stringify(this.fileMetaID));
-		}
-		else { //has audio file
-			for (let i = 0; i < this.refFromToArr.length; i++) {  //check each ref if has voice file
-				bk = this.refFromToArr[i].substring(0, 2);
-				bkSctn = util.getBookSection(bk);
-
-				for (let j = 0; j < audioMetaOrderArr.length; j++) {  //check if Ref has audio File match based on audioMetaFile row in audioMetaOrder
-					k = audioMetaOrderArr[j]; //k is now the metaID being checked;
-					//see if audio based on Full Section has Audio has this Ref OR list has this book
-					if ((bkSctn == "NT" && audioFileMeta[k][8] == 1) || (bkSctn == "OT" && audioFileMeta[k][9] == 1) || (bkSctn == "AP" && audioFileMeta[k][10] == 1) || audioFileMeta[k][15].includes(bk) == true) {
-						metaID = k;
-						break;
-					}
-				}
-				this.fileMetaID[i] = metaID;  //will be 0 if none; if none should be synth voice
-				metaID = "0"; //prime for next reflist	
-			}
-		}
-		console.log("fileMetaID:" + JSON.stringify(this.fileMetaID));
-		//****Create items for this.voiceFle object */
-		//check if all references are without a voicefile (all zeroes) which means they are only synth options. 
-		if (0 == this.fileMetaID.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0)) {
-			//build this.voiceFle object format of objects in object is "o1":{"rArrI":"0","file":"none","ref":"67001001"},
-			for (let i = 0; i < this.refFromToArr.length; i++) {
-				if (voiceFleStr != "{")  //add comma after previous object
-					voiceFleStr = voiceFleStr + ",";
-				voiceFleStr = voiceFleStr + '"o' + (i + 1) + '":{"rArrI":"' + i + '","file":"none","ref":"' + this.refFromToArr[i] + '"}';
-			}
-			voiceFleStr = voiceFleStr + "}";
-			this.voiceFle = JSON.parse(voiceFleStr);
-			console.log(voiceFleStr);
-			this.voiceFleTop = this.refFromToArr.length;
-			this.load(this.windowID);
-			return;
-		}
-		//The below is ONLY run if there is a voice file.
-		let fMetaID = JSON.stringify(this.fileMetaID).replace("[", "").replace("]", "");
-		// let rFromToArr=JSON.stringify(this.refFromToArr);
-		var increPst = this.windowID;
-		var vc = "VoiceControl" + increPst;
-		console.log("fMetaID:" + fMetaID);
-		console.log("refFromTo:" + refFromTo);
-		//call PHP with an array 
-		$.post("getAudioFileTiming.php", {
-			metaID: fMetaID,
-			refFromTo: refFromTo,
-		},
-			function (result) {
-				console.log(result);
-				//get voiceFle and nonchanging values with it.
-				let splt = result.split("~");
-				window[vc].voiceFleTop = splt[1];
-				window[vc].voiceFle = JSON.parse(splt[0]);
-				window[vc].load(increPst);
-			}
-		);
-	}
-	load(incre) {
-		//called from startAudioFileProcesS and Ended
-		//this function runs for each voicefile (object) in voiceFle
-		console.log("zq in VoiceControl" + incre + ".load()");
-
-		//let refBook=0;		
-		let resetToStart = false;
-		//for easier readability in code
-		let vFIncr = window["VoiceControl" + incre].voiceFleIncr; //voiceFle Increment is set to 1 initially and then ++ in EndeD() which calls VC.loaD() again for each reference file.
-		console.log("vFIncr:" + vFIncr);
-
-
-		//check if set to reload first file as prime.
-		if (vFIncr > window["VoiceControl" + incre].voiceFleTop) {
-			console.log("in voice file reset");
-			window["VoiceControl" + incre].autoPlay = false;
-			window["VoiceControl" + incre].voiceFleIncr = 1;
-			vFIncr = 1;
-			resetToStart = true;
-		}
-
-		//get Bible Reference Word Array
-		window["VoiceControl" + incre].getRefWordArr(incre);
-
-
-		//check if NOT first run or if repeat is true and if either is true then autoPlay all subsequent loads
-		if ((vFIncr > 1) || document.getElementById('audioRepeat' + incre).checked == true) {
-			console.log("autoplay turned on");
-			window["VoiceControl" + incre].autoPlay = true; //set to auto play all subsequent voice files in window["VoiceControl" + incre].voiceFileNames[] list.
-		}
-
-
-		//run synth and exit load
-		if (window["VoiceControl" + incre].voiceFle["o" + vFIncr].file == "none") { //is synth
-			console.log("in load synth");
-			if (window["VoiceControl" + incre].autoPlay == true)
-				window["VoiceControl" + incre].primeSynthRef(vFIncr);
-			return;
-		}
-		console.log("in load but not synth");
-
-		//Get current Reference and Book
-		////console.log(window["VoiceControl" + window["VoiceControl" + incre].windowID].voiceFle)[window["VoiceControl" + incre].voiceFleIncr].rArrI);
-		//refBook=window["VoiceControl" + incre].voiceFle["o" + vFIncr].ref.substring(0,2);
-		//window["VoiceControl" + incre].refFromToArr[window["VoiceControl" + incre].refFromToIncr];
-		//console.log("refBook:" + refBook);
-
-
-
-		//*********** Load voice & timing files and details ***********/
-		//set Load Audio Filename and set timingFile and Audio Chapters start & end 
-		document.getElementById("ScriptureHeaderAudio" + incre).src = window["VoiceControl" + incre].voiceFle["o" + vFIncr].file;
-		console.log("loaded Audio file:" + window["VoiceControl" + incre].voiceFle["o" + vFIncr].file);
-		//set at first time in timing
-		document.getElementById("ScriptureHeaderAudio" + incre).currentTime = window["VoiceControl" + incre].voiceFle["o" + vFIncr].timing[0];
-		//get duration as time once (it is repeated several times a second as the timer counts so do it once here)
-		window["VoiceControl" + incre].duration = window["VoiceControl" + incre].SecondsToTime(window["VoiceControl" + incre].voiceFle["o" + vFIncr].dur);
-		window["VoiceControl" + incre].timingStop = window["VoiceControl" + incre].voiceFle["o" + vFIncr].stop;
-		document.getElementById("AudioTime" + incre).innerHTML = window["VoiceControl" + incre].duration;
-
-		//set aud Chapters	
-		////console.log("currentTime:" + document.getElementById("ScriptureHeaderAudio" + window["VoiceControl" + incre].currentTime);
-
-
-		//when RH is enabled will need to goto time and text on screen based on Reference History;
-
-		//If user already pressed Play it should go through all audiofiles and play for the entire references in SW
-		if (window["VoiceControl" + incre].autoPlay == true)
-			window["VoiceControl" + incre].Play(incre);
-
-		if (resetToStart == true) //go back to top if have reached end of voice files.
-			setTimeout(window["VoiceControl" + incre].GoToTop, 250, incre);
-		else
-			setTimeout(window["VoiceControl" + incre].trackVoicePlaying, 300, incre);
-	}
-	getRefWordArr(incre) {
-		//called from VC.load
-		window["VoiceControl" + incre].refWordArr = []; //empty array before pushing new reference to it.
-
-		let refItem = window["VoiceControl" + incre].voiceFle["o" + window["VoiceControl" + incre].voiceFleIncr].ref; //ref is FromTo format with BBCCVVWW-BBCCVVWW in 2 or 3 digit CVW
-		window["VoiceControl" + incre].bookNum = Number(refItem.substring(0, 2));
-		if (refItem == "-1") //reference not exist
-			return;  //exit because can't process the nonexisting reference of -1  
-
-		let pnum = 3; //util.refPadCount(window["VoiceControl" + incre].bookNum, window["BibleRef" + incre].version);
-		let refItem1 = refItem.substring(2, 2 + pnum * 3);
-		let refItem2 = refItem.substring(pnum * 3 + 5); //the ref after the dash. Either 9 or 12 the added 3 is 2 for book plus one for dash
-
-		window["VoiceControl" + incre].bookNam = bibleBookData[window["VoiceControl" + incre].bookNum][8];
-
-		//Get refWordArr to include only the refItem portion of the book.
-		//if whole book
-		if (window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version][1][0] == refItem1 && window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version][window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version].length - 1][0] == refItem2) {  //Whole Book
-			window["VoiceControl" + incre].refWordArr = window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version];  //whole book 2d array
-			//console.log("refWordArr is the whole book");
-		}
-		else {
-			//e.g. find in B1PEWEB  ref 4:5 as "040501"
-			let iRow = util.findRowIn2DArr("B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version, 0, refItem1);
-			let iRow2 = util.findRowIn2DArr("B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version, 0, refItem2);
-			window["VoiceControl" + incre].refWordArr.push(window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version][0]); //prime row 0 with column names		
-
-			for (let i = iRow; i <= iRow2; i++)
-				window["VoiceControl" + incre].refWordArr.push(window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + incre].version][i]);
-		}
-		//set refWordArr values
-		window["VoiceControl" + incre].iPunctAfter = getColumnIncre(window["B" + window["VoiceControl" + incre].bookNam + window["BibleRef" + window["VoiceControl" + incre].windowID].version][0], "PunctAfter");
-		window["VoiceControl" + incre].rWAIncr = 1;
-		window["VoiceControl" + incre].rWAFrstIncr = 1;
-		window["VoiceControl" + incre].rWALstIncr = window["VoiceControl" + incre].refWordArr.length - 1;
-	}
-	trackVoicePlaying(incre) {
-		let pend = document.getElementById("ScriptureHeaderAudio" + incre).currentTime;
-
-		//stop if at or after timingSTOP and call Ended
-		if (pend >= window["VoiceControl" + incre].timingStop) {
-			document.getElementById('ScriptureHeaderAudio' + incre).pause();
-			//console.log("in timingStop");
-			console.log("current:" + pend + "  stop:" + window["VoiceControl" + incre].timingStop);
-			window["VoiceControl" + incre].Ended(incre);
-			return;
-		}
-
-		//reset HTML voice file timer
-		document.getElementById("AudioTime" + incre).innerHTML = window["VoiceControl" + incre].SecondsToTime(pend) + "/" + window["VoiceControl" + incre].duration;
-
-		//*************** Get timing and html object name to send to scrolling during the audio playing */
-		//get audio currentTime's match to timing item for assigning when at next timingIncr
-		if (pend >= window["VoiceControl" + incre].voiceFle["o" + window["VoiceControl" + incre].voiceFleIncr].timing[window["VoiceControl" + incre].timingIncr]) {
-			//get previous verse start and loop through until in next verse (or chapter...or end)
-
-			let pnum = 3;  //util.refPadCount(window["VoiceControl" + incre].bookNum, window["BibleRef" + incre].version);
-			let currVrs = window["VoiceControl" + incre].refWordArr[window["VoiceControl" + incre].rWAIncr][0].substring(0, pnum * 2); //The refWordArr reference CCVV ither 4 or 6 the added 3 is 2 for book plus one for dash
-			do {
-				window["VoiceControl" + incre].rWAIncr++;
-			} while (currVrs == window["VoiceControl" + incre].refWordArr[window["VoiceControl" + incre].rWAIncr][0].substring(0, pnum * 2))
-
-			let myStr = window["BibleRef" + incre].version + util.padNum(window["VoiceControl" + incre].bookNum, 2) + window["VoiceControl" + incre].refWordArr[window["VoiceControl" + incre].rWAIncr][0] + "-" + incre;
-			console.log("scrolling to Obj " + myStr);
-			window["VoiceControl" + incre].timingIncr++;
-
-			window["VoiceControl" + incre].trackScroll(myStr, incre);
-		}
-
-		rootBody("auto");
-		//recursive call if voice file not paused by user.
-		if (document.getElementById('AudioPauseBtn' + incre).style.display != "none")
-			setTimeout(window["VoiceControl" + incre].trackVoicePlaying, 1000, incre);
-		else
-			console.info("in trackVoicePlaying at end. But it seems to think it is paused and did NOT recursively call this function.");
-	}
-	trackScroll(myId, incre) {
-		//console.log ("zq in trackScrolL with Id of:" + myId + "  and incre of " + incre);
-		let wrd1Ele = document.getElementById(myId).getBoundingClientRect();
-		if (wrd1Ele.top < (window["ScriptureWindow" + incre].windowHeight / 1.5)) {
-			window["VoiceControl" + incre].autoScroll = 0; //in next run of audiocontrol.pageScroll() stop delayed recursive call.
-			//console.log("In autoScroll=1");			
-		}
-		else if ((wrd1Ele.top > window["ScriptureWindow" + incre].windowHeight / 1.5)) {
-
-			if (window["VoiceControl" + incre].autoScroll == 0) {  //only start autoscrolling if not currently doing so.
-				//console.log("In autoScroll=0");			
-				////console.log("autoScrollTiming=" + window["VoiceControl" + incre].autoScrollTiming);
-				////console.log("autoScroll=" + window["VoiceControl" + incre].autoScroll);
-				window["VoiceControl" + incre].autoScroll = 1;
-				window["VoiceControl" + incre].pageScroll(incre);
-				//console.log("autoScroll=" + window["VoiceControl" + incre].autoScroll);
-				setTimeout(window["VoiceControl" + incre].pageScroll, window["VoiceControl" + incre].autoScrollTiming, incre);
-
-			}
-
-		}
-
-
-	}
-	pageScroll(incre) {
-		//console.log ("zq in pageScrolL with incre of " + incre);		
-		if (window["VoiceControl" + incre].autoScroll > 0) {
-			document.getElementById('Scripture' + incre).scrollBy(0, 1);
-			setTimeout(window["VoiceControl" + incre].pageScroll, window["VoiceControl" + incre].autoScrollTiming, incre);
-		}
-	}
-	PlayChoice(incre) {
-		console.log("zq In audio PlayChoicE for incre " + incre);
-		if (window["VoiceControl" + incre].fileMetaID[window["VoiceControl" + incre].refFromToIncr] == 0)
-			window["VoiceControl" + incre].PlaySynth(incre);
-		else
-			window["VoiceControl" + incre].Play(incre);
-	}
-	Play(incre) {
-		console.log("zq In audio Play for incre " + incre);
-		document.getElementById('AudioPlayBtn' + incre).style.display = "none";
-		document.getElementById('AudioPauseBtn' + incre).style.display = "inline";
-		document.getElementById('ScriptureHeaderAudio' + incre).playbackRate = document.getElementById('audioRate' + incre).value;
-		setTimeout(window["VoiceControl" + incre].trackVoicePlaying, 1000, incre);
-		document.getElementById('ScriptureHeaderAudio' + incre).play();
-	}
-	PlaySynth(incre) {
-		console.log("zq In VC.PlaySynth");
-		if (this.isPaused == true) {
-			window.speechSynthesis.resume();
-			this.isPaused = false;
-			this.fullStop = false;
-		}
-		else {
-			//console.log("primeSynthReF(" + this.voiceFleIncr + ")"); 
-			this.isPaused = false;
-			this.fullStop = false;
-			this.primeSynthRef(this.voiceFleIncr);
-		}
-		document.getElementById('AudioPlayBtn' + incre).style.display = "none";
-		document.getElementById('AudioPauseBtn' + incre).style.display = "inline";
-	}
-	PauseChoice(incre) {
-		console.log("zq in PauseChoice for incre " + incre);
-
-		//stop autoScroll if put back to first refItem
-		window["VoiceControl" + incre].autoScroll = 0;
-
-		//if synth
-		if (window["VoiceControl" + incre].fileMetaID[window["VoiceControl" + incre].refFromToIncr] == 0)
-			window["VoiceControl" + incre].PauseSynth(incre);
-		else { //if human voice
-			window["VoiceControl" + incre].Pause(incre);
-		}
-	}
-	Pause(incre) {
-		console.log("zq in Pause for incre " + incre);
-		let RHNum = window["BibleRef" + incre].RHNum;
-		document.getElementById('AudioPauseBtn' + incre).style.display = "none";
-		document.getElementById('AudioPlayBtn' + incre).style.display = "inline";
-		document.getElementById('ScriptureHeaderAudio' + incre).pause();
-		if (RHNum != "0")
-			RH.updateRHRow(incre, RHNum);
-	}
-	PauseSynth(incre) {
-		console.log("zq in PauseSynth for incre " + incre);
-		window.speechSynthesis.pause();
-		this.isPaused = true;
-		this.fullStop = true;
-
-		document.getElementById('AudioPauseBtn' + incre).style.display = "none";
-		document.getElementById('AudioPlayBtn' + incre).style.display = "inline";
-		//	this.speechFullStop();
-	}
-	Ended(incre = 1) {
-		//called from html and trackVoicePlaying
-		// stop auto scrolling
-		console.log("zq in VoiceControl.EndeD()");
-		window["VoiceControl" + incre].autoScroll = 0;
-		if (window["VoiceControl" + this.windowID].fullStop == true) {
-			window["VoiceControl" + this.windowID].fullStop = false;
-		}
-
-		//set html audio controls
-		document.getElementById('AudioPauseBtn' + incre).style.display = "none";
-		document.getElementById('AudioPlayBtn' + incre).style.display = "inline";
-		//increment to next file ref
-		//Get voiceFle info
-
-		window["VoiceControl" + incre].voiceFleIncr++;
-		//console.log ("in Ended with voiceFleIncr new value of " + window["VoiceControl" + incre].voiceFleIncr);
-
-		window["VoiceControl" + incre].load(incre);
-	}
-	OpenDialog(event, incre) {
-		document.getElementById('audioPopUp' + incre).style.top = event.pageY + 15 + "px";
-		if (window.innerWidth < event.pageX + 150)
-			document.getElementById('audioPopUp' + incre).style.right = 0 + "px";
-		else
-			document.getElementById('audioPopUp' + incre).style.left = event.pageX + "px";
-		document.getElementById('audioPopUp' + incre).style.display = "block";
-	}
-	setLoop(incre) {
-		//document.getElementById("ScriptureHeaderAudio" + incre).loop = document.getElementById('audioRepeat' + incre).checked;
-	}
-	GoToTime(incre, setTime) {
-		document.getElementById("ScriptureHeaderAudio" + incre).currentTime = setTime;
-		this.trackVoicePlaying(incre)
-	}
-	GoTo(incre, autoPlay) {
-		var curTime = document.getElementById('audioGoTo' + incre).value;
-		if (curTime.includes(":"))
-			curTime = this.TimeToSeconds(curTime);
-		else
-			////console.log("curTime " + Math.floor(curTime / 60) + ":" + (curTime - (Math.floor(curTime / 60) * 60)));
-
-			document.getElementById("ScriptureHeaderAudio" + incre).currentTime = curTime;
-		this.trackVoicePlaying(incre);
-		if (autoPlay == true)
-			this.Play(incre);
-	}
-	GoToTop(incre) {
-		document.getElementById("Scripture" + incre).scroll({ top: 0, left: 0, behavior: 'auto' });
-	}
-	setPlaybackRate(incre) {
-		document.getElementById("ScriptureHeaderAudio" + incre).playbackRate = document.getElementById('audioRate' + incre).value;
-	}
-	SecondsToTime(sec) {
-		var AudioHours = Math.floor(sec / 3600);
-		sec = sec - (AudioHours * 3600);
-		var AudioMinutes = Math.floor(sec / 60);
-		var AudioSeconds = Math.floor(sec - AudioMinutes * 60);
-		if (AudioHours == 0)
-			return AudioMinutes + ":" + util.padNum(AudioSeconds, 2);
-		else
-			return AudioHours + ":" + util.padNum(AudioMinutes, 2) + ":" + util.padNum(AudioSeconds, 2);
-
-	}
-	TimeToSeconds(tm) {
-		var hrs = 0;
-		if (tm.indexOf(":") != tm.lastIndexOf(":")) {
-			hrs = Number(tm.substr(0, tm.indexOf(":"))) * 3600;
-			tm = tm.substr(tm.indexOf(":") + 1);
-		}
-		var mins = Number(tm.substr(0, tm.indexOf(":"))) * 60;
-		var secs = Number(tm.substr(tm.indexOf(":") + 1));
-		return hrs + mins + secs;
-
-	}
-	clearVoiceData() {
-		//called at start of startAudioFileProcesS
-		console.log("zq In voiceControl?.clearVoiceData()");
-		this.fileMetaID = [];
-		this.refFromToArr = [];
-		this.refFromToIncr = 0;
-		this.voiceFle = {};
-		this.voiceFleIncr = 1;
-		this.voiceFleTop = 0;
-		this.autoPlay = false;
-
-		this.iRHrow = -1;
-		this.RHNum = "";
-		this.autoScroll = 0;
-		//this.autoScrollTiming=100;			
-	}
-	reset() {
-		// Only called as VoiceControl.reset in BibleRef# and in uncoverGodsWord   ???Does it need both?
-		console.log("zq In voiceControl?.reset()");
-		this.timingFile = "";
-		this.timingIncr = 1;
-		this.currentTime = 0;
-		//this.duration = "";
-		this.autoPlay = false;
-
-		this.iRHrow = -1;
-		//set visible audio html elements
-		document.getElementById("AudioTime" + this.windowID).style.display = "none";
-		document.getElementById("AudioTimeSpacer" + this.windowID).style.display = "none";
-		document.getElementById("AudioTime" + this.windowID).innerHTML = "";
-		document.getElementById("ScriptureHeaderAudio" + this.windowID).style.display = "none";
-		if (siteControl.audioTypeAllowed != "None") {
-			document.getElementById("AudioDDBtn" + this.windowID).style.display = "inline";
-			document.getElementById("AudioPlayBtn" + this.windowID).style.display = "inline";
-		}
-		document.getElementById("AudioPauseBtn" + this.windowID).style.display = "none";
-		document.getElementById("ScriptureHeaderAudio" + this.windowID).src = "";
-		document.getElementById("audioGoTo" + this.windowID).value = "";
-		document.getElementById("audioEndAt" + this.windowID).value = "";
-	}
-	populateVoiceList() {
-		let i = 0;
-		let voiceSelect = document.getElementById("voiceSelect" + siteControl.activeWindow);
-
-		for (i = 0; i < this.voices.length; i++) {
-			var option = document.createElement('option');
-			if (this.voices[i].lang.substr(0, 3) == "en-" || this.voices[i].lang.substr(0, 3) == "he-" || this.voices[i].lang.substr(0, 3) == "gr-") {
-				option.textContent = this.voices[i].name + ' (' + this.voices[i].lang + ')';
-				option.setAttribute('value', this.voices[i].name);
-				voiceSelect.appendChild(option);
-			}
-		}
-	}
-	speechFullStop() {
-		this.fullStop = true;
-
-		msg.removeEventListener('end', function () {
-			window[this.callbackControl][this.callbackFunction]();
-		});
-
-		window["VoiceControl" + incre].voiceFleIncr++;
-		window.speechSynthesis.cancel();
-	}
-	sayIt(sayMsg, callbackControl, callbackFunction) {
-		//This is called from BibleRef?.primeSynthReF() for first time and BibleRef?.speechSayNext() for subsequent times.
-		//console.log("zq In VC.sayIt");
-		let msg = {};
-		let incre = callbackControl.slice(-1);
-
-		if (this.fullStop == true) {
-			window["VoiceControl" + incre].Ended(incre);
-			return;
-		}
-		if (this.isPaused != true) {
-			let selectedVoice = document.getElementById('voiceSelect' + incre).value;
-
-			//keep to be able to remove the listener from anywhere.
-			this.callbackControl = callbackControl;
-			this.callbackFunction = callbackFunction;
-
-			//create speech object passing text
-			sayMsg = sayMsg.replaceAll(" – ", ", ");
-			sayMsg = sayMsg.replaceAll("Job", "Jobe");
-			sayMsg = sayMsg.replaceAll(" live ", " liv ");
-			sayMsg = sayMsg.replaceAll(" lives ", " livs ");
-			//sayMsg=sayMsg.replaceAll(" lived ","liv");
-			sayMsg = sayMsg.replaceAll("Elisha", "ah-lye-sha");
-			sayMsg = sayMsg.replaceAll("Nazirite", "Naz-uh-rite");
-
-			//console.log("zq sayMsg=" + sayMsg);
-			msg = new SpeechSynthesisUtterance(sayMsg);
-			//set speech settings 
-			for (let i = 0; i < this.voices.length; i++)
-				if (this.voices[i].name == selectedVoice)
-					msg.voice = this.voices[i];
-			msg.rate = document.getElementById("audioRate" + incre).value;
-			msg.pitch = document.getElementById("audioPitch" + incre).value;
-			if (msg.rate < 0.5)
-				msg.rate = 1;
-			if (msg.pitch < 0.5)
-				msg.pitch = 1;
-		}
-		else
-			this.isPaused = false;
-
-
-		window.speechSynthesis.speak(msg);
-		//console.log ("at end of sayIt next removing and then recalling " + callbackControl + "." + callbackFunction); 
-		msg.removeEventListener('end', function () {
-			window[callbackControl][callbackFunction]();
-		});
-		msg.addEventListener('end', function () {
-			window[callbackControl][callbackFunction]();
-		});
-	}
-
-	sayReference(ref) {
-		if (ref.substring(1, 2) == " ") { //means it is a 1 2 3 or 4 such as 4 Maccabees
-			if (ref.substring(0, 1) == "1")
-				ref = "First " + ref.substring(2);
-			else if (ref.substring(0, 1) == "2")
-				ref = "Second " + ref.substring(2);
-			else if (ref.substring(0, 1) == "3")
-				ref = "Third " + ref.substring(2);
-			else if (ref.substring(0, 1) == "4")
-				ref = "Fourth " + ref.substring(2);
-			//console.log ("ref with 1st, 2nd, 3rd, or 4th:" + ref);	
-		}
-
-		ref = ref.replaceAll(":", " verse ");
-		ref = ref.replaceAll("-", " to ");
-		ref = ref.replaceAll("Job", "Jobe");
-		return ref + ". ";
-	}
-
-	primeSynthRef(vFIncr) {
-		//For a single refIteM, this should prime and read the first sentence (highlighting the text) 
-		//and call back to speechSayNext to continue
-		//console.log("zq primeSynthReF refItem:" + vFIncr);
-		let refTextArr = window["BibleRef" + this.windowID].refText.split(";");
-
-		if (window["BibleRef" + this.windowID].language == "Greek")
-			this.cntTo = 5;   //the most words sent to speak at one time
-		else
-			this.cntTo = 999;  //the most words sent to speak at one time
-
-		//mark refWordArr (sWA) First Increment of 1 and Last Increment used in getSpeechTexT() 
-
-
-		if (window["VoiceControl" + this.windowID].refFromToTop > 1) //more than one reference so read aloud the reference. 
-			this.sayIt(this.sayReference(refTextArr[this.voiceFle["o" + vFIncr].rArrI]) + this.getSpeechText(), "VoiceControl" + this.windowID, "speechSayNext");
-		else
-			this.sayIt(this.getSpeechText(), "VoiceControl" + this.windowID, "speechSayNext");
-	}
-
-	speechSayNext() {
-		//console.log("zq In speechSayNext -start");
-		//UnMark Text
-		if (this.markTextArr.length > 0)
-			for (let i = 0; i < this.markTextArr.length; i++)
-				if (document.getElementById(this.markTextArr[i]) != null)
-					document.getElementById(this.markTextArr[i]).style.backgroundColor = "var(--bgSW)";
-		//prime for next set
-		this.markTextArr = [];
-
-
-		// if (this.fullStop==true)
-		// 	return;		
-
-		//set to read the next sentence
-		this.rWAFrstIncr = this.rWALstIncr;
-		//console.log ("sWA Last Increment:" + this.rWALstIncr +  "  Top Increment:" + this.refWordArr.length)
-
-		if (this.rWAFrstIncr + 2 >= this.refWordArr.length) {
-			this.fullStop = true;
-		}
-		if (this.fullStop == true)
-			this.Ended(this.windowID);
-		else {
-			let scriptText = this.getSpeechText();
-			this.sayIt(scriptText, "VoiceControl" + this.windowID, "speechSayNext");
-		}
-	}
-
-	getSpeechText() {
-		//console.log("zq In getSpeechText");	
-		//let i=0;
-		let sayStr = "";
-		let bkNum = util.padNum(this.bookNum, 2);
-
-
-		//STOP if needed
-		if (this.fullStop == true)
-			return;
-
-		//Get New Text to Say
-		this.rWAIncr = this.rWAFrstIncr;
-		this.cntFrom = this.rWAIncr;
-		do {
-			//check if at end of refWordArr
-			if (this.rWAIncr >= this.refWordArr.length) {
-				break;
-			}
-			//add word to sayStr	
-			if (window["BibleRef" + this.windowID].language == "Greek")
-				sayStr = sayStr + " " + util.Greek2English(this.refWordArr[this.rWAIncr][1]);
-			else
-				sayStr = sayStr + " " + this.refWordArr[this.rWAIncr][1];
-
-			//add punctuation if present
-			if (this.iPunctAfter < this.refWordArr[this.rWAIncr].length)
-				sayStr = sayStr + this.refWordArr[this.rWAIncr][this.iPunctAfter];
-
-			// mark word 
-			if (null != document.getElementById(window["BibleRef" + this.windowID].version + bkNum + this.refWordArr[this.rWAIncr][0] + "-" + this.windowID)) {
-				document.getElementById(window["BibleRef" + this.windowID].version + bkNum + this.refWordArr[this.rWAIncr][0] + "-" + this.windowID).style.backgroundColor = "var(--bgSWMark)";
-				this.markTextArr.push(window["BibleRef" + this.windowID].version + bkNum + this.refWordArr[this.rWAIncr][0] + "-" + this.windowID);
-			}
-
-		} while (this.checkSpeechTextEnd());
-		this.rWALstIncr = this.rWAIncr;
-
-		if (typeof (this.refWordArr[this.rWAFrstIncr][0]) == "undefined")
-			console.info("Mark this line to find out why it went wrong");
-
-		//scroll to verse
-		let myStr = window["BibleRef" + this.windowID].version + bkNum + this.refWordArr[this.rWAFrstIncr][0] + "-" + this.windowID;
-		myStr = myStr.replaceAll(" ", "");
-		this.trackScroll(myStr, this.windowID);
-
-		return sayStr;
-
-	}
-	checkSpeechTextEnd() {
-		let rVal = true;
-
-		if (this.rWAIncr >= this.refWordArr.length)
-			return false;
-
-		if ((this.rWAIncr - this.cntFrom) >= this.cntTo)
-			rVal = false;
-
-
-		if (this.iPunctAfter < this.refWordArr[this.rWAIncr].length)
-			if (this.refWordArr[this.rWAIncr][this.iPunctAfter].includes(".") || this.refWordArr[this.rWAIncr][this.iPunctAfter].includes("?") || this.refWordArr[this.rWAIncr][this.iPunctAfter].includes("!"))
-				rVal = false;
-
-		this.rWAIncr++;
-
-		if (this.rWAIncr >= this.refWordArr.length)
-			rVal = false;
-
-		return rVal;
-	}
-
-
-
-} //end object voiceControl
-
-
 class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB000000, Whole Chapter=BBCCC000, Chapter Range=BBCCC000-BBCCC000 
 	constructor(windowID) {
 		this.refList = "";       	//this is the reference for computer usage such as 60001001-60001003WEB; separate multiple references with a semicolon(;)
@@ -3387,7 +1843,7 @@ class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB
 		this.bookNam = "";
 		this.bookNum = "";
 		//window["VoiceControl"+ this.windowID].bookNum=this.bookNum; //sync with audio to prevent loading wrong audio to RH
-		window["VoiceControl" + this.windowID].currentTime = 0;
+//		window["VoiceControl" + this.windowID].currentTime = 0;
 		this.ScrollToId = "";
 		this.multipleBooks = false;
 		this.versionArray = [];
@@ -3585,7 +2041,7 @@ class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB
 		else { //not in history - Creating NEW RH
 			//clear voiceControl RH data
 			//voiceControl.timingFile="";
-			window["VoiceControl" + this.windowID].currentTime = 0;
+		//	window["VoiceControl" + this.windowID].currentTime = 0;
 			this.ScrollToId = this.version + this.refList.substring(0, 2) + getRefCVW(this.refList, this.version, true) + "-" + this.windowID;
 			if (this.refList.includes(";") == true && this.topic == "") //first entry of multiple ref
 				openTRBox(this.windowID);
@@ -3831,8 +2287,8 @@ class BibleRef { //Get ref into form BBCCCVVV or BBCCCVVV-BBCCCVVV Whole Book=BB
 				this.refFromTo += semicolon + this.reformat2RefFromTo(refListArr[j], this.version);
 		}
 		//console.log ("br.refFromTO:" + this.refFromTo);
-		if (callVoiceControlStart == true)
-			window["VoiceControl" + this.windowID].startAudioFileProcess(this.version, this.refFromTo);
+		//if (callVoiceControlStart == true)
+		//	window["VoiceControl" + this.windowID].startAudioFileProcess(this.version, this.refFromTo);
 	}
 	reformat2RefFromTo(refListItem, version = "WEB", includesBook = true) {
 		//just one reference - may be 8 character like BCV 60-001-000 or a "from and to" in that BCV format 60001010-600010017 
@@ -4583,7 +3039,6 @@ class ScriptureWindow {
 	}
 } //end class ScriptureWindow
 
-
 var uncoverGodsWord = {
 	incre: 1,
 	br: null, //will be BibleRef + incre
@@ -4634,7 +3089,7 @@ var uncoverGodsWord = {
 		//set values 
 		this.br.initialLoad = false;
 
-		document.getElementById("ScriptureHeaderAudio1").style.display = "none";
+		//document.getElementById("ScriptureHeaderAudio1").style.display = "none";
 		//update br variables 
 		this.br.bookNum = this.br.refList.substr(0, 2);
 		this.br.refCount = (this.br.refList.match(/;/g) || []).length + 1;
@@ -4699,7 +3154,7 @@ var uncoverGodsWord = {
 		window["ScriptureWindow" + incre].OptionshowVideoBarChange(false);
 
 		//make adding Mark As Read visible again.
-		document.getElementById('addMAR').style.display = "block";
+		//document.getElementById('addMAR').style.display = "block";
 
 		//Clear previous content in Scripture window.	
 		document.getElementById("Scripture" + incre).innerHTML = "";
@@ -5236,300 +3691,6 @@ var uncoverGodsWord = {
 	}
 } //end uncoverGodsWord
 
-var origLang = {
-	oLObj: {},
-	oLObj2: {},
-	dStrongObj: {},
-	parseObj: {},
-
-	loadData: function (vrs) {  //vrs is formatted as b.c.v
-		//console.log("In OrigLang loadData for verse:" + vrs);
-
-		let ref = [0, 0, 0];
-
-		let sqlText = "";
-		let sqlText2 = "";
-
-		ref = vrs.split(".");
-
-		//remove previous oLObj
-		origLang.oLObj = {};
-		origLang.oLObj2 = {};
-
-		if (ref[0] > 39 && ref[0] < 67) {
-			sqlText = 'SELECT * FROM `AmalGNT` WHERE `Book`=' + ref[0] + ' AND `Chapter`=' + ref[1] + ' AND `Verse`=' + ref[2] + ' Order BY `WordOrder`'
-		}
-		else if (ref[0] > 66) {
-			sqlText = 'SELECT * FROM `LXX` WHERE `Book`=' + ref[0] + ' AND `Chapter`=' + ref[1] + ' AND `Verse`=' + ref[2] + ' Order BY `WordOrder`'
-		}
-		else {
-			sqlText = 'SELECT * FROM `AmalHOT` WHERE `Book`=' + ref[0] + ' AND `Chapter`=' + ref[1] + ' AND `Verse`=' + ref[2] + ' Order BY `WordOrder`;';
-			sqlText2 = 'SELECT * FROM `LXX` WHERE `Book`=' + ref[0] + ' AND `Chapter`=' + ref[1] + ' AND `Verse`=' + ref[2] + ' Order BY `WordOrder`';
-		}
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || (result == "Forbidden SQL Statement"))
-					console.error(result);
-				else {
-					origLang.oLObj = JSON.parse(result);
-					if (sqlText2 == "")
-						origLang.displayOrigLang();
-					else if (Object.keys(origLang.oLObj).length != 0 && Object.keys(origLang.oLObj2).length != 0)
-						origLang.displayOrigLang();
-				}
-			}
-		);
-
-		if (sqlText2 != "") {
-			$.post("loadGeneric2JSON.php", {
-				sqlText: sqlText2
-			},
-				function (result) {
-					if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-						console.error(result);
-					else {
-						origLang.oLObj2 = JSON.parse(result);
-						if (Object.keys(origLang.oLObj).length != 0 && Object.keys(origLang.oLObj2).length != 0)
-							origLang.displayOrigLang();
-					}
-				}
-			);
-		}
-	},
-
-	displayOrigLang: function () {
-		let Language = "";
-		let tblFormat = "";
-		let Bk = origLang.oLObj[0].Book;
-		let Chp = origLang.oLObj[0].Chapter;
-		let Vrs = origLang.oLObj[0].Verse;
-
-		if (Bk > 39 && Bk < 67) { //NT
-			Language = "Greek";
-
-			tblFormat = "<table id='Greek" + util.padNum(Bk, 2) + util.padNum(Chp, 3) + util.padNum(Vrs, 3) + "'><tr><th>English</th><th>Word</th><th>Parse</th><th>Lemma</th><th>Strongs</th></tr>"
-			for (let i = 0; i < origLang.oLObj.length; i++)
-				tblFormat += "<tr><td>" + origLang.oLObj[i].English + "</td><td>" + origLang.oLObj[i].Word + " (" + origLang.oLObj[i].Phonetic + ")</td><td><a href='#' onclick='origLang.getParse(\"" + origLang.oLObj[i].Parse + "\")'>" + origLang.oLObj[i].Parse + "</a></td><td>" + origLang.oLObj[i].Lemma + "</td><td><a href='#' onclick='origLang.getStrongs(\"" + origLang.oLObj[i].dStrongs + "\",\"dStrong\")'>" + origLang.oLObj[i].dStrongs + "</a></td></tr>";
-			tblFormat += "</table>";
-			document.getElementById('origLangBoxFooter').innerHTML = "Data from <a href='www.STEPBible.org'>STEP Bible</a>";
-		}
-		else if (Bk < 40) { //OT
-			Language = "Hebrew and Greek";
-			tblFormat = "<table id='Hebrew" + util.padNum(Bk, 2) + util.padNum(Chp, 3) + util.padNum(Vrs, 3) + "'><tr><th>English</th><th>Word</th><th>Grammar</th><th>Strongs</th></tr>";
-			for (let i = 0; i < origLang.oLObj.length; i++)
-				tblFormat += "<tr><td>" + origLang.oLObj[i].Translation + "</td><td>" + origLang.oLObj[i].Hebrew + " (" + origLang.oLObj[i].Transliteration + ")</td><td>" + origLang.markHebrewGrammar(origLang.oLObj[i].Grammar) + "</td><td>" + origLang.markHebrewdStrong(origLang.oLObj[i].dStrongs) + "</td></tr>";
-			tblFormat += "</table>";
-			document.getElementById('origLangBoxFooter').innerHTML = "Hebrew from <a href='www.STEPBible.org'>STEP Bible</a>.  Greek  ";
-
-			//get LXX data
-			tblFormat += "<br><br>Greek LXX <table id='Greek" + util.padNum(Bk, 2) + util.padNum(Chp, 3) + util.padNum(Vrs, 3) + "'><tr><th>Gloss</th><th>Word</th><th>Parse</th><th>Lemma</th><th>Strongs</th></tr>"
-			for (let i = 0; i < origLang.oLObj2.length; i++)
-				tblFormat += "<tr><td>" + origLang.oLObj2[i].Gloss + "</td><td>" + origLang.oLObj2[i].Word + " (" + origLang.oLObj2[i].transliteration + ")</td><td><a href='#' onclick='origLang.getParsing(\"" + origLang.oLObj2[i].Parsing + "\")'>" + origLang.oLObj2[i].Parsing + "</a></td><td>" + origLang.oLObj2[i].Lemma + "</td><td><a href='#' onclick='origLang.getStrongs(\"" + origLang.oLObj2[i].Strongs + "\",\"eStrong\")'>" + origLang.oLObj2[i].Strongs + "</a></td></tr>";
-			tblFormat += "</table>";
-		}
-		else {
-			//get LXX data
-			Language = "Greek";
-			tblFormat += "<br><br>Greek LXX <table id='Greek" + util.padNum(Bk, 2) + util.padNum(Chp, 3) + util.padNum(Vrs, 3) + "'><tr><th>Gloss</th><th>Word</th><th>Parse</th><th>Lemma</th><th>Strongs</th></tr>"
-			for (let i = 0; i < origLang.oLObj.length; i++)
-				tblFormat += "<tr><td>" + origLang.oLObj[i].Gloss + "</td><td>" + origLang.oLObj[i].Word + " (" + origLang.oLObj[i].transliteration + ")</td><td><a href='#' onclick='origLang.getParsing(\"" + origLang.oLObj[i].Parsing + "\")'>" + origLang.oLObj[i].Parsing + "</a></td><td>" + origLang.oLObj[i].Lemma + "</td><td><a href='#' onclick='origLang.getStrongs(\"" + origLang.oLObj[i].Strongs + "\",\"eStrong\")'>" + origLang.oLObj[i].Strongs + "</a></td></tr>";
-			tblFormat += "</table>";
-		}
-
-		document.getElementById('origLangMsg').style.display = 'none';
-		document.getElementById('origLangBoxHeader').innerHTML = Language + " for " + bibleBookData[Number(Bk)][1] + " " + origLang.oLObj[0].Chapter + ":" + origLang.oLObj[0].Verse;
-		document.getElementById('origLangBoxMain').innerHTML = tblFormat;
-		//document.getElementById('origLangBoxFooter').innerHTML = version;
-		document.getElementById('origLangBox').style.zIndex = 26;
-		document.getElementById('origLangBox').style.width = "90vw";
-		document.getElementById('origLangBox').style.left = '2rem';
-		document.getElementById('origLangBox').style.top = '1rem';
-		document.getElementById('origLangBox').style.display = 'block';
-	},
-
-	getStrongs: function (Strongs, Fld) {
-		if (Fld == "eStrong")
-			if (Strongs.length < 5)
-				Strongs = Strongs.substring(0, 1) + util.padNum(Strongs.substring(1), 4);
-
-
-		let sqlText = "SELECT * FROM `eStrongsGreek` WHERE `" + Fld + "`='" + Strongs + "'  ORDER BY `dStrong`;";
-		//remove previous 
-		origLang.dStrongObj = {};
-
-		console.log(sqlText);
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-					console.error(result);
-				else {
-					origLang.dStrongObj = JSON.parse(result);
-					console.log("getStrongs result: " + result);
-					console.log("getStrongs result as JSON: " + JSON.parse(result));
-
-					document.getElementById('origLangMsgHeader').innerHTML = "Strongs " + origLang.dStrongObj[0].dStrong;
-					document.getElementById('origLangMsgMain').innerHTML = "Greek Lemma: " + origLang.dStrongObj[0].Greek + " (" + origLang.dStrongObj[0].Transliteration + ")<br> Morphology: " + origLang.dStrongObj[0].Morph + "<br>Gloss: " + origLang.dStrongObj[0].Gloss + "<br> Meaning: " + origLang.dStrongObj[0].BriefMeaning;
-					document.getElementById('origLangMsg').style.display = 'block';
-					//document.getElementById('origLangMsgFooter').innerHTML = $(v).text();	
-				}
-			}
-		);
-	},
-
-	getParse: function (parse) {
-		let sqlText = "SELECT * FROM `AmalGNTParse` WHERE `Parse`='" + parse + "';";
-		//remove previous 
-		origLang.parseObj = {};
-
-		console.log(sqlText);
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-					console.error(result);
-				else {
-					origLang.parseObj = JSON.parse(result);
-					console.log("getparse result: " + result);
-					console.log("getparse result as JSON: " + JSON.parse(result));
-
-					document.getElementById('origLangMsgHeader').innerHTML = origLang.parseObj[0].Parse;
-					document.getElementById('origLangMsgMain').innerHTML = origLang.parseObj[0].FullKey.replaceAll(";", "<br>");
-					document.getElementById('origLangMsg').style.display = 'block';
-					//document.getElementById('origLangMsgFooter').innerHTML = $(v).text();	
-				}
-			}
-		);
-	},
-
-	getParsing: function (parse) {
-		let sqlText = 'SELECT * FROM `LXXParse` WHERE `Parse`="' + parse + '";';
-		//remove previous 
-		origLang.parseObj = {};
-
-		console.log(sqlText);
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-					console.error(result);
-				else {
-					origLang.parseObj = JSON.parse(result);
-					console.log("getparse result: " + result);
-					console.log("getparse result as JSON: " + JSON.parse(result));
-					document.getElementById('origLangMsgHeader').innerHTML = origLang.parseObj[0].Parse;
-					document.getElementById('origLangMsgMain').innerHTML = origLang.parseObj[0].FullKey.replaceAll("｜", "<br>");
-					document.getElementById('origLangMsg').style.display = 'block';
-					//document.getElementById('origLangMsgFooter').innerHTML = $(v).text();	
-				}
-			}
-		);
-	},
-	getHebStrongs: function (dStrongs) {
-		let sqlText = "SELECT * FROM `eStrongsHebrew` WHERE `dStrong`='" + dStrongs + "'  ORDER BY `dStrong`;";
-		//remove previous 
-		origLang.dStrongObj = {};
-
-		console.log(sqlText);
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-					console.error(result);
-				else {
-					origLang.dStrongObj = JSON.parse(result);
-					console.log("getStrongs result: " + result);
-					console.log("getStrongs result as JSON: " + JSON.parse(result));
-
-					document.getElementById('origLangMsgHeader').innerHTML = "Strongs " + origLang.dStrongObj[0].dStrong;
-					document.getElementById('origLangMsgMain').innerHTML = "Hebrew: " + origLang.dStrongObj[0].Hebrew + " (" + origLang.dStrongObj[0].Transliteration + ")<br> Morphology: " + origLang.dStrongObj[0].Morph + "<br>Gloss: " + origLang.dStrongObj[0].Gloss + "<br> Meaning: " + origLang.dStrongObj[0].Meaning;
-					document.getElementById('origLangMsg').style.display = 'block';
-					//document.getElementById('origLangMsgFooter').innerHTML = $(v).text();	
-				}
-			}
-		);
-	},
-
-	markHebrewdStrong: function (hText) {
-		let hTexti = "";
-		let hTextStr = "";
-		let hText2 = hText;
-		hText2 = hText2.replaceAll("|", "/");
-		let hTextArr = [];
-		hTextArr = hText2.split("/");
-		for (let i = 0; i < hTextArr.length; i++) {
-			if (hTextArr[i].substring(0, 1) == "{")
-				hTexti = "<a href='#' onclick='origLang.getHebStrongs(\"" + hTextArr[i].substring(1).replaceAll("}", "") + "\")'>" + hTextArr[i] + "</a>";
-			else
-				hTexti = "<a href='#' onclick='origLang.getHebStrongs(\"" + hTextArr[i] + "\")'>" + hTextArr[i] + "</a>";
-
-			if (hTextStr == "")
-				hTextStr = hTexti;
-			else
-				hTextStr += "/" + hTexti;
-		}
-		return hTextStr;
-	},
-
-	getGrammar: function (lang, grammar) {
-		let sqlText = "SELECT * FROM `AmalHOTGrammar` WHERE `Lang`='" + lang + "' AND `Grammar`='" + grammar + "';";
-		//remove previous 
-		origLang.parseObj = {};
-
-		console.log(sqlText);
-
-		$.post("loadGeneric2JSON.php", {
-			sqlText: sqlText
-		},
-			function (result) {
-				if (result.includes("no rows returned with SQL of") || result == "Forbidden SQL Statement")
-					console.error(result);
-				else {
-					origLang.parseObj = JSON.parse(result);
-					console.log("getGrammar result: " + result);
-					console.log("getGrammar result as JSON: " + JSON.parse(result));
-
-					document.getElementById('origLangMsgHeader').innerHTML = origLang.parseObj[0].Lang + origLang.parseObj[0].Grammar;
-					document.getElementById('origLangMsgMain').innerHTML = origLang.parseObj[0].FullKey.replaceAll(";", "<br>");
-					document.getElementById('origLangMsg').style.display = 'block';
-					//document.getElementById('origLangMsgFooter').innerHTML = $(v).text();	
-				}
-			}
-		);
-
-	},
-	markHebrewGrammar: function (hText) {
-		let hTexti = "";
-		let hTextStr = "";
-		let lang = hText.substr(0, 1);
-		let hText2 = hText.substr(1);
-		hText2 = hText2.replaceAll("|", "/");
-		let hTextArr = [];
-		hTextArr = hText2.split("/");
-		for (let i = 0; i < hTextArr.length; i++) {
-			hTexti = "<a href='#' onclick='origLang.getGrammar(\"" + lang + "\",\"" + hTextArr[i] + "\")'>" + hTextArr[i] + "</a>";
-
-			if (hTextStr == "")
-				hTextStr = lang + ":" + hTexti;
-			else
-				hTextStr += "/" + hTexti;
-		}
-		return hTextStr;
-	}
-}  //end origLang
-
-
 function getOneVerseBefore(ref) { //format BBCCCVVV
 	let bk = Number(ref.substr(0, 2));
 	let ch = Number(ref.substr(2, 3));
@@ -5583,9 +3744,9 @@ function setLocalStorage() {
 		localStorage.setItem("RHCurNum", RH.CurNum);
 		localStorage.setItem("RHLastNum", RH.LastNum);
 		localStorage.setItem("RHFirstNum", RH.FirstNum);
-		localStorage.setItem("speechVoice", document.getElementById("voiceSelect1").value);
-		localStorage.setItem("speechPitch", document.getElementById("audioPitch1").value);
-		localStorage.setItem("speechRate", document.getElementById("audioRate1").value);
+	//	localStorage.setItem("speechVoice", document.getElementById("voiceSelect1").value);
+	//	localStorage.setItem("speechPitch", document.getElementById("audioPitch1").value);
+	//	localStorage.setItem("speechRate", document.getElementById("audioRate1").value);
 		localStorage.setItem("siteControlthemeName", siteControl.themeName);
 		localStorage.setItem("siteControlthemeDarkColor", siteControl.themeDarkColor);
 		localStorage.setItem("siteControlthemeSWColor", siteControl.themeSWColor);
@@ -5628,8 +3789,8 @@ $(document).ready(function () {
 		localStorage.setItem("RHLastNum", "000");
 	if (!("RHCurNum" in localStorage))
 		localStorage.setItem("RHCurNum", "000");
-	if ("speechVoice" in localStorage)
-		document.getElementById("voiceSelect1").value = localStorage.getItem("speechVoice");
+//	if ("speechVoice" in localStorage)
+//		document.getElementById("voiceSelect1").value = localStorage.getItem("speechVoice");
 
 
 	RH.FirstNum = localStorage.getItem("RHFirstNum").replace("RH", "");
@@ -5719,11 +3880,12 @@ $(document).ready(function () {
 	// if (siteControl.syncSettings==true)
 	// 	document.getElementById("syncSettings").checked=true;
 
-	if (siteControl.audioTypeAllowed == null || siteControl.audioTypeAllowed == 1)
-		siteControl.audioTypeAllowed = "SynthOnly";
+//	if (siteControl.audioTypeAllowed == null || siteControl.audioTypeAllowed == 1)
+//		siteControl.audioTypeAllowed = "SynthOnly";
 
-	document.getElementById("voice" + siteControl.audioTypeAllowed).checked = true;
-	document.getElementById("fontnone").checked = true;
+//	document.getElementById("voice" + siteControl.audioTypeAllowed).checked = true;
+
+document.getElementById("fontnone").checked = true;
 
 	//set RH 
 	RH.ToDBDate = window.localStorage.getItem("RHToDBDate");
@@ -5732,9 +3894,9 @@ $(document).ready(function () {
 	//runcode for objects		
 	util.setGreekLetter();
 	window["BibleRef" + siteControl.activeWindow] = new BibleRef(siteControl.activeWindow);
-	window["VoiceControl" + siteControl.activeWindow] = new VoiceControl(siteControl.activeWindow);
+//	window["VoiceControl" + siteControl.activeWindow] = new VoiceControl(siteControl.activeWindow);
 	window["ScriptureWindow" + siteControl.activeWindow] = new ScriptureWindow(siteControl.activeWindow, true);
-	window["VoiceControl" + siteControl.activeWindow].voices = window.speechSynthesis.getVoices();
+//	window["VoiceControl" + siteControl.activeWindow].voices = window.speechSynthesis.getVoices();
 
 
 	// window["BibleRef" + siteControl.activeWindow2] = new BibleRef(siteControl.activeWindow2);
@@ -5746,9 +3908,9 @@ $(document).ready(function () {
 
 	window["BibleRef0"] = new BibleRef(0);
 	window["ScriptureWindow0"] = new ScriptureWindow(0);
-	window["VoiceControl0"] = new VoiceControl(0);
+//	window["VoiceControl0"] = new VoiceControl(0);
 
-	VoiceControl0.voices = window.speechSynthesis.getVoices();
+//	VoiceControl0.voices = window.speechSynthesis.getVoices();
 
 	//and load
 	if (refList == "")
@@ -5845,10 +4007,10 @@ $(document).ready(function () {
 	// ) {
 	//   speechSynthesis.onvoiceschanged = populateVoiceList;
 	// }
-	window["VoiceControl" + siteControl.activeWindow].populateVoiceList()   //setTimeout( '',3000);
-	document.getElementById("voiceSelect" + siteControl.activeWindow).value = localStorage.getItem("speechVoice");
-	document.getElementById("audioPitch" + siteControl.activeWindow).value = localStorage.getItem("speechPitch");
-	document.getElementById("audioRate" + siteControl.activeWindow).value = localStorage.getItem("speechRate");
+	// window["VoiceControl" + siteControl.activeWindow].populateVoiceList()   //setTimeout( '',3000);
+	// document.getElementById("voiceSelect" + siteControl.activeWindow).value = localStorage.getItem("speechVoice");
+	// document.getElementById("audioPitch" + siteControl.activeWindow).value = localStorage.getItem("speechPitch");
+	// document.getElementById("audioRate" + siteControl.activeWindow).value = localStorage.getItem("speechRate");
 
 	//set devVer
 	document.getElementById("devVersion").innerHTML = devVer;
@@ -5863,14 +4025,6 @@ $(document).ready(function () {
 	// });
 
 });
-
-// window.speechSynthesis.onvoiceschanged = function () {
-
-// 	if (typeof (window["VoiceControl1"] == "undefined"))
-// 		console.info("VoiceControl1 type :" + typeof (window["VoiceControl1"]));
-// 	else
-// 		VoiceControl1.voices = window.speechSynthesis.getVoices();
-// }
 
 wordboxdisplay =
 {
@@ -6700,13 +4854,7 @@ $('#searchEntry').keyup(function () {
 		$("#searchEntry").blur();
 });
 
-$('#audioEndAt1').keydown(function (event) {
-	VoiceControl1.Pause('1');
-});
 
-$('#AudioDDBtn1').click(function (event) {
-	VoiceControl1.OpenDialog(event, '1');
-});
 
 function setAccordionClickListener() {
 	////console.log("In setAccordionClickListener");
@@ -6874,20 +5022,6 @@ function getWordData(wrd, strngs, lang, lmma) {
 	);
 }
 
-//*****MISC***** */
-function doTestData() {
-	$("[data-pars]").css({
-		"text-decoration-line": "underline",
-		"text-decoration-style": "dotted"
-	});
-
-	//$("[data-lm='χριστός']").css({		
-	//, "backgroundColor": "yellow"
-}
-
-//****************(should be) BibleRef put out scripture window with reference and options **************************************************/	
-//******************** Load the Scripture in  ********************************************************
-
 //util
 function getColumnIncre(arr, val) {
 	var i = 0;
@@ -6897,8 +5031,6 @@ function getColumnIncre(arr, val) {
 	}
 	return 99;
 }
-
-
 
 //uGW
 function displaySectionTitles(bookNum, bookNam, version, incre, startAt, endAt, sendTo) {
@@ -7152,7 +5284,6 @@ function getRefCVW(refList, version = "WEB", startOnly = true, includeBook = fal
 }
 
 
-
 //util ONLY in Uncovering God's Word
 function elementInViewportTotally(el) {
 	var top = el.offsetTop;
@@ -7206,200 +5337,3 @@ function devTest() {
 }
 
 
-var makeAudioDataFile = {
-	//used to fill (and reset?) the second for each verse start in an audio Bible 
-	// (Already need the audiofile and meta tables) 
-
-	timelen: 0,
-	wordCount: 0,
-	MetaID: 0,  //NEW - will be read from Developer Area entry
-	MatchVersion: "VER",
-	MatchBook: -1, //will be read from Developer Area entry
-	MatchBook2: -1, //will be read from Developer Area entry
-	IntroLen: -1,    //Def 4  ERV 3  BYZ 2 
-	BookIntroLen: -1,  //Def 6  ERV 12
-	EndingLen: -1,    //Def 2  ERV 7  BYZ 0
-	PunctAfterLen: -1, //Def 0.02  ERV 0.08
-	ActiveRow: -1,
-	CVWlen: 3, //length for Chap, Verse, Word.  Is 3 for Psalms.
-
-	findVoiceFileDataRow: function (mb) {
-		for (let i = 1; i < window["voiceFileData"].length; i++) {
-			if (window["voiceFileData"][i][7] == mb && window["voiceFileData"][i][13] == this.MetaID)
-				return i;
-		}
-		return -1;
-	},
-
-	makeTimingFile: function () {  //This reads from the first to last book entered - it runs computeTiming() for each book. 
-		this.MetaID = document.getElementById("DA-MtID").value;
-		this.MatchBook = document.getElementById("DA-BS").value;
-		this.MatchBook2 = document.getElementById("DA-BE").value;
-		this.MatchVersion = audioFileMeta[this.MetaID][1];
-		this.IntroLen = audioFileMeta[this.MetaID][11];
-		this.BookIntroLen = audioFileMeta[this.MetaID][12];
-		this.EndingLen = audioFileMeta[this.MetaID][13];
-		this.PunctAfterLen = audioFileMeta[this.MetaID][14];
-
-
-		for (let i = this.MatchBook; i <= this.MatchBook2; i++) {
-			//console.log("Doing Book " + i);
-			this.ActiveRow = this.findVoiceFileDataRow(i);
-			//console.log ("voiceFileData Active Row:" + this.ActiveRow + " Active Row Book:" + voiceFileData[this.ActiveRow][7] );
-			if (this.ActiveRow > -1) {
-				this.computeTiming(voiceFileData[this.ActiveRow][7]);
-			}
-		}
-	},
-	computeTiming: function (MB) {
-		let timeAt = 0;
-		let timeLeft = -1;
-		let timeInterval = -1;
-		let timingBy = 22;
-		let j = 0;
-		let k = 0;
-		let i = 0;
-		let chp = 1;
-		//get Book Data and column intervals
-		let bibFN = window["B" + bibleBookData[MB][8] + this.MatchVersion];
-		let iID = getColumnIncre(bibFN[0], "id"); //get the column increment whose title matches
-		let iPuncAft = getColumnIncre(bibFN[0], "PunctAfter"); //ditto
-		let puncCnt = 0;
-		let refLen = 3; //util.refPadCount(MB);
-		let firstWord = util.padNum(1, refLen);
-		let fileID = 0;
-
-		//Read for each chapter in this book
-		if (voiceFileData[this.ActiveRow][4] == "Chapter") {
-			while (voiceFileData[this.ActiveRow][7] == MB) { //Read voiceFileData for each chapter in this book
-				if (voiceFileData[this.ActiveRow][8] == 1) //first Chapter may have book intro
-					timeAt = this.BookIntroLen;
-				else
-					timeAt = this.IntroLen;
-				timeLeft = voiceFileData[this.ActiveRow][12] - timeAt;
-				//get count for each punctuation of [,;.? etc]
-				puncCnt = 0;
-				// for (i=j;i<j + voiceFileData[this.ActiveRow][11];i++)  //voiceFileData[this.ActiveRow][11] is the total number of words in this audio file section					if (typeof (bibFN[i][iPuncAft]) != 'undefined') //bibFN[i][iPuncAft].includes(",")==true || bibFN[i][iPuncAft].includes(".")==true || bibFN[i][iPuncAft].includes(";")==true || bibFN[i][iPuncAft].includes("!")==true || bibFN[i][iPuncAft].includes("?")==true)
-				// 		puncCnt++;
-				//WRONG ABOVE? Doesn't it need to only count IF the Bible Book Data has a ",;.?!" in the words row? 
-				timeInterval = (timeLeft - (puncCnt * this.PunctAfterLen + this.EndingLen)) / voiceFileData[this.ActiveRow][11];
-				//puncCnt=0;     //above was (timeLeft - (puncCnt* this.PunctAfterLen)) divided by the total number of words in this audio file section 
-
-				//***************** Create Timing Table for this voice File ***************/
-				//loop through every word in Bible Data File for this section
-				fileID = voiceFileData[this.ActiveRow][0];
-				for (i = 1; i <= voiceFileData[this.ActiveRow][11]; i++) {
-					if (Number(bibFN[j + i][iID].substring(0, refLen)) == voiceFileData[this.ActiveRow][8])
-						if (bibFN[j + i][iID].slice(-refLen) == firstWord) {
-							//this.saveTiming(fileID,Number.parseFloat(timeAt).toFixed(2),bibFN[j+i][iID].substring(0, 2),bibFN[j+i][iID].substring(2, 4),"01");
-							console.log(fileID + "," + Number.parseFloat(timeAt).toFixed(2) + "," + timingBy + "," + bibFN[j + i][iID].substring(0, 2) + "," + bibFN[j + i][iID].substring(2, 4) + ",01")
-						}
-						else
-							if (typeof (bibFN[i][iPuncAft]) != 'undefined')
-								puncCnt = this.PunctAfterLen;
-							else
-								puncCnt = 0;
-
-					timeAt += timeInterval + puncCnt;
-				}
-				chp++;
-
-
-				j = util.findRowIn2DArr("B" + bibleBookData[MB][8] + this.MatchVersion, iID, util.padNum(chp, refLen) + util.padNum(1, refLen) + util.padNum(1, refLen));
-				j = j - 1;
-				this.ActiveRow++;
-			}
-			//this.ActiveRow=-1;
-		}
-		else if (voiceFileData[this.ActiveRow][4] == "Book") {
-			//while (voiceFileData[this.ActiveRow][7]==MB){ //Read voiceFileData for each chapter in this book
-			////console.log(this.MatchVersion + MB + "=[");
-			timeAt = this.BookIntroLen;
-			timeLeft = voiceFileData[this.ActiveRow][12] - timeAt;
-
-
-			puncCnt = 0;
-			for (i = j; i < j + voiceFileData[this.ActiveRow][11]; i++)
-				if (typeof (bibFN[i][iPuncAft]) != 'undefined')
-					puncCnt++;
-			timeInterval = (timeLeft - (puncCnt * this.PunctAfterLen + this.EndingLen)) / voiceFileData[this.ActiveRow][11];
-			puncCnt = 0;
-
-
-			//***************** Create Timing Table for this voice File ***************/
-			//loop through every word in Bible Data File for this section
-			for (i = 1; i < bibFN.length; i++) {
-				if (bibFN[i][iID].slice(-2) == "01") {
-					////console.log("['" + bibFN[i][iID] + "','"+ bibFN[i][iWord] + "'," + Number.parseFloat(timeAt).toFixed(2) + "],");
-				}
-				if (typeof (bibFN[i][iPuncAft]) != 'undefined')
-					puncCnt = this.PunctAfterLen;
-				else
-					puncCnt = 0;
-				timeAt += timeInterval + puncCnt;
-			}
-			////console.log("];");
-		}
-	},
-
-	saveTiming: function (fileID, timing, chapRef, verRef, wordRef) {
-		let i = 0;
-		$.post("saveTiming.php", {
-			FileID: fileID,
-			Timing: timing,
-			ChapRef: chapRef,
-			VerRef: verRef,
-			WordRef: wordRef
-		},
-			function (result) {
-				console.log(result);
-				//console.log("php saved " + ChapRef + VerRef + WordRef + " settings in fileID of " + fileID + " with timing of " + timing);
-			}
-		);
-	},
-
-	//DONE (getFirstTimingLength & getTimingLength)  open voice file for length  (chap or book?)
-	//DONE on PC - count words for that version 
-	// divide length by number of words to get estimate of chapters/verses/sentences
-	// save to db by userid. 
-	//*********** Enable editing of the auto marking of chapters/verses/sentences
-	//select edit option
-	//dialog box with auto play of each chapter/verse/ or sentence
-	//listen to audio and find in text? 
-	getFirstTimingLength: function () {
-		makeAudioDataFile.rowNum = util.findRowIn2DArr("voiceFileData", 1, makeAudioDataFile.MatchVersion);
-		////console.log(voiceFileData[makeAudioDataFile.rowNum][0]);
-		if (makeAudioDataFile.rowNum > -1) {
-			document.getElementById("ScriptureHeaderAudio1").src = voiceFileData[makeAudioDataFile.rowNum][2] + "\\" + voiceFileData[makeAudioDataFile.rowNum][3];
-			voiceControl0.setDuration();
-			setTimeout(makeAudioDataFile.getTimingLength, 2000);
-		}
-	},
-	getTimingLength() {
-		let i = makeAudioDataFile.rowNum;
-		let str = "";
-		////console.log("ID nd Ver: " + voiceFileData[i][0] + voiceFileData[i][1] );
-		str = "['" + voiceFileData[i][0] + "','" + voiceFileData[i][1] + "','" + voiceFileData[i][2] + "','" + voiceFileData[i][3] + "','" + voiceFileData[i][4] + "','" + voiceFileData[i][5] + "','" + voiceFileData[i][6] + "'," + voiceFileData[i][7] + "," + voiceFileData[i][8] + ",," + voiceFileData[i][10] + "," + voiceFileData[i][11] + "," + voiceControl0.TimeToSeconds(voiceControl0.duration) + "],"
-		////console.log(str);
-
-		i++;
-		makeAudioDataFile.rowNum = i;
-		if (voiceFileData[i][1] == makeAudioDataFile.MatchVersion) {
-			document.getElementById("ScriptureHeaderAudio1").src = voiceFileData[i][2] + "/" + voiceFileData[i][3];
-			voiceControl0.setDuration();
-			setTimeout(makeAudioDataFile.getTimingLength, 2000);
-		}
-
-		// setVoiceFileDuration(incre){
-		// 	let pend = document.getElementById("ScriptureHeaderAudio" + incre).currentTime;
-		// 	let i= document.getElementById("ScriptureHeaderAudio"+ incre).duration;
-		// 	if(isNaN(i)) {
-		// 		setTimeout(window["VoiceControl" + incre].setVoiceFileDuration,100,incre);
-		// 		return;
-		// 	}
-		// 	else
-		// 		VoiceControl.duration=VoiceControl.SecondsToTime(i);
-		// 	document.getElementById("AudioTime" + incre).innerHTML = VoiceControl.SecondsToTime(pend) + "/" + VoiceControl.duration;
-		// }
-	}
-}
