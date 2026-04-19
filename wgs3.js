@@ -3049,12 +3049,15 @@ var uncoverGodsWord = {
 	refListArr: [],
 	refTextArr: [],
 	refVersionArr: [], //enables each reference to have its own version
+	bkType: "",
 	version: "", //default version for these references - used if none specified on refList
+	versionNum: 0,
 	versionCount: 0,
 	paragraphId: 0,
 	resetEnterVerse: false,
 	lastRefBkNum: "00",
-//	arryW: [], //will have the bible book data 2d array
+	paragraphClass:"rdp", //reading paragraph class name. In processScriptureDatA will reset to wBp for Study mode.
+	//	arryW: [], //will have the bible book data 2d array
 
 
 	//Run once:starting process - setup BR,SW, and UGW variables
@@ -3076,6 +3079,11 @@ var uncoverGodsWord = {
 		this.refVersionArr = this.br.versionArray;
 		let i = 0;
 		let prevBook = "";
+
+		if (window["ScriptureWindow" + this.incre].setupMode == "Study"){
+			this.paragraphClass="wBp"; //wordBox paragraph
+		}
+
 
 		if (this.br.topic.length > 1) {
 			window["ScriptureWindow" + incre].showSWTopic();
@@ -3176,9 +3184,9 @@ var uncoverGodsWord = {
 			return;
 		}
 		//has a reference so load the data	
-		var ver = this.version //this.br.version - leave this line to change when RefList can include versions;
+		var ver = this.version //this.version //this.br.version - leave this line to change when RefList can include versions;
 		this.br.bookNum = this.refListArr[this.refIncre].substr(0, 2);
-		this.br.bookNam = bibleBookData[this.br.bookNum][8];
+		this.br.bookNam = bibleBookData[Number(this.br.bookNum)][8];
 
 		var arryW = "B" + this.br.bookNam + ver;
 
@@ -3223,13 +3231,28 @@ var uncoverGodsWord = {
 
 			function loadFromMySQL() {
 				let currentRefIncre = uncoverGodsWord.refIncre; // Capture current value
-				versionNum = 1;
+				let versionNum=0;
+				let bkType ="";
+				
+				if (ver=="ERV")
+					versionNum = 5;
+				else if (ver=="LEB")
+					versionNum = 1;
+
+				
+				if (uncoverGodsWord.br.bookNum<40)
+					bkType="ot";
+				else if (uncoverGodsWord.br.bookNum<67)
+					bkType="nt";
+
+				console.log ("loadfrommysql ver:" + ver + "  bkType:" + bkType);
+
 				$.post("loadBook.php", {
 					bookName: uncoverGodsWord.br.bookNam,
 					bookNum: uncoverGodsWord.br.bookNum,
 					version: ver,
-					versionNum: 1,
-					bookType: "n"
+					versionNum: versionNum,
+					bookType: bkType
 				},
 					function (result) {
 						$("#ScriptureData").append(result);
@@ -3286,7 +3309,7 @@ var uncoverGodsWord = {
 		const vbb = this.version + this.br.bookNum;
 		let currentParagraph = null;
 		let currentP = null;
-
+		let sp=" "; //set to "" after a —
 		//get display:none settings for each span label in the word box: lemma,phonetic,... 
 		util.setwordboxdisplay(this.incre);
 
@@ -3312,7 +3335,10 @@ var uncoverGodsWord = {
 		// let gloss = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "ew");
 		// let glossCnt = getColumnIncre(window["B" + this.br.bookNam + this.version][0], "ewLevel");
 
-
+		let paragraphClass="rdp"; //reading paragraph
+		if (window["ScriptureWindow" + this.incre].setupMode == "Study"){
+			paragraphClass="wBp"; //wordBox paragraph
+		}
 
 		//add each row from Book Table 
 		for (let i = bkwoStart; i <= bkwoEnd; i++) {
@@ -3338,69 +3364,102 @@ var uncoverGodsWord = {
 				vrsDisplay = Number(row[id].substring(0, 3)) + ":" + Number(row[id].substring(3, 6));
 
 				currentP = document.createElement("p");
-				currentP.setAttribute("class", "wBp");
+				currentP.setAttribute("class", this.paragraphClass); //"wBp" for wordBox paragraph or "rdp" for reading paragraph 
 				container.appendChild(currentP);
 			}
 
-			// Create flexbox container for each word's fields - ADD ID FROM BKWO FIELD
-			const wordBox = document.createElement("div");
-			wordBox.setAttribute("class", "wordBox");
-			wordBox.id = vbb + "^" + row[bkwo] + "-" + this.incre + "~" + this.refIncre;
+			if (window["ScriptureWindow" + this.incre].setupMode == "Study"){
+				// Create flexbox container for each word's fields - ADD ID FROM BKWO FIELD
+				const wordBox = document.createElement("div");
+				wordBox.setAttribute("class", "wordBox");
+				wordBox.id = vbb + "^" + row[bkwo] + "-" + this.incre + "~" + this.refIncre;
 
-			// Define fields with labels
-			const fields = [
-				{ label: "word", value: row[word], index: word },
-				{ label: "greek", value: row[greek], index: greek },
-				{ label: "phonetic", value: row[phonetic], index: phonetic },
-				{ label: "lemma", value: row[lemma], index: lemma },
-				{ label: "parse", value: row[parse], index: parse },
-				{ label: "strongs", value: row[strongs], index: strongs }
-			];
+				// Define fields with labels
+				const fields = [
+					{ label: "word", value: row[word], index: word },
+					{ label: "greek", value: row[greek], index: greek },
+					{ label: "phonetic", value: row[phonetic], index: phonetic },
+					{ label: "lemma", value: row[lemma], index: lemma },
+					{ label: "parse", value: row[parse], index: parse },
+					{ label: "strongs", value: row[strongs], index: strongs }
+				];
 
-			// Create SPAN for each field with class=label
-			fields.forEach(field => {
-				if (field.value && field.value.trim() !== '') {
-					const fieldSpan = document.createElement("span");
-					fieldSpan.className = field.label;
-					fieldSpan.textContent = field.value;
+				// Create SPAN for each field with class=label
+				fields.forEach(field => {
+					if (field.value && field.value.trim() !== '') {
+						const fieldSpan = document.createElement("span");
+						fieldSpan.className = field.label;
+						fieldSpan.textContent = field.value;
 
-					if (wordboxdisplay[field.label] != "")
-						fieldSpan.style = wordboxdisplay[field.label]
-					if (field.label == "word") {
+						if (wordboxdisplay[field.label] != "")
+							fieldSpan.style = wordboxdisplay[field.label]
+						if (field.label == "word") {
 
-						if (row[PunctBefore] != "") {
-							const PunctBeforespan = document.createElement("span");
-							PunctBeforespan.textContent = row[PunctBefore];
-							fieldSpan.prepend(PunctBeforespan);
+							if (row[PunctBefore] != "") {
+								const PunctBeforespan = document.createElement("span");
+								PunctBeforespan.textContent = row[PunctBefore];
+								fieldSpan.prepend(PunctBeforespan);
+							}
+
+							if (verseNum != Number(row[id].substring(3, 6))) { //add vrs anchor as a child to word row			
+								verseNum = Number(row[id].substring(3, 6)); //prime for next VerseNum change			
+								if (vrsDisplay == "")  //not filled as C:V cuz of new paragraph
+									vrsDisplay = "" + Number(row[id].substring(3, 6));
+								const vrsAnchor = document.createElement("a");
+								vrsAnchor.className = "vrs";
+								vrsAnchor.textContent = vrsDisplay;
+								fieldSpan.prepend(vrsAnchor);
+							}
+
+							if (row[PunctAfter] != "") {
+								const PunctAfterspan = document.createElement("span");
+								PunctAfterspan.textContent = row[PunctAfter];
+								fieldSpan.appendChild(PunctAfterspan);
+							}
+
+							vrsDisplay = "";
 						}
-
-						if (verseNum != Number(row[id].substring(3, 6))) { //add vrs anchor as a child to word row			
-							verseNum = Number(row[id].substring(3, 6)); //prime for next VerseNum change			
-							if (vrsDisplay == "")  //not filled as C:V cuz of new paragraph
-								vrsDisplay = "" + Number(row[id].substring(3, 6));
-							const vrsAnchor = document.createElement("a");
-							vrsAnchor.className = "vrs";
-							vrsAnchor.textContent = vrsDisplay;
-							fieldSpan.prepend(vrsAnchor);
-						}
-
-						if (row[PunctAfter] != "") {
-							const PunctAfterspan = document.createElement("span");
-							PunctAfterspan.textContent = row[PunctAfter];
-							fieldSpan.appendChild(PunctAfterspan);
-						}
-
-						vrsDisplay = "";
+						wordBox.appendChild(fieldSpan);
 					}
-					wordBox.appendChild(fieldSpan);
+				});
+				currentP.appendChild(wordBox);
+			}
+			else if (window["ScriptureWindow" + this.incre].setupMode == "Reading"){
+				//add verse achor to paragraph if new verse
+				if (verseNum != Number(row[id].substring(3, 6))) { //add vrs number		
+					verseNum = Number(row[id].substring(3, 6)); //prime for next VerseNum change			
+					if (vrsDisplay == "")  //not filled as C:V cuz of new paragraph
+						vrsDisplay = "" + Number(row[id].substring(3, 6));
+					const vrsAnchor = document.createElement("a");
+					vrsAnchor.className = "vrs";
+					vrsAnchor.textContent = vrsDisplay;
+					currentP.appendChild(vrsAnchor);
 				}
-			});
-			currentP.appendChild(wordBox);
 
+				//add punctuation before if it exists
+				if (row[PunctBefore] != "")
+					currentP.append(row[PunctBefore]);
+
+				//add word span
+				const wordSpan = document.createElement("span");
+				wordSpan.className = "word";
+				wordSpan.textContent = row[word];
+				wordSpan.id = vbb + "^" + row[bkwo] + "-" + this.incre + "~" + this.refIncre;
+				currentP.appendChild(wordSpan);
+					
+
+				if (row[PunctAfter] != "") {
+					currentP.append(row[PunctAfter]);
+					if (row[PunctAfter].slice(-1)=="—")
+						sp=""; //set to no space after a —
+				}
+
+				currentP.append(sp);
+				vrsDisplay = "";
+				sp=" ";			
+			}
+				
 		}
-		//      if (field.label="word")
-		//  
-
 		// //add Section Titles
 		// if (window["ScriptureWindow" + this.incre].showSectionTitles == true)
 		// 	if (this.refCount == 1)

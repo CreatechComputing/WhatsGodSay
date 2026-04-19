@@ -576,6 +576,7 @@ select, input[type="text"],input[type="email"],input[type="password"],#toGroup {
 
 
 #Scripture1, #Forum, #Scripture0 {
+	word-spacing:0.5px;
 	position:relative;
 	cursor:pointer;
 	margin-top:0;
@@ -893,22 +894,19 @@ h3.WNPS{
 	vertical-align:top;
 	}
 
-
-
 .greek,.lemma,.phonetic {
 	font-size:75%; 
 	vertical-align:bottom;
 	}
 .strongs {
 	font-size:60%; 
-	/* vertical-align:bottom; */
+ 	vertical-align:bottom; 
 	}
-.parse {
+ .parse {
 	font-size:60%; 
 	vertical-align:top;
-	}
+	} 
 		
-
 .wgs-modal{
 	z-index:27;
 	position:fixed;
